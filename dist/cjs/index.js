@@ -13,6 +13,7 @@ const symbolextensions_js_1 = require("./symbolextensions.js");
 Object.defineProperty(exports, "SymbolExtensions", { enumerable: true, get: function () { return symbolextensions_js_1.SymbolExtensions; } });
 const arrayextensions_js_1 = require("./arrayextensions.js");
 Object.defineProperty(exports, "ArrayPrototypeExtensions", { enumerable: true, get: function () { return arrayextensions_js_1.ArrayPrototypeExtensions; } });
+const descriptor_js_1 = require("./descriptor.js");
 const extension_1 = require("@nejs/extension");
 const Owners = [
     Object,
@@ -22,15 +23,25 @@ const Owners = [
     Symbol,
     Array.prototype,
 ];
+const NetNew = [
+    descriptor_js_1.DescriptorExtension,
+];
 function enableAll(owners) {
-    (owners || Owners).forEach(owner => {
+    const list = owners || Owners || [];
+    list.forEach(owner => {
         extension_1.Patch.enableFor(owner);
+    });
+    NetNew.forEach(extension => {
+        extension.apply();
     });
 }
 exports.enableAll = enableAll;
 function disableAll(owners) {
-    (owners || Owners).forEach(owner => {
+    list.forEach(owner => {
         extension_1.Patch.disableFor(owner);
+    });
+    NetNew.forEach(extension => {
+        extension.revert();
     });
 }
 exports.disableAll = disableAll;

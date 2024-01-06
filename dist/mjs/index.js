@@ -4,6 +4,7 @@ import { ReflectExtensions } from './reflectextensions.js';
 import { StringExtensions } from './stringextensions.js';
 import { SymbolExtensions } from './symbolextensions.js';
 import { ArrayPrototypeExtensions } from './arrayextensions.js';
+import { DescriptorExtension } from './descriptor.js';
 import { Patch } from '@nejs/extension';
 const Owners = [
     Object,
@@ -13,14 +14,24 @@ const Owners = [
     Symbol,
     Array.prototype,
 ];
+const NetNew = [
+    DescriptorExtension,
+];
 export function enableAll(owners) {
-    (owners || Owners).forEach(owner => {
+    const list = owners || Owners || [];
+    list.forEach(owner => {
         Patch.enableFor(owner);
+    });
+    NetNew.forEach(extension => {
+        extension.apply();
     });
 }
 export function disableAll(owners) {
-    (owners || Owners).forEach(owner => {
+    list.forEach(owner => {
         Patch.disableFor(owner);
+    });
+    NetNew.forEach(extension => {
+        extension.revert();
     });
 }
 export { ObjectExtensions, FunctionExtensions, ReflectExtensions, StringExtensions, SymbolExtensions, ArrayPrototypeExtensions, };

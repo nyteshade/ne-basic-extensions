@@ -15,11 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DescriptorExtension = void 0;
 const extension_1 = require("@nejs/extension");
 const objectextensions_js_1 = require("./objectextensions.js");
+const stringextensions_js_1 = require("./stringextensions.js");
 const reflectextensions_js_1 = require("./reflectextensions.js");
-const isObject = objectextensions_js_1.ObjectExtensions.patchEntries.isObject.computed;
-const isValidKey = objectextensions_js_1.ObjectExtensions.patchEntries.isValidKey.computed;
-const isString = objectextensions_js_1.ObjectExtensions.patchEntries.isString.computed;
-const hasSome = reflectextensions_js_1.ReflectExtensions.patchEntries.hasSome.computed;
+const isObject = objectextensions_js_1.ObjectExtensions.patchEntries?.isObject?.computed;
+const isValidKey = objectextensions_js_1.ObjectExtensions.patchEntries?.isValidKey?.computed;
+const isString = stringextensions_js_1.StringExtensions.patchEntries?.isString?.computed;
+const hasSome = reflectextensions_js_1.ReflectExtensions.patchEntries?.hasSome?.computed;
 class Descriptor {
     /**
      * Creates a new instance of Descriptor either from another object or
@@ -43,12 +44,38 @@ class Descriptor {
          */
         );
         __classPrivateFieldSet(this, _Descriptor_desc, object, "f");
-        if (object && key) {
+        if (isObject(object) && isValidKey(key)) {
             __classPrivateFieldSet(this, _Descriptor_desc, Object.getOwnPropertyDescriptor(object, key), "f");
         }
-        if (!_a.isDescriptor(__classPrivateFieldGet(this, _Descriptor_desc, "f"))) {
+        if (!this.isDescriptor) {
             throw new Error(`Not a valid descriptor:`, __classPrivateFieldGet(this, _Descriptor_desc, "f"));
         }
+    }
+    /**
+     * Detects whether or not this instance is an accessor object descriptor
+     *
+     * @returns {boolean} true if this object has a getter or setter and is not
+     * a data descriptor
+     */
+    get isAccessor() {
+        return _a.isAccessor(__classPrivateFieldGet(this, _Descriptor_desc, "f"));
+    }
+    /**
+     * Detects whether or not this instance is an data object descriptor
+     *
+     * @returns {boolean} true if this object has a value property and is not
+     * an accessor descriptor
+     */
+    get isData() {
+        return _a.isData(__classPrivateFieldGet(this, _Descriptor_desc, "f"));
+    }
+    /**
+     * Detects whether or not this instance is a valid object descriptor
+     *
+     * @returns {boolean} true if this descriptor store is a valid descriptor
+     */
+    get isDescriptor() {
+        return _a.isDescriptor(__classPrivateFieldGet(this, _Descriptor_desc, "f"));
     }
     /**
      * Getter around the `configurable` object descriptor property of
@@ -58,7 +85,7 @@ class Descriptor {
      * descriptor store is invalid.
      */
     get configurable() {
-        return !!__classPrivateFieldGet(this, _Descriptor_desc, "f")?.configurable ?? undefined;
+        return !!__classPrivateFieldGet(this, _Descriptor_desc, "f")?.configurable;
     }
     /**
      * Sets the `configurable` value of this object. If the internal descriptor
@@ -181,7 +208,7 @@ class Descriptor {
         if (!isObject(object) || !isValidKey(forKey)) {
             throw new Error(`Cannot apply descriptor to non-object or invalid key`);
         }
-        Object.defineProperty(object, forKey, __classPrivateFieldGet(this, _Descriptor_desc, "f"));
+        return Object.defineProperty(object, forKey, __classPrivateFieldGet(this, _Descriptor_desc, "f"));
     }
     /**
      * Converts this descriptor object into a base representation
@@ -360,9 +387,7 @@ class Descriptor {
             ..._a.ACCESSOR_KEYS,
             ..._a.DATA_KEYS,
         ];
-        let isa = (hasSome(knownKeys) && (_a.isAccessor(object) ||
-            _a.isData(object)));
-        return isa;
+        return hasSome(object, knownKeys);
     }
     /**
      * The function checks if a given property or descriptor is a data property.
@@ -388,7 +413,7 @@ class Descriptor {
         else if (hasSome(descriptor, DATA_KEYS)) {
             validData = true;
         }
-        return false;
+        return validData;
     }
     /**
      * The function checks if a given property descriptor or property of an object is

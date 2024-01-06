@@ -1,10 +1,11 @@
 import { Extension } from '@nejs/extension';
 import { ObjectExtensions } from './objectextensions.js';
+import { StringExtensions } from './stringextensions.js';
 import { ReflectExtensions } from './reflectextensions.js';
-const isObject = ObjectExtensions.patchEntries.isObject.computed;
-const isValidKey = ObjectExtensions.patchEntries.isValidKey.computed;
-const isString = ObjectExtensions.patchEntries.isString.computed;
-const hasSome = ReflectExtensions.patchEntries.hasSome.computed;
+const isObject = ObjectExtensions.patchEntries?.isObject?.computed;
+const isValidKey = ObjectExtensions.patchEntries?.isValidKey?.computed;
+const isString = StringExtensions.patchEntries?.isString?.computed;
+const hasSome = ReflectExtensions.patchEntries?.hasSome?.computed;
 class Descriptor {
     #desc = Descriptor.enigmatic;
     /**
@@ -18,12 +19,38 @@ class Descriptor {
      */
     constructor(object, key) {
         this.#desc = object;
-        if (object && key) {
+        if (isObject(object) && isValidKey(key)) {
             this.#desc = Object.getOwnPropertyDescriptor(object, key);
         }
-        if (!Descriptor.isDescriptor(this.#desc)) {
+        if (!this.isDescriptor) {
             throw new Error(`Not a valid descriptor:`, this.#desc);
         }
+    }
+    /**
+     * Detects whether or not this instance is an accessor object descriptor
+     *
+     * @returns {boolean} true if this object has a getter or setter and is not
+     * a data descriptor
+     */
+    get isAccessor() {
+        return Descriptor.isAccessor(this.#desc);
+    }
+    /**
+     * Detects whether or not this instance is an data object descriptor
+     *
+     * @returns {boolean} true if this object has a value property and is not
+     * an accessor descriptor
+     */
+    get isData() {
+        return Descriptor.isData(this.#desc);
+    }
+    /**
+     * Detects whether or not this instance is a valid object descriptor
+     *
+     * @returns {boolean} true if this descriptor store is a valid descriptor
+     */
+    get isDescriptor() {
+        return Descriptor.isDescriptor(this.#desc);
     }
     /**
      * Getter around the `configurable` object descriptor property of
@@ -33,7 +60,7 @@ class Descriptor {
      * descriptor store is invalid.
      */
     get configurable() {
-        return !!this.#desc?.configurable ?? undefined;
+        return !!this.#desc?.configurable;
     }
     /**
      * Sets the `configurable` value of this object. If the internal descriptor
@@ -156,7 +183,7 @@ class Descriptor {
         if (!isObject(object) || !isValidKey(forKey)) {
             throw new Error(`Cannot apply descriptor to non-object or invalid key`);
         }
-        Object.defineProperty(object, forKey, this.#desc);
+        return Object.defineProperty(object, forKey, this.#desc);
     }
     /**
      * Converts this descriptor object into a base representation
@@ -335,9 +362,7 @@ class Descriptor {
             ...Descriptor.ACCESSOR_KEYS,
             ...Descriptor.DATA_KEYS,
         ];
-        let isa = (hasSome(knownKeys) && (Descriptor.isAccessor(object) ||
-            Descriptor.isData(object)));
-        return isa;
+        return hasSome(object, knownKeys);
     }
     /**
      * The function checks if a given property or descriptor is a data property.
@@ -363,7 +388,7 @@ class Descriptor {
         else if (hasSome(descriptor, DATA_KEYS)) {
             validData = true;
         }
-        return false;
+        return validData;
     }
     /**
      * The function checks if a given property descriptor or property of an object is

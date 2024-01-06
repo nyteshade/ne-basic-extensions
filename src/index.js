@@ -23,21 +23,23 @@ const NetNew = [
 ]
 
 export function enableAll(owners) {
-  (owners || Owners).forEach(owner => {
+  const list = owners || Owners || []
+
+  list.forEach(owner => {
     Patch.enableFor(owner)
   })
 
-  (NetNew).forEach(extension => {
+  NetNew.forEach(extension => {
     extension.apply()
   })
 }
 
 export function disableAll(owners) {
-  (owners || Owners).forEach(owner => {
+  list.forEach(owner => {
     Patch.disableFor(owner)
   })
 
-  (NetNew).forEach(extension => {
+  NetNew.forEach(extension => {
     extension.revert()
   })
 }
