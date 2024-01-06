@@ -23,7 +23,11 @@ const NetNew = [
 ]
 
 export function enableAll(owners) {
-  const list = owners || Owners || []
+  const list = owners || Owners
+
+  if (!list) {
+    throw new Error('Unable to enable features without owners list')
+  }
 
   list.forEach(owner => {
     Patch.enableFor(owner)
@@ -35,6 +39,12 @@ export function enableAll(owners) {
 }
 
 export function disableAll(owners) {
+  const list = owners || Owners
+
+  if (!list) {
+    throw new Error('Unable to disable features without owners list')
+  }
+
   list.forEach(owner => {
     Patch.disableFor(owner)
   })

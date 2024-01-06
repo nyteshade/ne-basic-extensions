@@ -27,7 +27,10 @@ const NetNew = [
     descriptor_js_1.DescriptorExtension,
 ];
 function enableAll(owners) {
-    const list = owners || Owners || [];
+    const list = owners || Owners;
+    if (!list) {
+        throw new Error('Unable to enable features without owners list');
+    }
     list.forEach(owner => {
         extension_1.Patch.enableFor(owner);
     });
@@ -37,6 +40,10 @@ function enableAll(owners) {
 }
 exports.enableAll = enableAll;
 function disableAll(owners) {
+    const list = owners || Owners;
+    if (!list) {
+        throw new Error('Unable to disable features without owners list');
+    }
     list.forEach(owner => {
         extension_1.Patch.disableFor(owner);
     });
