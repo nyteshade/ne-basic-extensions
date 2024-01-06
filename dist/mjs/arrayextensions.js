@@ -9,6 +9,37 @@ import { Patch } from '@nejs/extension';
  */
 export const ArrayPrototypeExtensions = new Patch(Array.prototype, {
     /**
+     * Sometimes defining even a short function for the invocation of `find`
+     * can be troublesome. This helper function performs that job for you. If
+     * the specified element is in the array, `true` will be returned.
+     *
+     * @param {*} value the value to search for. This value must triple equals
+     * the array element in order to return true.
+     * @returns true if the exact element exists in the array, false otherwise
+     */
+    contains(value) {
+        return !!this.find(entry => entry === value);
+    },
+    /**
+     * The `findEntry` function searches the entries of the object and returns
+     * the `[index, value]` entry array for the first matching value found.
+     *
+     * @param {function} findFn a function that takes the element to be checked
+     * and returns a boolean value
+     * @returns if `findFn` returns `true`, an array with two elements, the first
+     * being the index, the second being the value, is returned.
+     */
+    findEntry(findFn) {
+        const entries = this.entries();
+        const VALUE = 1;
+        for (let entry of entries) {
+            if (findFn(entry[VALUE])) {
+                return entry;
+            }
+        }
+        return undefined;
+    },
+    /**
      * A getter property that returns the first element of the array. If the
      * array is empty, it returns `undefined`. This property is useful for
      * scenarios where you need to quickly access the first item of an array
@@ -32,5 +63,5 @@ export const ArrayPrototypeExtensions = new Patch(Array.prototype, {
      */
     get last() {
         return this[this.length - 1];
-    }
+    },
 });

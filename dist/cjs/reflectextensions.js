@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReflectExtensions = void 0;
 const extension_1 = require("@nejs/extension");
+const objectextensions_js_1 = require("./objectextensions.js");
 /**
  * The `ReflectExtensions` class is a patch applied to the built-in JavaScript
  * `Reflect` object. It extends `Reflect` with additional utility methods that
@@ -29,6 +30,25 @@ exports.ReflectExtensions = new extension_1.Patch(Reflect, {
         return Object.isObject(object) && (keys.flat(Infinity)
             .map(key => Reflect.has(object, key))
             .every(has => has));
+    },
+    ownDescriptors(object) {
+        const result = {};
+        const revertOnDone = () => revertOnDone.doIt ? objectextensions_js_1.ObjectExtensions.revert() : '';
+        revertOnDone.doIt = false;
+        if (!Object.isObject) {
+            revertOnDone.doIt = true;
+            objectextensions_js_1.ObjectExtensions.apply();
+        }
+        if (!Object.isObject(object)) {
+            revertOnDone();
+            return {};
+        }
+        const keys = Reflect.ownKeys(object);
+        for (const key of keys) {
+            result[key] = Object.getOwnPropertyDescriptor(key);
+        }
+        revertOnDone();
+        return result;
     },
     /**
      * The function checks if an object has at least one of the specified keys.

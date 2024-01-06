@@ -45,7 +45,47 @@ export const ObjectExtensions = new Patch(Object, {
    * @returns {string} - The string tag of the object, indicating its type.
    */
   getStringTag(value) {
-    return /(\w+)]/.exec(Object.prototype.toString.call(value))[1];
+    return /\s(.+)]/.exec(Object.prototype.toString.call(value))[1];
+  },
+
+  /**
+   * Strips an object down to only the keys specified. Optionally, any
+   * accessors can be made to retain their context on the source object.
+   *
+   * @param {object} object the object to pare down
+   * @param {Array<string|symbol>} keys the keys that should appear in the
+   * final reduced object
+   * @param {boolean} [bindAccessors = true] if this value is true
+   * then any accessors from the source object will continue to have their
+   * `this` value bound to the source. If the getter or setter on that object
+   * is defined using an arrow function, this will not work as intended.
+   * @returns {object} an object containing only the keys and symbols specified
+   * in the `keys` parameter.
+   */
+  stripTo(object, keys, bindAccessors = true) {
+    const result = {}
+
+    if (!Array.isArray(keys)) {
+      return result
+    }
+
+    for (let key of keys) {
+      if (Reflect.has(object, key)) {
+        const descriptor = Object.getOwnPropertyDescriptor(object, key)
+        if (Reflect.has(descriptor, 'get') || Reflect.has(descriptor, 'set')) {
+          if (bindAccessors) {
+            descriptor.get = descriptor?.get?.bind(object)
+            descriptor.set = descriptor?.set?.bind(object)
+          }
+          Object.defineProperty(result, descriptor)
+        }
+        else {
+          Object.defineProperty(result, descriptor)
+        }
+      }
+    }
+
+    return result
   },
 
   /**

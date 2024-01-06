@@ -1,4 +1,5 @@
 import { Patch } from '@nejs/extension'
+import { ObjectExtensions } from './objectextensions.js'
 
 /**
  * The `ReflectExtensions` class is a patch applied to the built-in JavaScript
@@ -28,6 +29,32 @@ export const ReflectExtensions = new Patch(Reflect, {
       .map(key => Reflect.has(object, key))
       .every(has => has)
     )
+  },
+
+  ownDescriptors(object) {
+    const result = {}
+    const revertOnDone = () => revertOnDone.doIt ? ObjectExtensions.revert() : ''
+    revertOnDone.doIt = false
+
+    if (!Object.isObject) {
+      revertOnDone.doIt = true
+      ObjectExtensions.apply()
+    }
+
+    if (!Object.isObject(object)) {
+      revertOnDone()
+      return {}
+    }
+
+    const keys = Reflect.ownKeys(object)
+
+    for (const key of keys) {
+      result[key] = Object.getOwnPropertyDescriptor(key)
+    }
+
+    revertOnDone()
+
+    return result
   },
 
   /**

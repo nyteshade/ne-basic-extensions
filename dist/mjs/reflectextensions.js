@@ -1,4 +1,5 @@
 import { Patch } from '@nejs/extension';
+import { ObjectExtensions } from './objectextensions.js';
 /**
  * The `ReflectExtensions` class is a patch applied to the built-in JavaScript
  * `Reflect` object. It extends `Reflect` with additional utility methods that
@@ -26,6 +27,25 @@ export const ReflectExtensions = new Patch(Reflect, {
         return Object.isObject(object) && (keys.flat(Infinity)
             .map(key => Reflect.has(object, key))
             .every(has => has));
+    },
+    ownDescriptors(object) {
+        const result = {};
+        const revertOnDone = () => revertOnDone.doIt ? ObjectExtensions.revert() : '';
+        revertOnDone.doIt = false;
+        if (!Object.isObject) {
+            revertOnDone.doIt = true;
+            ObjectExtensions.apply();
+        }
+        if (!Object.isObject(object)) {
+            revertOnDone();
+            return {};
+        }
+        const keys = Reflect.ownKeys(object);
+        for (const key of keys) {
+            result[key] = Object.getOwnPropertyDescriptor(key);
+        }
+        revertOnDone();
+        return result;
     },
     /**
      * The function checks if an object has at least one of the specified keys.
