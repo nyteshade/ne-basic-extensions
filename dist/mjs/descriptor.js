@@ -172,6 +172,20 @@ class Descriptor {
         (this.#desc || {}).set = value;
     }
     /**
+     * Shorthand for Object.getOwnPropertyDescriptor()
+     *
+     * @param {object} object a non-null object instance
+     * @param {string|symbol} key a symbol or string referencing which key on the
+     * object to return a descriptor for.
+     * @returns an object descriptor for the requested field or null
+     */
+    static for(object, key) {
+        if (!isObject(object) && !isValidKey(key)) {
+            return null;
+        }
+        return Object.getOwnPropertyDescriptor(object, key);
+    }
+    /**
      * Take the descriptor defined by this objects values and apply them to
      * the specified object using the specified key.
      *

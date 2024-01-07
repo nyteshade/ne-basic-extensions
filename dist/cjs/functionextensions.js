@@ -20,7 +20,7 @@ exports.FunctionExtensions = new extension_1.Patch(Function, {
      * @returns {boolean} Returns `true` if the value is a class, otherwise `false`.
      */
     isClass(value) {
-        return value instanceof Function && String(value).includes('class');
+        return value instanceof Function && !!/^class\s/.exec(String(value));
     },
     /**
      * Checks if a given value is a regular function. This method verifies if the value is

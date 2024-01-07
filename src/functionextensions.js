@@ -18,7 +18,7 @@ export const FunctionExtensions = new Patch(Function, {
    * @returns {boolean} Returns `true` if the value is a class, otherwise `false`.
    */
   isClass(value) {
-    return value instanceof Function && String(value).includes('class');
+    return value instanceof Function && !!/^class\s/.exec(String(value))
   },
 
   /**

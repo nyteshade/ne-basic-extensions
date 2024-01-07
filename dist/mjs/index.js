@@ -5,6 +5,7 @@ import { StringExtensions } from './stringextensions.js';
 import { SymbolExtensions } from './symbolextensions.js';
 import { ArrayPrototypeExtensions } from './arrayextensions.js';
 import { DescriptorExtension } from './descriptor.js';
+import { GlobalFunctionsAndProps } from './globals.js';
 import { Patch } from '@nejs/extension';
 const Owners = [
     Object,
@@ -15,6 +16,7 @@ const Owners = [
     Array.prototype,
 ];
 const NetNew = [
+    GlobalFunctionsAndProps,
     DescriptorExtension,
 ];
 export function enableAll(owners) {
@@ -41,4 +43,24 @@ export function disableAll(owners) {
         extension.revert();
     });
 }
-export { ObjectExtensions, FunctionExtensions, ReflectExtensions, StringExtensions, SymbolExtensions, ArrayPrototypeExtensions, };
+export const all = (() => {
+    let extensions = [
+        ObjectExtensions,
+        FunctionExtensions,
+        ReflectExtensions,
+        StringExtensions,
+        SymbolExtensions,
+        ArrayPrototypeExtensions,
+        GlobalFunctionsAndProps,
+        DescriptorExtension,
+    ];
+    const dest = extensions.reduce((accumulator, extension) => {
+        Reflect.ownKeys(extension.patchEntries).reduce((_, key) => {
+            accumulator[key] = extension.patchEntries[key].computed;
+            return accumulator;
+        }, accumulator);
+        return accumulator;
+    }, {});
+    return dest;
+})();
+export { ObjectExtensions, FunctionExtensions, ReflectExtensions, StringExtensions, SymbolExtensions, ArrayPrototypeExtensions, GlobalFunctionsAndProps, DescriptorExtension, };
