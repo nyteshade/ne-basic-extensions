@@ -19,9 +19,6 @@ exports.SymbolExtensions = new extension_1.Patch(Symbol, {
      * @returns {boolean} `true` if it is a `Symbol`, `false` otherwise
      */
     isSymbol(value) {
-        if (value && (typeof value === 'symbol')) {
-            return true;
-        }
-        return false;
+        return value && (typeof value === 'symbol');
     },
 });
