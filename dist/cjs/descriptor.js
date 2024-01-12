@@ -267,16 +267,16 @@ class Descriptor {
         return this.constructor.name;
     }
     /**
-     * The function `getData` retrieves the value of a property from an object if it
-     * exists and is a data property.
+     * The function `getData` retrieves the value of a property from an object
+     * if it exists and is a data property.
      *
      * @param object - The "object" parameter is the object from which we want to
      * retrieve data.
      * @param property - The `property` parameter is the name of the property that
      * you want to retrieve the data from.
-     * @returns either the value of the specified property if it exists and is a data
-     * property, or undefined if the property does not exist or is not a data
-     * property.
+     * @returns either the value of the specified property if it exists and is
+     * a data property, or undefined if the property does not exist or is not
+     * a data property.
      */
     static getData(object, property) {
         if (!isObject(object) || !isString(property)) {
@@ -301,10 +301,10 @@ class Descriptor {
      * which we want to get the accessor.
      * @returns an object that contains the getter and setter functions for the
      * specified property of the given object. If the property is an accessor
-     * property (defined with a getter and/or setter), the returned object will also
-     * have additional properties such as "accessor" and "descriptor". If the
-     * property is not found or is not an accessor property, the function returns
-     * undefined.
+     * property (defined with a getter and/or setter), the returned object will
+     * also have additional properties such as "accessor" and "descriptor". If
+     * the property is not found or is not an accessor property, the function
+     * returns undefined.
      */
     static getAccessor(object, property) {
         if (!isObject(object))
@@ -343,14 +343,14 @@ class Descriptor {
      *
      * @param [enumerable=false] - A boolean value indicating whether the property
      * can be enumerated (listed) when iterating over the object's properties.
-     * @param [configurable=false] - The `configurable` parameter determines whether
-     * the property can be deleted or its attributes can be modified. If
-     * `configurable` is set to `true`, the property can be deleted and its
-     * attributes can be changed. If `configurable` is set to `false`, the property
-     * cannot be deleted and
+     * @param [configurable=false] - The `configurable` parameter determines
+     * whether the property can be deleted or its attributes can be modified.
+     * If `configurable` is set to `true`, the property can be deleted and its
+     * attributes can be changed. If `configurable` is set to `false`, the
+     * property cannot be deleted and
      * @returns An object with the properties `enumerable` and `configurable` is
-     * being returned. The values of these properties are determined by the arguments
-     * passed to the `base` function.
+     * being returned. The values of these properties are determined by the
+     * arguments passed to the `base` function.
      */
     static base(enumerable = false, configurable = false) {
         return {
@@ -365,9 +365,9 @@ class Descriptor {
      *
      * @param getter - The getter parameter is a function that will be used as the
      * getter for the property. It will be called when the property is accessed.
-     * @param setter - The `setter` parameter is a function that will be used as the
-     * setter for the property. It will be called whenever the property is assigned a
-     * new value.
+     * @param setter - The `setter` parameter is a function that will be used as
+     * the setter for the property. It will be called whenever the property is
+     * assigned a new value.
      * @param [] - - `getter`: A function that will be used as the getter for the
      * property.
      * @returns an object with properties "get", "set", "enumerable", and
@@ -382,13 +382,15 @@ class Descriptor {
         };
     }
     /**
-     * The function "newData" creates a new data object with customizable properties.
+     * The function "newData" creates a new data object with customizable
+     * properties.
      *
-     * @param value - The value parameter represents the value that will be assigned
-     * to the property.
-     * @param [writable=true] - The `writable` parameter determines whether the value
-     * of the property can be changed. If `writable` is set to `true`, the value can
-     * be changed. If `writable` is set to `false`, the value cannot be changed.
+     * @param value - The value parameter represents the value that will be
+     * assigned to the property.
+     * @param [writable=true] - The `writable` parameter determines whether the
+     * value of the property can be changed. If `writable` is set to `true`, the
+     * value can be changed. If `writable` is set to `false`, the value cannot be
+     * changed.
      * @param [] - - `value`: The value to be assigned to the property.
      * @returns an object with properties `value`, `enumerable`, `writable`, and
      * `configurable`.
@@ -402,10 +404,11 @@ class Descriptor {
         };
     }
     /**
-     * The function checks if an object is a valid object descriptor in JavaScript.
+     * The function checks if an object is a valid object descriptor in
+     * JavaScript.
      *
-     * @param object - The `object` parameter is the object that we want to check if
-     * it is a descriptor.
+     * @param object - The `object` parameter is the object that we want to
+     * check if it is a descriptor.
      * @returns a boolean value.
      */
     static isDescriptor(object) {
@@ -419,12 +422,13 @@ class Descriptor {
     /**
      * The function checks if a given property or descriptor is a data property.
      *
-     * @param descriptor_orProp - The `descriptor_orProp` parameter can be either a
-     * descriptor or a property name.
-     * @param object - The `object` parameter is the object that you want to check
-     * for data properties.
-     * @returns a boolean value. It returns `true` if the `descriptor` object has any
-     * keys that match the `DATA_KEYS` array, otherwise it returns `false`.
+     * @param descriptor_orProp - The `descriptor_orProp` parameter can be
+     * either a descriptor or a property name.
+     * @param object - The `object` parameter is the object that you want to
+     * check for data properties.
+     * @returns a boolean value. It returns `true` if the `descriptor` object
+     * has any keys that match the `DATA_KEYS` array, otherwise it returns
+     * `false`.
      */
     static isData(object_orProp, property) {
         const needsDescriptor = (((typeof object_orProp === 'object') || object_orProp instanceof Object) &&
@@ -443,15 +447,15 @@ class Descriptor {
         return validData;
     }
     /**
-     * The function checks if a given property descriptor or property of an object is
-     * an accessor.
+     * The function checks if a given property descriptor or property of an
+     * object is an accessor.
      *
      * @param object_orProp - The `descriptor_orProp` parameter can be either a
      * descriptor object or a property name.
-     * @param property - The `object` parameter is the object that you want to check
-     * for accessor properties.
-     * @returns a boolean value. It returns true if the descriptor or property passed
-     * as an argument is an accessor descriptor, and false otherwise.
+     * @param property - The `object` parameter is the object that you want to
+     * check for accessor properties.
+     * @returns a boolean value. It returns true if the descriptor or property
+     * passed as an argument is an accessor descriptor, and false otherwise.
      */
     static isAccessor(object_orProp, property) {
         const needsDescriptor = ((object_orProp && property) &&
@@ -471,25 +475,28 @@ class Descriptor {
         return validAccessor;
     }
     /**
-     * A base descriptor (new for each read) that is both enumerable and configurable
+     * A base descriptor (new for each read) that is both enumerable and
+     * configurable
      *
-     * @returns The method `flexible` is returning the result of calling the `base`
-     * method with the arguments `true` and `true`.
+     * @returns The method `flexible` is returning the result of calling the
+     * `base` method with the arguments `true` and `true`.
      */
     static get flexible() {
         return this.base(true, true);
     }
     /**
-     * A base descriptor (new for each read) that is not enumerable but is configurable
+     * A base descriptor (new for each read) that is not enumerable but is
+     * configurable
      *
-     * @returns The method `enigmatic` is returning the result of calling the `base`
-     * method with the arguments `false` and `true`.
+     * @returns The method `enigmatic` is returning the result of calling
+     * the `base` method with the arguments `false` and `true`.
      */
     static get enigmatic() {
         return this.base(false, true);
     }
     /**
-     * A base descriptor (new for each read) that is neither enumerable nor configurable
+     * A base descriptor (new for each read) that is neither enumerable
+     * nor configurable
      *
      * @returns The code is returning the result of calling the `base` method with
      * the arguments `false` and `false`.
@@ -500,8 +507,8 @@ class Descriptor {
     /**
      * A base descriptor (new for each read) that enumerable but not configurable
      *
-     * @returns The method is returning the result of calling the `base` method with
-     * the arguments `true` and `false`.
+     * @returns The method is returning the result of calling the `base`
+     * method with the arguments `true` and `false`.
      */
     static get transparent() {
         return this.base(true, false);

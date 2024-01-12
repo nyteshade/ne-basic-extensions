@@ -11,6 +11,14 @@ const extension_1 = require("@nejs/extension");
  * utility functions.
  */
 exports.ObjectExtensions = new extension_1.Patch(Object, {
+    /**
+     * Checks to see if the supplied `value` is both an object, and has the
+     * appropriate symbol defined.
+     *
+     * @param {any} value the value to determine if it contains a defined
+     * `Symbol.toStringTag` defined.
+     * @returns true if the symbol is defined, false otherwise
+     */
     hasStringTag(value) {
         return Object.isObject(value) && Reflect.has(value, Symbol.toStringTag);
     },
