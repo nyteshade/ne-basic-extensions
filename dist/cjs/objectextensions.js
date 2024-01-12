@@ -11,6 +11,9 @@ const extension_1 = require("@nejs/extension");
  * utility functions.
  */
 exports.ObjectExtensions = new extension_1.Patch(Object, {
+    hasStringTag(value) {
+        return Object.isObject(value) && Reflect.has(value, Symbol.toStringTag);
+    },
     /**
      * Retrieves the string tag of an object. The string tag is a representation of
      * the object's type, as defined by its `Object.prototype.toString` method. This
@@ -21,6 +24,12 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
      * @returns {string} - The string tag of the object, indicating its type.
      */
     getStringTag(value) {
+        if (Object.hasStringTag(value)) {
+            return value[Symbol.toStringTag];
+        }
+        if (value && (typeof value === 'function')) {
+            return value.name;
+        }
         return /\s(.+)]/.exec(Object.prototype.toString.call(value))[1];
     },
     /**

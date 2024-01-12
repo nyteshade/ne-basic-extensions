@@ -171,6 +171,10 @@ class Descriptor {
     set set(value) {
         (this.#desc || {}).set = value;
     }
+    [Symbol.for('nodejs.util.inspect.custom')](depth, options, inspect) {
+        const type = this.isAccessor ? ' (Accessor)' : this.isData ? ' (Data)' : '';
+        return `Descriptor${type} ${inspect(this.#desc, { ...options, depth })}`;
+    }
     /**
      * Shorthand for Object.getOwnPropertyDescriptor()
      *
@@ -227,6 +231,15 @@ class Descriptor {
             default:
                 return this.#desc;
         }
+    }
+    /**
+     * Ensures that the constructor of this object instance's name
+     * is returned if the string tag for this instance is queried
+     *
+     * @returns {string} the name of the class
+     */
+    get [Symbol.toStringTag]() {
+        return this.constructor.name;
     }
     /**
      * The function `getData` retrieves the value of a property from an object if it
@@ -494,4 +507,4 @@ class Descriptor {
         return ['value', 'writable'];
     }
 }
-export const DescriptorExtension = new Extension(Descriptor);
+export const DescriptorExtensions = new Extension(Descriptor);

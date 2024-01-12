@@ -12,7 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _a, _Descriptor_desc;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DescriptorExtension = void 0;
+exports.DescriptorExtensions = void 0;
 const extension_1 = require("@nejs/extension");
 const objectextensions_js_1 = require("./objectextensions.js");
 const stringextensions_js_1 = require("./stringextensions.js");
@@ -196,6 +196,10 @@ class Descriptor {
     set set(value) {
         (__classPrivateFieldGet(this, _Descriptor_desc, "f") || {}).set = value;
     }
+    [(_Descriptor_desc = new WeakMap(), Symbol.for('nodejs.util.inspect.custom'))](depth, options, inspect) {
+        const type = this.isAccessor ? ' (Accessor)' : this.isData ? ' (Data)' : '';
+        return `Descriptor${type} ${inspect(__classPrivateFieldGet(this, _Descriptor_desc, "f"), { ...options, depth })}`;
+    }
     /**
      * Shorthand for Object.getOwnPropertyDescriptor()
      *
@@ -231,7 +235,7 @@ class Descriptor {
      * @returns if the hint is 'string', then a string identifying the enum
      * and its type is returned. `number` will always be NaN since it is incoret
      */
-    [(_Descriptor_desc = new WeakMap(), Symbol.toPrimitive)](hint) {
+    [Symbol.toPrimitive](hint) {
         switch (hint) {
             case 'string':
                 if (this.isAccessor) {
@@ -252,6 +256,15 @@ class Descriptor {
             default:
                 return __classPrivateFieldGet(this, _Descriptor_desc, "f");
         }
+    }
+    /**
+     * Ensures that the constructor of this object instance's name
+     * is returned if the string tag for this instance is queried
+     *
+     * @returns {string} the name of the class
+     */
+    get [Symbol.toStringTag]() {
+        return this.constructor.name;
     }
     /**
      * The function `getData` retrieves the value of a property from an object if it
@@ -520,4 +533,4 @@ class Descriptor {
     }
 }
 _a = Descriptor;
-exports.DescriptorExtension = new extension_1.Extension(Descriptor);
+exports.DescriptorExtensions = new extension_1.Extension(Descriptor);

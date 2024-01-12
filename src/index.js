@@ -4,8 +4,19 @@ import { ReflectExtensions } from './reflectextensions.js'
 import { StringExtensions } from './stringextensions.js'
 import { SymbolExtensions } from './symbolextensions.js'
 import { ArrayPrototypeExtensions } from './arrayextensions.js'
-import { DescriptorExtension } from './descriptor.js'
+import { DescriptorExtensions } from './descriptor.js'
 import { GlobalFunctionsAndProps } from './globals.js'
+import { RefSetExtensions } from './refset.js'
+
+import {
+  AsyncIteratorExtensions,
+  AsyncIterableExtensions
+} from './asyncIterable.js'
+
+import {
+  IteratorExtensions,
+  IterableExtensions
+} from './iterable.js'
 
 import { Patch } from '@nejs/extension'
 
@@ -21,7 +32,12 @@ const Owners = [
 
 const NetNew = [
   GlobalFunctionsAndProps,
-  DescriptorExtension,
+  DescriptorExtensions,
+  AsyncIterableExtensions,
+  AsyncIteratorExtensions,
+  IterableExtensions,
+  IteratorExtensions,
+  RefSetExtensions,
 ]
 
 export function enableAll(owners) {
@@ -35,9 +51,11 @@ export function enableAll(owners) {
     Patch.enableFor(owner)
   })
 
-  NetNew.forEach(extension => {
-    extension.apply()
-  })
+  enableNetNew()
+}
+
+export function enableNetNew() {
+  NetNew.forEach(extension => { extension.apply() })
 }
 
 export function disableAll(owners) {
@@ -51,9 +69,11 @@ export function disableAll(owners) {
     Patch.disableFor(owner)
   })
 
-  NetNew.forEach(extension => {
-    extension.revert()
-  })
+  disableNetNew()
+}
+
+export function disableNetNew() {
+  NetNew.forEach(extension => { extension.revert() })
 }
 
 export const all = (() => {
@@ -66,7 +86,7 @@ export const all = (() => {
     ArrayPrototypeExtensions,
 
     GlobalFunctionsAndProps,
-    DescriptorExtension,
+    DescriptorExtensions,
   ]
 
   const dest = extensions.reduce((accumulator, extension) => {
@@ -91,5 +111,10 @@ export {
   ArrayPrototypeExtensions,
 
   GlobalFunctionsAndProps,
-  DescriptorExtension,
+  DescriptorExtensions,
+  AsyncIterableExtensions,
+  AsyncIteratorExtensions,
+  IterableExtensions,
+  IteratorExtensions,
+  RefSetExtensions,
 }

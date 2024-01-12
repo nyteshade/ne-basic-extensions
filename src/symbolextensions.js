@@ -19,4 +19,50 @@ export const SymbolExtensions = new Patch(Symbol, {
   isSymbol(value) {
     return value && (typeof value === 'symbol');
   },
+
+  /**
+   * Returns true if the supplied value is a Symbol created using
+   * `Symbol.for()`.
+   *
+   * @param {any} value assumption is that the supplied value is of type
+   * 'symbol' however, unless `allowOnlySymbols` is set to `true`, `false`
+   * will be returned for any non-symbol values.
+   * @param {boolean} allowOnlySymbols true if an error should be thrown
+   * if the supplied value is not of type 'symbol'
+   * @returns true if the symbol is registered, meaning, none of the spec
+   * static symbols (`toStringTag`, `iterator`, etc...), and no symbols
+   * created by passing a value directly to the Symbol function, such as
+   * `Symbol('name')`
+   */
+  isRegistered(value, allowOnlySymbols = false) {
+    if (!Symbol.isSymbol(value)) {
+      if (allowOnlySymbols) {
+        throw new TypeError('allowOnlySymbols specified; value is not a symbol')
+      }
+      return false
+    }
+
+    return Symbol.keyFor(value) !== undefined
+  },
+
+  /**
+   * A function that returns true if the symbol is not registered, meaning,
+   * any of the spec static symbols (`toStringTag`, `iterator`, etc...), and
+   * any symbols created by passing a value directly to the `Symbol` function,
+   * such as `Symbol('name')`.
+   *
+   * @param {any} value assumption is that the supplied value is of type
+   * 'symbol' however, unless allowOnlySymbols is set to true, false will
+   * be returned for any non-symbol values.
+   * @param {boolean} allowOnlySymbols true if an error should be thrown
+   * if the supplied value is not of type 'symbol'
+   * @returns true if the symbol is not registered, meaning, any of the
+   * spec static symbols (`toStringTag`, `iterator`, etc...), and any symbols
+   * created by passing a value directly to the `Symbol` function, such as
+   * `Symbol('name')`
+   * @returns
+   */
+  isNonRegistered(value, allowOnlySymbols = false) {
+    return !Symbol.isRegistered(value, allowOnlySymbols)
+  },
 });
