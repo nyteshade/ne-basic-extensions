@@ -133,11 +133,24 @@ class RefSet extends Set {
      * @param {*} thisArg - Value to use as `this` when executing `forEachFn`.
      */
     entries() {
-        const refEntries = super.entries();
+        const refEntries = Array.from(super.entries());
         return refEntries
             .map(([_, ref]) => [ref.deref(), ref.deref()])
             .filter(([_, value]) => !!value);
     }
+    /**
+     * Iterate over the items in the set and pass them to the supplied
+     * function ala `Array.prototype.forEach`. Note however, there are no
+     * indexes on Sets and as such, the index parameter of the callback
+     * will always be `NaN`. Subsequently the `array` or third parameter
+     * will receive the set instance rather than an array.
+     *
+     * @param {function} forEachFn the function to use for each element in
+     * the set.
+     * @param {object} thisArg the `this` argument to be applied to each
+     * invocation of the `forEachFn` callback. Note, this value is unable
+     * to be applied if the `forEachFn` is a big arrow function
+     */
     forEach(forEachFn, thisArg) {
         const set = this;
         super.forEach(function (ref) {

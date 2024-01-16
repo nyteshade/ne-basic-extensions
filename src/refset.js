@@ -140,26 +140,39 @@ class RefSet extends Set {
     return this
   }
 
-/**
- * Executes a provided function once for each value in the RefSet. The callback
- * function receives the dereferenced value, the value again (as RefSet doesn't
- * use keys), and the RefSet itself. This method provides a way to iterate over
- * and apply operations to the values stored in the RefSet, taking into account
- * that they are weak references and may have been garbage-collected.
- *
- * @param {Function} forEachFn - Function to execute for each element. It
- * takes three arguments: element, element (again, as RefSet has no key), and
- * the RefSet itself.
- * @param {*} thisArg - Value to use as `this` when executing `forEachFn`.
- */
-entries() {
-    const refEntries = super.entries()
+  /**
+   * Executes a provided function once for each value in the RefSet. The callback
+   * function receives the dereferenced value, the value again (as RefSet doesn't
+   * use keys), and the RefSet itself. This method provides a way to iterate over
+   * and apply operations to the values stored in the RefSet, taking into account
+   * that they are weak references and may have been garbage-collected.
+   *
+   * @param {Function} forEachFn - Function to execute for each element. It
+   * takes three arguments: element, element (again, as RefSet has no key), and
+   * the RefSet itself.
+   * @param {*} thisArg - Value to use as `this` when executing `forEachFn`.
+   */
+  entries() {
+    const refEntries = Array.from(super.entries())
 
     return refEntries
       .map(([_, ref]) => [ref.deref(), ref.deref()])
       .filter(([_, value]) => !!value)
   }
 
+  /**
+   * Iterate over the items in the set and pass them to the supplied
+   * function ala `Array.prototype.forEach`. Note however, there are no
+   * indexes on Sets and as such, the index parameter of the callback
+   * will always be `NaN`. Subsequently the `array` or third parameter
+   * will receive the set instance rather than an array.
+   *
+   * @param {function} forEachFn the function to use for each element in
+   * the set.
+   * @param {object} thisArg the `this` argument to be applied to each
+   * invocation of the `forEachFn` callback. Note, this value is unable
+   * to be applied if the `forEachFn` is a big arrow function
+   */
   forEach(forEachFn, thisArg) {
     const set = this
 
