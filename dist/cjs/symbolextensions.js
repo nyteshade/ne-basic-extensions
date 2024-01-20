@@ -65,3 +65,4 @@ exports.SymbolExtensions = new extension_1.Patch(Symbol, {
         return !Symbol.isRegistered(value, allowOnlySymbols);
     },
 });
+//# sourceMappingURL=symbolextensions.js.map

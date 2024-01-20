@@ -1,95 +1,90 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RefSetExtensions = exports.IteratorExtensions = exports.IterableExtensions = exports.AsyncIteratorExtensions = exports.AsyncIterableExtensions = exports.DescriptorExtensions = exports.GlobalFunctionsAndProps = exports.ArrayPrototypeExtensions = exports.SymbolExtensions = exports.StringExtensions = exports.ReflectExtensions = exports.FunctionExtensions = exports.ObjectExtensions = exports.all = exports.disableNetNew = exports.disableAll = exports.enableNetNew = exports.enableAll = void 0;
+exports.Controls = exports.Patches = exports.Extensions = exports.all = void 0;
 const functionextensions_js_1 = require("./functionextensions.js");
-Object.defineProperty(exports, "FunctionExtensions", { enumerable: true, get: function () { return functionextensions_js_1.FunctionExtensions; } });
 const objectextensions_js_1 = require("./objectextensions.js");
-Object.defineProperty(exports, "ObjectExtensions", { enumerable: true, get: function () { return objectextensions_js_1.ObjectExtensions; } });
 const reflectextensions_js_1 = require("./reflectextensions.js");
-Object.defineProperty(exports, "ReflectExtensions", { enumerable: true, get: function () { return reflectextensions_js_1.ReflectExtensions; } });
 const stringextensions_js_1 = require("./stringextensions.js");
-Object.defineProperty(exports, "StringExtensions", { enumerable: true, get: function () { return stringextensions_js_1.StringExtensions; } });
 const symbolextensions_js_1 = require("./symbolextensions.js");
-Object.defineProperty(exports, "SymbolExtensions", { enumerable: true, get: function () { return symbolextensions_js_1.SymbolExtensions; } });
 const arrayextensions_js_1 = require("./arrayextensions.js");
-Object.defineProperty(exports, "ArrayPrototypeExtensions", { enumerable: true, get: function () { return arrayextensions_js_1.ArrayPrototypeExtensions; } });
-const descriptor_js_1 = require("./descriptor.js");
-Object.defineProperty(exports, "DescriptorExtensions", { enumerable: true, get: function () { return descriptor_js_1.DescriptorExtensions; } });
+const descriptor_js_1 = require("./ newClasses/descriptor.js");
 const globals_js_1 = require("./globals.js");
-Object.defineProperty(exports, "GlobalFunctionsAndProps", { enumerable: true, get: function () { return globals_js_1.GlobalFunctionsAndProps; } });
-const refset_js_1 = require("./refset.js");
-Object.defineProperty(exports, "RefSetExtensions", { enumerable: true, get: function () { return refset_js_1.RefSetExtensions; } });
-const asyncIterable_js_1 = require("./asyncIterable.js");
-Object.defineProperty(exports, "AsyncIteratorExtensions", { enumerable: true, get: function () { return asyncIterable_js_1.AsyncIteratorExtensions; } });
-Object.defineProperty(exports, "AsyncIterableExtensions", { enumerable: true, get: function () { return asyncIterable_js_1.AsyncIterableExtensions; } });
-const iterable_js_1 = require("./iterable.js");
-Object.defineProperty(exports, "IteratorExtensions", { enumerable: true, get: function () { return iterable_js_1.IteratorExtensions; } });
-Object.defineProperty(exports, "IterableExtensions", { enumerable: true, get: function () { return iterable_js_1.IterableExtensions; } });
-const extension_1 = require("@nejs/extension");
-const Owners = [
-    Object,
-    Function,
-    Reflect,
-    String,
-    Symbol,
-    Array.prototype,
-];
-const NetNew = [
-    globals_js_1.GlobalFunctionsAndProps,
-    descriptor_js_1.DescriptorExtensions,
-    asyncIterable_js_1.AsyncIterableExtensions,
-    asyncIterable_js_1.AsyncIteratorExtensions,
-    iterable_js_1.IterableExtensions,
-    iterable_js_1.IteratorExtensions,
-    refset_js_1.RefSetExtensions,
-];
-function enableAll(owners) {
-    const list = owners || Owners;
-    if (!list) {
-        throw new Error('Unable to enable features without owners list');
-    }
-    list.forEach(owner => {
-        extension_1.Patch.enableFor(owner);
-    });
-    enableNetNew();
-}
-exports.enableAll = enableAll;
-function enableNetNew() {
-    NetNew.forEach(extension => { extension.apply(); });
-}
-exports.enableNetNew = enableNetNew;
-function disableAll(owners) {
-    const list = owners || Owners;
-    if (!list) {
-        throw new Error('Unable to disable features without owners list');
-    }
-    list.forEach(owner => {
-        extension_1.Patch.disableFor(owner);
-    });
-    disableNetNew();
-}
-exports.disableAll = disableAll;
-function disableNetNew() {
-    NetNew.forEach(extension => { extension.revert(); });
-}
-exports.disableNetNew = disableNetNew;
+const refset_js_1 = require("./ newClasses/refset.js");
+const asyncIterable_js_1 = require("./ newClasses/asyncIterable.js");
+const iterable_js_1 = require("./ newClasses/iterable.js");
+const Patches = new Map([
+    [Object, objectextensions_js_1.ObjectExtensions],
+    [Function, functionextensions_js_1.FunctionExtensions],
+    [Reflect, reflectextensions_js_1.ReflectExtensions],
+    [String, stringextensions_js_1.StringExtensions],
+    [Symbol, symbolextensions_js_1.SymbolExtensions],
+    [Array.prototype, arrayextensions_js_1.ArrayPrototypeExtensions],
+    [globalThis, globals_js_1.GlobalFunctionsAndProps],
+]);
+exports.Patches = Patches;
+const Extensions = {
+    [descriptor_js_1.DescriptorExtensions.key]: descriptor_js_1.DescriptorExtensions,
+    [asyncIterable_js_1.AsyncIterableExtensions.key]: asyncIterable_js_1.AsyncIterableExtensions,
+    [asyncIterable_js_1.AsyncIteratorExtensions.key]: asyncIterable_js_1.AsyncIteratorExtensions,
+    [iterable_js_1.IterableExtensions.key]: iterable_js_1.IterableExtensions,
+    [iterable_js_1.IteratorExtensions.key]: iterable_js_1.IteratorExtensions,
+    [refset_js_1.RefSetExtensions.key]: refset_js_1.RefSetExtensions,
+};
+exports.Extensions = Extensions;
+const Controls = {};
+exports.Controls = Controls;
+Object.assign(Controls, {
+    enableAll() {
+        Controls.enablePatches();
+        Controls.enableExtensions();
+    },
+    enablePatches() {
+        Patches.forEach((extension) => { extension.apply(); });
+    },
+    enableExtensions() {
+        Object.values(Extensions).forEach((extension) => { extension.apply(); });
+    },
+    disableAll(owners) {
+        Controls.disablePatches();
+        Controls.disableExtensions();
+    },
+    disablePatches() {
+        Patches.forEach((extension) => { extension.revert(); });
+    },
+    disableExtensions() {
+        Object.values(Extensions).forEach((extension) => { extension.revert(); });
+    },
+});
 exports.all = (() => {
-    let extensions = [
-        objectextensions_js_1.ObjectExtensions,
-        functionextensions_js_1.FunctionExtensions,
-        reflectextensions_js_1.ReflectExtensions,
-        stringextensions_js_1.StringExtensions,
-        symbolextensions_js_1.SymbolExtensions,
-        arrayextensions_js_1.ArrayPrototypeExtensions,
-        globals_js_1.GlobalFunctionsAndProps,
-        descriptor_js_1.DescriptorExtensions,
+    const extensions = [
+        ...Array.from(Patches.values()),
+        ...Array.from(Object.values(Extensions)),
     ];
     const dest = extensions.reduce((accumulator, extension) => {
         Reflect.ownKeys(extension.patchEntries).reduce((_, key) => {
-            accumulator[key] = extension.patchEntries[key].computed;
+            const entry = extension.patchEntries[key];
+            if (entry.isAccessor)
+                accumulator[key] = new descriptor_js_1.Descriptor(entry.descriptor);
+            else
+                accumulator[key] = entry.computed;
             return accumulator;
         }, accumulator);
         return accumulator;
     }, {});
     return dest;
 })();
+const results = {
+    ...Controls,
+    extensions: Extensions,
+    patches: Patches,
+    all: exports.all,
+};
+for (const key of Object.keys(Extensions)) {
+    // Exports a constant string for each new new class that can be
+    // used as a key to the Extensions map should they be referenced
+    // individually. Should returned undefined and likely end up in
+    // an error if the class is misreferenced or the code changes
+    results[`k${key}`] = key;
+}
+exports.default = results;
+//# sourceMappingURL=index.js.map

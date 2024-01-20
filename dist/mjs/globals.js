@@ -1,6 +1,6 @@
 import { Patch } from '@nejs/extension';
 import { FunctionExtensions } from './functionextensions.js';
-const { isClass, isFunction } = FunctionExtensions.patchEntries.isClass.computed;
+const { isClass, isFunction } = FunctionExtensions.patches;
 const CustomInspect = Symbol.for('nodejs.util.inspect.custom');
 export const GlobalFunctionsAndProps = new Patch(globalThis, {
     /**
@@ -160,3 +160,4 @@ export const GlobalFunctionsAndProps = new Patch(globalThis, {
         return options;
     },
 });
+//# sourceMappingURL=globals.js.map

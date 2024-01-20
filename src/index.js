@@ -4,94 +4,84 @@ import { ReflectExtensions } from './reflectextensions.js'
 import { StringExtensions } from './stringextensions.js'
 import { SymbolExtensions } from './symbolextensions.js'
 import { ArrayPrototypeExtensions } from './arrayextensions.js'
-import { DescriptorExtensions } from './descriptor.js'
+import { DescriptorExtensions, Descriptor } from './ newClasses/descriptor.js'
 import { GlobalFunctionsAndProps } from './globals.js'
-import { RefSetExtensions } from './refset.js'
+import { RefSetExtensions } from './ newClasses/refset.js'
 
 import {
   AsyncIteratorExtensions,
   AsyncIterableExtensions
-} from './asyncIterable.js'
+} from './ newClasses/asyncIterable.js'
 
 import {
   IteratorExtensions,
   IterableExtensions
-} from './iterable.js'
+} from './ newClasses/iterable.js'
 
-import { Patch } from '@nejs/extension'
+const Patches = new Map([
+  [Object, ObjectExtensions],
+  [Function, FunctionExtensions],
+  [Reflect, ReflectExtensions],
+  [String, StringExtensions],
+  [Symbol, SymbolExtensions],
+  [Array.prototype, ArrayPrototypeExtensions],
+  [globalThis, GlobalFunctionsAndProps],
+])
 
-const Owners = [
-  Object,
-  Function,
-  Reflect,
-  String,
-  Symbol,
-
-  Array.prototype,
-]
-
-const NetNew = [
-  GlobalFunctionsAndProps,
-  DescriptorExtensions,
-  AsyncIterableExtensions,
-  AsyncIteratorExtensions,
-  IterableExtensions,
-  IteratorExtensions,
-  RefSetExtensions,
-]
-
-export function enableAll(owners) {
-  const list = owners || Owners
-
-  if (!list) {
-    throw new Error('Unable to enable features without owners list')
-  }
-
-  list.forEach(owner => {
-    Patch.enableFor(owner)
-  })
-
-  enableNetNew()
+const Extensions = {
+  [DescriptorExtensions.key]: DescriptorExtensions,
+  [AsyncIterableExtensions.key]: AsyncIterableExtensions,
+  [AsyncIteratorExtensions.key]: AsyncIteratorExtensions,
+  [IterableExtensions.key]: IterableExtensions,
+  [IteratorExtensions.key]: IteratorExtensions,
+  [RefSetExtensions.key]: RefSetExtensions,
 }
 
-export function enableNetNew() {
-  NetNew.forEach(extension => { extension.apply() })
-}
+const Controls = {}
 
-export function disableAll(owners) {
-  const list = owners || Owners
+Object.assign(Controls, {
+  enableAll() {
+    Controls.enablePatches()
+    Controls.enableExtensions()
+  },
 
-  if (!list) {
-    throw new Error('Unable to disable features without owners list')
-  }
+  enablePatches() {
+    Patches.forEach((extension) => { extension.apply() })
+  },
 
-  list.forEach(owner => {
-    Patch.disableFor(owner)
-  })
+  enableExtensions() {
+    Object.values(Extensions).forEach((extension) => { extension.apply() })
+  },
 
-  disableNetNew()
-}
+  disableAll(owners) {
+    Controls.disablePatches()
+    Controls.disableExtensions()
+  },
 
-export function disableNetNew() {
-  NetNew.forEach(extension => { extension.revert() })
-}
+  disablePatches() {
+    Patches.forEach((extension) => { extension.revert() })
+  },
+
+  disableExtensions() {
+    Object.values(Extensions).forEach((extension) => { extension.revert() })
+  },
+})
 
 export const all = (() => {
-  let extensions = [
-    ObjectExtensions,
-    FunctionExtensions,
-    ReflectExtensions,
-    StringExtensions,
-    SymbolExtensions,
-    ArrayPrototypeExtensions,
-
-    GlobalFunctionsAndProps,
-    DescriptorExtensions,
+  const extensions = [
+    ...Array.from(Patches.values()),
+    ...Array.from(Object.values(Extensions)),
   ]
 
   const dest = extensions.reduce((accumulator, extension) => {
     Reflect.ownKeys(extension.patchEntries).reduce((_, key) => {
-      accumulator[key] = extension.patchEntries[key].computed
+      const entry = extension.patchEntries[key]
+
+      if (entry.isAccessor)
+        accumulator[key] = new Descriptor(entry.descriptor)
+      else
+        accumulator[key] = entry.computed
+
       return accumulator
     }, accumulator)
 
@@ -101,20 +91,25 @@ export const all = (() => {
   return dest
 })()
 
+const results = {
+  ...Controls,
+  extensions: Extensions,
+  patches: Patches,
+  all,
+}
+
+for (const key of Object.keys(Extensions)) {
+  // Exports a constant string for each new new class that can be
+  // used as a key to the Extensions map should they be referenced
+  // individually. Should returned undefined and likely end up in
+  // an error if the class is misreferenced or the code changes
+  results[`k${key}`] = key
+}
+
+export default results
 
 export {
-  ObjectExtensions,
-  FunctionExtensions,
-  ReflectExtensions,
-  StringExtensions,
-  SymbolExtensions,
-  ArrayPrototypeExtensions,
-
-  GlobalFunctionsAndProps,
-  DescriptorExtensions,
-  AsyncIterableExtensions,
-  AsyncIteratorExtensions,
-  IterableExtensions,
-  IteratorExtensions,
-  RefSetExtensions,
+  Extensions,
+  Patches,
+  Controls,
 }

@@ -26,11 +26,17 @@ export const ObjectExtensions = new Patch(Object, {
      * what is returned by the `typeof` operator, especially for custom objects.
      *
      * @param {*} value - The object whose string tag is to be retrieved.
+     * @param {boolean} strict - if this is set to true, undefined will be returned
+     * whenever a supplied object does not have a `Symbol.toStringTag` defined,
+     * period. if false, the default,
      * @returns {string} - The string tag of the object, indicating its type.
      */
-    getStringTag(value) {
+    getStringTag(value, strict = false) {
         if (Object.hasStringTag(value)) {
             return value[Symbol.toStringTag];
+        }
+        if (strict) {
+            return undefined;
         }
         if (value && (typeof value === 'function')) {
             return value.name;
@@ -131,25 +137,28 @@ export const ObjectExtensions = new Patch(Object, {
      * in the `keys` parameter.
      */
     stripTo(object, keys, bindAccessors = true) {
+        if (!object || typeof object !== 'object') {
+            throw new TypeError('Object.stripTo requires an object to strip. Received', object);
+        }
         const result = {};
         if (!Array.isArray(keys)) {
             return result;
         }
         for (let key of keys) {
             if (Reflect.has(object, key)) {
-                const descriptor = Object.getOwnPropertyDescriptor(object, key);
-                if (Reflect.has(descriptor, 'get') || Reflect.has(descriptor, 'set')) {
+                const originalDescriptor = Object.getOwnPropertyDescriptor(object, key);
+                const descriptor = { ...originalDescriptor };
+                if (typeof descriptor.get === 'function' ||
+                    typeof descriptor.set === 'function') {
                     if (bindAccessors) {
-                        descriptor.get = descriptor?.get?.bind(object);
-                        descriptor.set = descriptor?.set?.bind(object);
+                        descriptor.get = descriptor.get?.bind(object);
+                        descriptor.set = descriptor.set?.bind(object);
                     }
-                    Object.defineProperty(result, descriptor);
                 }
-                else {
-                    Object.defineProperty(result, descriptor);
-                }
+                Object.defineProperty(result, key, descriptor);
             }
         }
         return result;
     },
 });
+//# sourceMappingURL=objectextensions.js.map

@@ -60,7 +60,8 @@ export const SymbolExtensions = new Patch(Symbol, {
    * spec static symbols (`toStringTag`, `iterator`, etc...), and any symbols
    * created by passing a value directly to the `Symbol` function, such as
    * `Symbol('name')`
-   * @returns
+   * @returns true if the `value` in question is both a `symbol` and has
+   * returns `undefined` if passed to `Symbol.keyFor`
    */
   isNonRegistered(value, allowOnlySymbols = false) {
     return !Symbol.isRegistered(value, allowOnlySymbols)

@@ -65,3 +65,4 @@ export const ArrayPrototypeExtensions = new Patch(Array.prototype, {
         return this[this.length - 1];
     },
 });
+//# sourceMappingURL=arrayextensions.js.map

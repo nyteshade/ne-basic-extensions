@@ -1,19 +1,10 @@
-export function enableAll(owners: any): void;
-export function enableNetNew(): void;
-export function disableAll(owners: any): void;
-export function disableNetNew(): void;
-export const all: {};
-import { ObjectExtensions } from './objectextensions.js';
-import { FunctionExtensions } from './functionextensions.js';
-import { ReflectExtensions } from './reflectextensions.js';
-import { StringExtensions } from './stringextensions.js';
-import { SymbolExtensions } from './symbolextensions.js';
-import { ArrayPrototypeExtensions } from './arrayextensions.js';
-import { GlobalFunctionsAndProps } from './globals.js';
-import { DescriptorExtensions } from './descriptor.js';
-import { AsyncIterableExtensions } from './asyncIterable.js';
-import { AsyncIteratorExtensions } from './asyncIterable.js';
-import { IterableExtensions } from './iterable.js';
-import { IteratorExtensions } from './iterable.js';
-import { RefSetExtensions } from './refset.js';
-export { ObjectExtensions, FunctionExtensions, ReflectExtensions, StringExtensions, SymbolExtensions, ArrayPrototypeExtensions, GlobalFunctionsAndProps, DescriptorExtensions, AsyncIterableExtensions, AsyncIteratorExtensions, IterableExtensions, IteratorExtensions, RefSetExtensions };
+export const all: any;
+export default results;
+declare namespace results {
+    export { Extensions as extensions };
+    export { Patches as patches };
+    export { all };
+}
+export const Extensions: {};
+export const Patches: Map<ObjectConstructor, import("@nejs/extension").Patch>;
+export const Controls: {};

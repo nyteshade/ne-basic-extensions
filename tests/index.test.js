@@ -1,4 +1,4 @@
-const { enableAll, disableAll } = require('../dist/cjs/index.js')
+const { Controls: { enableAll, disableAll } } = require('../dist/cjs/index.js')
 
 describe('Enabled extensions', () => {
   beforeEach(() => {

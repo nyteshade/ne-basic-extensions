@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>globals.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AsyncIterable.html">AsyncIterable</a><ul class='methods'><li data-type='method'><a href="AsyncIterable.html#.isAsyncIterable">isAsyncIterable</a></li></ul></li><li><a href="AsyncIterator.html">AsyncIterator</a><ul class='methods'><li data-type='method'><a href="AsyncIterator.html#asArray">asArray</a></li><li data-type='method'><a href="AsyncIterator.html#next">next</a></li><li data-type='method'><a href="AsyncIterator.html#reset">reset</a></li></ul></li><li><a href="Descriptor_Descriptor.html">Descriptor</a></li><li><a href="Iterable.html">Iterable</a><ul class='methods'><li data-type='method'><a href="Iterable.html#.isIterable">isIterable</a></li></ul></li><li><a href="Iterator.html">Iterator</a><ul class='methods'><li data-type='method'><a href="Iterator.html#next">next</a></li><li data-type='method'><a href="Iterator.html#reset">reset</a></li></ul></li><li><a href="RefSet.html">RefSet</a><ul class='methods'><li data-type='method'><a href="RefSet.html#add">add</a></li><li data-type='method'><a href="RefSet.html#addAll">addAll</a></li><li data-type='method'><a href="RefSet.html#clean">clean</a></li><li data-type='method'><a href="RefSet.html#contains">contains</a></li><li data-type='method'><a href="RefSet.html#entries">entries</a></li><li data-type='method'><a href="RefSet.html#filter">filter</a></li><li data-type='method'><a href="RefSet.html#find">find</a></li><li data-type='method'><a href="RefSet.html#forEach">forEach</a></li><li data-type='method'><a href="RefSet.html#has">has</a></li><li data-type='method'><a href="RefSet.html#keys">keys</a></li><li data-type='method'><a href="RefSet.html#map">map</a></li><li data-type='method'><a href="RefSet.html#objectifying">objectifying</a></li><li data-type='method'><a href="RefSet.html#values">values</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#ArrayPrototypeExtensions">ArrayPrototypeExtensions</a></li><li><a href="global.html#FunctionExtensions">FunctionExtensions</a></li><li><a href="global.html#GenericMask">GenericMask</a></li><li><a href="global.html#NumberMask">NumberMask</a></li><li><a href="global.html#ObjectExtensions">ObjectExtensions</a></li><li><a href="global.html#ReflectExtensions">ReflectExtensions</a></li><li><a href="global.html#StringExtensions">StringExtensions</a></li><li><a href="global.html#StringMask">StringMask</a></li><li><a href="global.html#SymbolExtensions">SymbolExtensions</a></li><li><a href="global.html#contains">contains</a></li><li><a href="global.html#entries">entries</a></li><li><a href="global.html#findEntry">findEntry</a></li><li><a href="global.html#first">first</a></li><li><a href="global.html#getStringTag">getStringTag</a></li><li><a href="global.html#getType">getType</a></li><li><a href="global.html#hasAll">hasAll</a></li><li><a href="global.html#hasSome">hasSome</a></li><li><a href="global.html#hasStringTag">hasStringTag</a></li><li><a href="global.html#isAsync">isAsync</a></li><li><a href="global.html#isBigArrow">isBigArrow</a></li><li><a href="global.html#isBound">isBound</a></li><li><a href="global.html#isClass">isClass</a></li><li><a href="global.html#isFunction">isFunction</a></li><li><a href="global.html#isNonRegistered">isNonRegistered</a></li><li><a href="global.html#isObject">isObject</a></li><li><a href="global.html#isPrimitive">isPrimitive</a></li><li><a href="global.html#isRegistered">isRegistered</a></li><li><a href="global.html#isString">isString</a></li><li><a href="global.html#isSymbol">isSymbol</a></li><li><a href="global.html#isValidKey">isValidKey</a></li><li><a href="global.html#isValidReference">isValidReference</a></li><li><a href="global.html#last">last</a></li><li><a href="global.html#maskAs">maskAs</a></li><li><a href="global.html#maskAsNumber">maskAsNumber</a></li><li><a href="global.html#maskAsString">maskAsString</a></li><li><a href="global.html#ownDescriptors">ownDescriptors</a></li><li><a href="global.html#stripTo">stripTo</a></li><li><a href="global.html#values">values</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">globals.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Patch } from '@nejs/extension'
+import { FunctionExtensions } from './functionextensions.js'
+
+const { isClass, isFunction } = FunctionExtensions.patches
+const CustomInspect = Symbol.for('nodejs.util.inspect.custom')
+
+export const GlobalFunctionsAndProps = new Patch(globalThis, {
+  /**
+   * Transforms an object to mimic a specified prototype, altering its type
+   * conversion and inspection behaviors. This function is especially useful
+   * for creating objects that need to behave like different primitive types
+   * under various operations.
+   *
+   * @param {Object} object - The object to be transformed.
+   * @param {Function|Object} [prototype=String.prototype] - The prototype or
+   * class to emulate. If a function is provided, its prototype is used.
+   * Defaults to String.prototype.
+   * @param {Function} [toPrimitive=(hint, val) => String(val)] - A function
+   * defining how the object should be converted to a primitive value. It
+   * receives a type hint ('number', 'string', or 'default') and the object,
+   * returning the primitive value.
+   * @returns {Object|null} The transformed object, or null if neither a class
+   * nor a prototype could be derived from the provided prototype parameter.
+   */
+  maskAs(object, classPrototype, options) {
+    const {
+      prototype,
+      toPrimitive
+    } = GenericMask({...options, prototype: classPrototype})
+
+    const base = { configurable: true, enumerable: false }
+    const proto = isFunction(prototype) ? prototype.prototype : prototype
+    const klass = isClass(prototype) ? prototype : proto?.constructor
+
+    if (!klass &amp;&amp; !proto) {
+      return null
+    }
+
+    Object.setPrototypeOf(object, proto)
+    Object.defineProperties(object, {
+      valueOf: {
+        value() { return String(toPrimitive('default', object)) }, ...base },
+
+      [Symbol.toPrimitive]: {
+        value(hint) { return toPrimitive(hint, object) }, ...base
+      },
+      [Symbol.toStringTag]: { value: klass.name, ...base },
+      [Symbol.species]: { get() { return klass }, ...base },
+      [CustomInspect]: { ...base, value(depth, opts, inspect) {
+        return inspect(this[Symbol.toPrimitive](), { ...opts, depth })
+      }}
+    })
+
+    return object
+  },
+
+  /**
+   * Masks an object as a string-like object by setting its prototype to
+   * String and defining how it converts to primitive types. This is
+   * particularly useful when an object needs to behave like a string in
+   * certain contexts, such as type coercion or logging.
+   *
+   * @param {Object} object - The object to be masked as a string.
+   * @param {string} [stringKey='value'] - The object property key used for
+   * the string representation. Defaults to 'value'.
+   * @param {Function} [toPrimitive] - Optional custom function for primitive
+   * conversion. If omitted, a default function handling various conversion
+   * hints is used.
+   * @returns {Object|null} The string-masked object, or null if the object
+   * doesn't have the specified stringKey property.
+   */
+  maskAsString(
+    object,
+    stringKey,
+    toPrimitive
+  ) {
+    if (object &amp;&amp; Reflect.has(object, stringKey)) {
+      return maskAs(object, StringMask(stringKey ?? 'value', toPrimitive))
+    }
+
+    return null
+  },
+
+  /**
+   * Masks an object as a number-like object. This allows the object to
+   * behave like a number in operations like arithmetic and type coercion.
+   * It sets the prototype to Number and defines custom conversion behavior.
+   *
+   * @param {Object} object - The object to be masked as a number
+   * representation. Defaults to 'value'.
+   * @param {Function} [toPrimitive] - Optional custom function for primitive
+   * conversion. If not provided, a default function handling different
+   * conversion hints is used.
+   * @returns {Object|null} The number-masked object, or null if the object
+   * doesn't have the specified numberKey property.
+   */
+  maskAsNumber(
+    object,
+    numberKey,
+    toPrimitive
+  ) {
+    if (object &amp;&amp; Reflect.has(object, numberKey)) {
+      return maskAs(object, NumberMask(numberKey ?? 'value', toPrimitive))
+    }
+
+    return null
+  },
+
+  /**
+   * Generates options for generic masking of an object, providing defaults for
+   * prototype and toPrimitive function if not specified.
+   *
+   * @param {Object} options - The options object including prototype,
+   * targetKey, and toPrimitive function.
+   * @returns {Object} The options object with defaults applied as necessary.
+   */
+  GenericMask({ prototype, targetKey = 'value', toPrimitive }) {
+    const options = { targetKey, toPrimitive, prototype };
+
+    if (!isFunction(toPrimitive)) {
+      options.toPrimitive = (hint, object) => {
+        let property = object[targetKey];
+        let isNum = (
+          (typeof property === 'number' &amp;&amp; Number.isFinite(property)) ||
+          (typeof property === 'string' &amp;&amp;
+            !isNaN(parseFloat(property)) &amp;&amp; isFinite(property)
+          )
+        );
+
+        switch (hint) {
+          case 'string':
+            return isNum ? String(property) : (property ?? String(object));
+          case 'number':
+            return isNum ? Number(property) : NaN;
+          case 'default':
+          default:
+            return isNum ? Number(property) : property;
+        }
+      }
+    }
+
+    return options;
+  },
+
+  /**
+   * Generates options for string masking of an object, providing a default
+   * toPrimitive function if not specified.
+   *
+   * @param {string} targetKey - The object property key for string
+   * representation.
+   * @param {Function} toPrimitive - Custom function for primitive conversion.
+   * @returns {Object} Options for string masking.
+   */
+  StringMask(targetKey, toPrimitive) {
+    const options = { targetKey, toPrimitive, prototype: String.prototype }
+
+    if (!isFunction(toPrimitive)) {
+      options.toPrimitive = function toPrimitive(hint, object) {
+        switch (hint) {
+          case 'default': return object[targetKey]
+          case 'number': return parseInt(object[targetKey], 36)
+          case 'string': return String(object[targetKey])
+          default: return object
+        }
+      }
+    }
+
+    return options
+  },
+
+  /**
+   * Generates options for number masking of an object, providing a default
+   * toPrimitive function if not specified.
+   *
+   * @param {string} targetKey - The object property key for number
+   * representation.
+   * @param {Function} toPrimitive - Custom function for primitive conversion.
+   * @returns {Object} Options for number masking.
+   */
+  NumberMask(targetKey, toPrimitive) {
+    const options = { targetKey, toPrimitive, prototype: Number.prototype }
+
+    if (!isFunction(toPrimitive)) {
+      options.toPrimitive = function toPrimitive(hint, object) {
+        switch (hint) {
+          case 'default': return object[targetKey]
+          case 'number': return Number(object[targetKey])
+          case 'string': return String(object[targetKey])
+          default: return object
+        }
+      }
+    }
+
+    return options
+  },
+})
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Jan 20 2024 16:01:56 GMT-0600 (Central Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

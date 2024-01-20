@@ -1,6 +1,8 @@
 import { Patch } from '@nejs/extension'
 import { ObjectExtensions } from './objectextensions.js'
 
+const { isObject } = ObjectExtensions.patches
+
 /**
  * The `ReflectExtensions` class is a patch applied to the built-in JavaScript
  * `Reflect` object. It extends `Reflect` with additional utility methods that
@@ -31,28 +33,28 @@ export const ReflectExtensions = new Patch(Reflect, {
     )
   },
 
+  /**
+   * Fetches all descriptors of an object, including those mapped to a
+   * symbol descriptor value.
+   *
+   * @param {object} object the object from whose descriptors need to be
+   * retrieved.
+   * @returns {object} with keys mapped to object descriptors
+   * @throws {TypeError} if the supplied `object` is null or not an object
+   * a TypeError exception will be thrown
+   */
   ownDescriptors(object) {
+    if (!isObject(object)) {
+      throw new TypeError('The supplied object must be non-null and an object')
+    }
+
     const result = {}
-    const revertOnDone = () => revertOnDone.doIt ? ObjectExtensions.revert() : ''
-    revertOnDone.doIt = false
-
-    if (!Object.isObject) {
-      revertOnDone.doIt = true
-      ObjectExtensions.apply()
-    }
-
-    if (!Object.isObject(object)) {
-      revertOnDone()
-      return {}
-    }
 
     const keys = Reflect.ownKeys(object)
 
     for (const key of keys) {
       result[key] = Object.getOwnPropertyDescriptor(key)
     }
-
-    revertOnDone()
 
     return result
   },
@@ -69,7 +71,7 @@ export const ReflectExtensions = new Patch(Reflect, {
    * at least one of the keys provided as arguments exists in the given object.
    */
   hasSome(object, ...keys) {
-    return Object.isObject(object) && (keys.flat(Infinity)
+    return isObject(object) && (keys.flat(Infinity)
       .map(key => Reflect.has(object, key))
       .some(has => has)
     )

@@ -25,3 +25,4 @@ exports.StringExtensions = new extension_1.Patch(String, {
         return false;
     },
 });
+//# sourceMappingURL=stringextensions.js.map

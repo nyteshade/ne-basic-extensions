@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReflectExtensions = void 0;
 const extension_1 = require("@nejs/extension");
 const objectextensions_js_1 = require("./objectextensions.js");
+const { isObject } = objectextensions_js_1.ObjectExtensions.patches;
 /**
  * The `ReflectExtensions` class is a patch applied to the built-in JavaScript
  * `Reflect` object. It extends `Reflect` with additional utility methods that
@@ -31,23 +32,25 @@ exports.ReflectExtensions = new extension_1.Patch(Reflect, {
             .map(key => Reflect.has(object, key))
             .every(has => has));
     },
+    /**
+     * Fetches all descriptors of an object, including those mapped to a
+     * symbol descriptor value.
+     *
+     * @param {object} object the object from whose descriptors need to be
+     * retrieved.
+     * @returns {object} with keys mapped to object descriptors
+     * @throws {TypeError} if the supplied `object` is null or not an object
+     * a TypeError exception will be thrown
+     */
     ownDescriptors(object) {
+        if (!isObject(object)) {
+            throw new TypeError('The supplied object must be non-null and an object');
+        }
         const result = {};
-        const revertOnDone = () => revertOnDone.doIt ? objectextensions_js_1.ObjectExtensions.revert() : '';
-        revertOnDone.doIt = false;
-        if (!Object.isObject) {
-            revertOnDone.doIt = true;
-            objectextensions_js_1.ObjectExtensions.apply();
-        }
-        if (!Object.isObject(object)) {
-            revertOnDone();
-            return {};
-        }
         const keys = Reflect.ownKeys(object);
         for (const key of keys) {
             result[key] = Object.getOwnPropertyDescriptor(key);
         }
-        revertOnDone();
         return result;
     },
     /**
@@ -62,7 +65,7 @@ exports.ReflectExtensions = new extension_1.Patch(Reflect, {
      * at least one of the keys provided as arguments exists in the given object.
      */
     hasSome(object, ...keys) {
-        return Object.isObject(object) && (keys.flat(Infinity)
+        return isObject(object) && (keys.flat(Infinity)
             .map(key => Reflect.has(object, key))
             .some(has => has));
     },
@@ -105,3 +108,4 @@ exports.ReflectExtensions = new extension_1.Patch(Reflect, {
         return Reflect.entries.map(([, value]) => value);
     }
 });
+//# sourceMappingURL=reflectextensions.js.map

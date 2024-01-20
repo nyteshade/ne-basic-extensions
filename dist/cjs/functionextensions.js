@@ -87,3 +87,4 @@ exports.FunctionExtensions = new extension_1.Patch(Function, {
             !Reflect.has(value, 'prototype'));
     },
 });
+//# sourceMappingURL=functionextensions.js.map

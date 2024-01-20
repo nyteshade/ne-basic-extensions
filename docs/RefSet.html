@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>RefSet - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AsyncIterable.html">AsyncIterable</a><ul class='methods'><li data-type='method'><a href="AsyncIterable.html#.isAsyncIterable">isAsyncIterable</a></li></ul></li><li><a href="AsyncIterator.html">AsyncIterator</a><ul class='methods'><li data-type='method'><a href="AsyncIterator.html#asArray">asArray</a></li><li data-type='method'><a href="AsyncIterator.html#next">next</a></li><li data-type='method'><a href="AsyncIterator.html#reset">reset</a></li></ul></li><li><a href="Descriptor_Descriptor.html">Descriptor</a></li><li><a href="Iterable.html">Iterable</a><ul class='methods'><li data-type='method'><a href="Iterable.html#.isIterable">isIterable</a></li></ul></li><li><a href="Iterator.html">Iterator</a><ul class='methods'><li data-type='method'><a href="Iterator.html#next">next</a></li><li data-type='method'><a href="Iterator.html#reset">reset</a></li></ul></li><li><a href="RefSet.html">RefSet</a><ul class='methods'><li data-type='method'><a href="RefSet.html#add">add</a></li><li data-type='method'><a href="RefSet.html#addAll">addAll</a></li><li data-type='method'><a href="RefSet.html#clean">clean</a></li><li data-type='method'><a href="RefSet.html#contains">contains</a></li><li data-type='method'><a href="RefSet.html#entries">entries</a></li><li data-type='method'><a href="RefSet.html#filter">filter</a></li><li data-type='method'><a href="RefSet.html#find">find</a></li><li data-type='method'><a href="RefSet.html#forEach">forEach</a></li><li data-type='method'><a href="RefSet.html#has">has</a></li><li data-type='method'><a href="RefSet.html#keys">keys</a></li><li data-type='method'><a href="RefSet.html#map">map</a></li><li data-type='method'><a href="RefSet.html#objectifying">objectifying</a></li><li data-type='method'><a href="RefSet.html#values">values</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#ArrayPrototypeExtensions">ArrayPrototypeExtensions</a></li><li><a href="global.html#FunctionExtensions">FunctionExtensions</a></li><li><a href="global.html#GenericMask">GenericMask</a></li><li><a href="global.html#NumberMask">NumberMask</a></li><li><a href="global.html#ObjectExtensions">ObjectExtensions</a></li><li><a href="global.html#ReflectExtensions">ReflectExtensions</a></li><li><a href="global.html#StringExtensions">StringExtensions</a></li><li><a href="global.html#StringMask">StringMask</a></li><li><a href="global.html#SymbolExtensions">SymbolExtensions</a></li><li><a href="global.html#contains">contains</a></li><li><a href="global.html#entries">entries</a></li><li><a href="global.html#findEntry">findEntry</a></li><li><a href="global.html#first">first</a></li><li><a href="global.html#getStringTag">getStringTag</a></li><li><a href="global.html#getType">getType</a></li><li><a href="global.html#hasAll">hasAll</a></li><li><a href="global.html#hasSome">hasSome</a></li><li><a href="global.html#hasStringTag">hasStringTag</a></li><li><a href="global.html#isAsync">isAsync</a></li><li><a href="global.html#isBigArrow">isBigArrow</a></li><li><a href="global.html#isBound">isBound</a></li><li><a href="global.html#isClass">isClass</a></li><li><a href="global.html#isFunction">isFunction</a></li><li><a href="global.html#isNonRegistered">isNonRegistered</a></li><li><a href="global.html#isObject">isObject</a></li><li><a href="global.html#isPrimitive">isPrimitive</a></li><li><a href="global.html#isRegistered">isRegistered</a></li><li><a href="global.html#isString">isString</a></li><li><a href="global.html#isSymbol">isSymbol</a></li><li><a href="global.html#isValidKey">isValidKey</a></li><li><a href="global.html#isValidReference">isValidReference</a></li><li><a href="global.html#last">last</a></li><li><a href="global.html#maskAs">maskAs</a></li><li><a href="global.html#maskAsNumber">maskAsNumber</a></li><li><a href="global.html#maskAsString">maskAsString</a></li><li><a href="global.html#ownDescriptors">ownDescriptors</a></li><li><a href="global.html#stripTo">stripTo</a></li><li><a href="global.html#values">values</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">RefSet</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            RefSet
+        
+        </h2>
+        
+            <div class="class-description usertext"><p>RefSet class extends the standard Set object to manage a collection of<br>
+WeakRef objects. It provides additional functionality such as objectification<br>
+of values and various utility methods.</p>
+<p>Unlike standard Sets or Arrays, RefSet stores weak references to objects,<br>
+allowing them to be garbage-collected if there are no other references to<br>
+them. This behavior is different from Arrays and standard Sets, which<br>
+maintain strong references to their elements.</p></div>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="RefSet"><span class="type-signature"></span>new RefSet<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>Set</li>
+    </ul>
+
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="objectifyValues"><span class="type-signature type-signature-private">(private) </span>objectifyValues<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Private field to track whether the RefSet should objectify primitive<br>
+values.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Private field to track whether the RefSet should objectify primitive<br>
+values.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="objectifyValues"><span class="type-signature"></span>objectifyValues<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Returns the state indicating whether or not <code>RefSet</code> will attempt to<br>
+convert non-valid primitives into targets that are valid input for<br>
+new <code>WeakRef</code> object instances. If this value is <code>false</code> then no<br>
+<em>objectification</em> will occur.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Returns the state indicating whether or not <code>RefSet</code> will attempt to<br>
+convert non-valid primitives into targets that are valid input for<br>
+new <code>WeakRef</code> object instances. If this value is <code>false</code> then no<br>
+<em>objectification</em> will occur.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="objectifyValues"><span class="type-signature"></span>objectifyValues<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Setting this value to true, will cause all added values to the Set to<br>
+be analyzed for validity as a candidate to be wrapped in a <code>WeakRef</code><br>
+object. If true, and if possible, the object will be turned into an<br>
+<code>Object</code> variant first. This will also enable less rigid variable<br>
+comparison in the <code>.has()</code> method (i.e. <code>==</code> instead of <code>===</code>).</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line60">line 60</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Setting this value to true, will cause all added values to the Set to<br>
+be analyzed for validity as a candidate to be wrapped in a <code>WeakRef</code><br>
+object. If true, and if possible, the object will be turned into an<br>
+<code>Object</code> variant first. This will also enable less rigid variable<br>
+comparison in the <code>.has()</code> method (i.e. <code>==</code> instead of <code>===</code>).</p>
+</div>
+
+
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="add"><span class="type-signature"></span>add<span class="signature">(value)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Overrides the add method of Set. Adds a value to the RefSet, converting it<br>
+to a WeakRef. Throws an error if the value is not a valid WeakRef target<br>
+(e.g., null, undefined, or a registered symbol). If <code>objectifyValues</code> is<br>
+enabled, an attempt to convert primitives to their object variants will be<br>
+made. These are numbers, strings, boolean values and big integers.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line74">line 74</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The value to be added to the RefSet.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-throws">Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc usertext">
+        <p>If the value is not a valid WeakRef target.</p>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl class="param-type">
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">TypeError</span>
+
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addAll"><span class="type-signature"></span>addAll<span class="signature">(values)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Adds multiple values to the RefSet. The supplied <code>values</code> should be<br>
+iterable and truthy. This function defers to <code>.add()</code> for its logic so<br>
+each value from the supplied collection of values will also be subject<br>
+to the criteria of that function.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line113">line 113</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>values</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Iterable.html">Iterable</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>An iterable of values to add to the RefSet.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-throws">Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc usertext">
+        <p>If the supplied values are falsey or non-iterable.</p>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl class="param-type">
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">TypeError</span>
+
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="clean"><span class="type-signature"></span>clean<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="RefSet.html">RefSet</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Removes all elements from the RefSet that have been garbage collected<br>
+(i.e., their WeakRef no longer points to an object).</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line133">line 133</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>The current RefSet instance to allow method chaining.</li>
+</ul>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="RefSet.html">RefSet</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="contains"><span class="type-signature"></span>contains<span class="signature">(value)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks if the RefSet contains a value that is equal to the specified<br>
+value. This method is used primarily in objectified RefSets to determine<br>
+the presence of a value, taking into account objectification. It differs<br>
+from the <code>has</code> method in that it's tailored for sets that have<br>
+transformed their primitive values into objects, whereas <code>has</code> is more<br>
+general-purpose.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line265">line 265</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The value to search for in the RefSet.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>True if the RefSet contains the value, false otherwise.</li>
+</ul>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="entries"><span class="type-signature"></span>entries<span class="signature">(forEachFn, thisArg)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Executes a provided function once for each value in the RefSet. The callback<br>
+function receives the dereferenced value, the value again (as RefSet doesn't<br>
+use keys), and the RefSet itself. This method provides a way to iterate over<br>
+and apply operations to the values stored in the RefSet, taking into account<br>
+that they are weak references and may have been garbage-collected.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line155">line 155</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>forEachFn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function to execute for each element. It<br>
+takes three arguments: element, element (again, as RefSet has no key), and<br>
+the RefSet itself.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thisArg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to use as <code>this</code> when executing <code>forEachFn</code>.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="filter"><span class="type-signature"></span>filter<span class="signature">(filterFn, thisArg)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Creates a new array with all elements that pass the test implemented by<br>
+the provided function. This method iterates over each element,<br>
+dereferences it, and applies the filter function. Unlike Array <code>filter</code>,<br>
+the callback receives the dereferenced value and not an index or array,<br>
+reflecting the non-indexed nature of RefSet. Useful for selectively<br>
+creating arrays from the set based on certain conditions, especially when<br>
+dealing with weak references.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line288">line 288</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>filterFn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function to test each element of the RefSet.<br>
+The function receives the dereferenced value.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thisArg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to use as <code>this</code> when executing <code>filterFn</code>.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>A new array with the elements that pass the test.</li>
+</ul>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(thisArg)</span><span class="type-signature"> &rarr; {*|any}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Returns the value of the first element in the RefSet that satisfies the<br>
+provided testing function. Similar to Array <code>find</code>, this method iterates<br>
+over the RefSet, dereferencing each value and applying the testing<br>
+function. The non-indexed nature of RefSet is considered, as the<br>
+callback does not receive an index. This method is useful for finding a<br>
+specific element based on a condition.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line319">line 319</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>thisArg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to use as this when executing findFn.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+<ul>
+        <li>
+<div class="param-desc">
+    <ul>
+<li>The value of the first element in the RefSet that satisfies<br>
+the testing function, or undefined if none found.</li>
+</ul>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+
+    </dd>
+</dl>
+</li>
+    
+        <li>
+<div class="param-desc">
+    <p>the dereferenced value if found, or undefined otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">any</span>
+
+
+
+    </dd>
+</dl>
+</li>
+    </ul>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="forEach"><span class="type-signature"></span>forEach<span class="signature">(forEachFn, thisArg)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Iterate over the items in the set and pass them to the supplied<br>
+function ala <code>Array.prototype.forEach</code>. Note however, there are no<br>
+indexes on Sets and as such, the index parameter of the callback<br>
+will always be <code>NaN</code>. Subsequently the <code>array</code> or third parameter<br>
+will receive the set instance rather than an array.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line176">line 176</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>forEachFn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the function to use for each element in<br>
+the set.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thisArg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the <code>this</code> argument to be applied to each<br>
+invocation of the <code>forEachFn</code> callback. Note, this value is unable<br>
+to be applied if the <code>forEachFn</code> is a big arrow function</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="has"><span class="type-signature"></span>has<span class="signature">(value)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Determines whether an element with the specified value exists in the<br>
+<code>RefSet</code>. For non-objectified sets, this method checks if the dereferenced<br>
+values of the set include the specified value.</p>
+<p>For objectified sets, it uses the <code>contains</code> method which accounts for<br>
+the objectification. This method differs from standard Set <code>has</code> in that<br>
+it works with weak references and considers objectification settings.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line240">line 240</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The value to check for presence in the RefSet.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>True if an element with the specified value exists<br>
+in the RefSet, false otherwise.</li>
+</ul>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="keys"><span class="type-signature"></span>keys<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Iterator.html">Iterator</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Returns an iterator for the keys of the RefSet. In RefSet, keys and<br>
+values are identical, so this method behaves the same as <code>values()</code>. It<br>
+provides compatibility with the standard Set interface and allows use in<br>
+contexts where keys are expected, despite RefSet not differentiating<br>
+between keys and values.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line223">line 223</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>An iterator for the keys.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Iterator.html">Iterator</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="map"><span class="type-signature"></span>map<span class="signature">(mapFn, thisArg, toRefSet, mirrorObjectification)</span><span class="type-signature"> &rarr; {Array|<a href="RefSet.html">RefSet</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Creates a new array or <code>RefSet</code> with the results of calling a provided<br>
+function on every element in the calling <code>RefSet</code>. This method dereferences<br>
+each value, applies the <code>mapFn</code>, and collects the results. If <code>toRefSet</code> is<br>
+<code>true</code>, a new <code>RefSet</code> is returned; otherwise, an array. This method<br>
+differs from <code>Array.map</code> in handling weak references and the potential to<br>
+return a new <code>RefSet</code> instead of an array.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line354">line 354</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>mapFn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that produces an element of the new<br>
+array or <code>RefSet</code>, taking three arguments.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thisArg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to use as this when executing mapFn.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>toRefSet</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Determines if the output should be a new<br>
+<code>RefSet</code> (<code>true</code>) or an array (<code>false</code>).</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mirrorObjectification</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>If <code>true</code> and <code>toRefSet</code> is<br>
+<code>true</code>, the new <code>RefSet</code> mirrors the objectification setting of the<br>
+original.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>A new array or <code>RefSet</code> with each element being<br>
+the result of the <code>mapFn</code>.</li>
+</ul>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+|
+
+<span class="param-type"><a href="RefSet.html">RefSet</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="objectifying"><span class="type-signature"></span>objectifying<span class="signature">(setObjectification)</span><span class="type-signature"> &rarr; {<a href="RefSet.html">RefSet</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Method to control whether the RefSet should objectify its values. When<br>
+objectifying, primitive values (number, string, boolean, bigint) are<br>
+converted to their respective object types, which allows them to be used as<br>
+WeakRef targets.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line34">line 34</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>setObjectification</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    <code>true</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>Flag to enable or disable<br>
+objectification.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>The current RefSet instance to allow method chaining.</li>
+</ul>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="RefSet.html">RefSet</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="values"><span class="type-signature"></span>values<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Iterator.html">Iterator</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Returns an iterator for the values in the RefSet. Each value is<br>
+dereferenced from its WeakRef before being returned. This method allows<br>
+iterating over he set's values, similar to how one would iterate over<br>
+values in a standard Set or Array, but with the understanding that the<br>
+values are weakly referenced and may no longer exist (in which case<br>
+they are skipped).</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="%20newClasses_refset.js.html"> newClasses/refset.js</a>, <a href="%20newClasses_refset.js.html#line200">line 200</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>An iterator for the values.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Iterator.html">Iterator</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Jan 20 2024 16:01:56 GMT-0600 (Central Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

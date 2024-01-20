@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GlobalFunctionsAndProps = void 0;
 const extension_1 = require("@nejs/extension");
 const functionextensions_js_1 = require("./functionextensions.js");
-const { isClass, isFunction } = functionextensions_js_1.FunctionExtensions.patchEntries.isClass.computed;
+const { isClass, isFunction } = functionextensions_js_1.FunctionExtensions.patches;
 const CustomInspect = Symbol.for('nodejs.util.inspect.custom');
 exports.GlobalFunctionsAndProps = new extension_1.Patch(globalThis, {
     /**
@@ -163,3 +163,4 @@ exports.GlobalFunctionsAndProps = new extension_1.Patch(globalThis, {
         return options;
     },
 });
+//# sourceMappingURL=globals.js.map

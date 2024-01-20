@@ -62,3 +62,4 @@ export const SymbolExtensions = new Patch(Symbol, {
         return !Symbol.isRegistered(value, allowOnlySymbols);
     },
 });
+//# sourceMappingURL=symbolextensions.js.map

@@ -22,3 +22,4 @@ export const StringExtensions = new Patch(String, {
         return false;
     },
 });
+//# sourceMappingURL=stringextensions.js.map

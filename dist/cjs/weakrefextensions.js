@@ -16,3 +16,4 @@ exports.WeakRefExtensions = new extension_1.Patch(WeakRef, {
             (value === null || value === undefined));
     },
 });
+//# sourceMappingURL=weakrefextensions.js.map

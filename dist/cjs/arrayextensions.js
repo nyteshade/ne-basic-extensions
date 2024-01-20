@@ -68,3 +68,4 @@ exports.ArrayPrototypeExtensions = new extension_1.Patch(Array.prototype, {
         return this[this.length - 1];
     },
 });
+//# sourceMappingURL=arrayextensions.js.map

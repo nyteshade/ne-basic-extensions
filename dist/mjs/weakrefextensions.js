@@ -13,3 +13,4 @@ export const WeakRefExtensions = new Patch(WeakRef, {
             (value === null || value === undefined));
     },
 });
+//# sourceMappingURL=weakrefextensions.js.map
