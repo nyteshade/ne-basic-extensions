@@ -19,7 +19,9 @@
     "typescript": "^5.2.2"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18",
+    "npm": "please-use-pnpm",
+    "pnpm": ">= 2.0.0"
   },
   "exports": {
     ".": {
@@ -46,6 +48,7 @@
   "module": "dist/mjs/index.js",
   "name": "@nejs/basic-extensions",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "build": "bin/clean && bin/esbuild && bin/build",
     "browser": "bin/esbuild",
     "clean": "bin/clean",
