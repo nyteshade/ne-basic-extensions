@@ -6,5 +6,5 @@ declare namespace results {
     export { all };
 }
 export const Extensions: {};
-export const Patches: Map<ObjectConstructor, import("@nejs/extension").Patch>;
+export const Patches: Map<Object, import("@nejs/extension").Patch>;
 export const Controls: {};

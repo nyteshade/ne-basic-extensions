@@ -1,21 +1,25 @@
 import { FunctionExtensions } from './functionextensions.js';
-import { ObjectExtensions } from './objectextensions.js';
+import { ObjectExtensions, ObjectPrototypeExtensions } from './objectextensions.js';
+import { MapPrototypeExtensions } from './mapextensions.js';
 import { ReflectExtensions } from './reflectextensions.js';
 import { StringExtensions } from './stringextensions.js';
 import { SymbolExtensions } from './symbolextensions.js';
 import { ArrayPrototypeExtensions } from './arrayextensions.js';
-import { DescriptorExtensions, Descriptor } from './ newClasses/descriptor.js';
+import { DescriptorExtensions, Descriptor } from './newClasses/descriptor.js';
 import { GlobalFunctionsAndProps } from './globals.js';
-import { RefSetExtensions } from './ newClasses/refset.js';
-import { AsyncIteratorExtensions, AsyncIterableExtensions } from './ newClasses/asyncIterable.js';
-import { IteratorExtensions, IterableExtensions } from './ newClasses/iterable.js';
+import { RefSetExtensions } from './newClasses/refset.js';
+import { RefMapExtensions } from './newClasses/refmap.js';
+import { AsyncIteratorExtensions, AsyncIterableExtensions } from './newClasses/asyncIterable.js';
+import { IteratorExtensions, IterableExtensions } from './newClasses/iterable.js';
 const Patches = new Map([
     [Object, ObjectExtensions],
     [Function, FunctionExtensions],
     [Reflect, ReflectExtensions],
     [String, StringExtensions],
     [Symbol, SymbolExtensions],
+    [Object.prototype, ObjectPrototypeExtensions],
     [Array.prototype, ArrayPrototypeExtensions],
+    [Map.prototype, MapPrototypeExtensions],
     [globalThis, GlobalFunctionsAndProps],
 ]);
 const Extensions = {
@@ -25,6 +29,7 @@ const Extensions = {
     [IterableExtensions.key]: IterableExtensions,
     [IteratorExtensions.key]: IteratorExtensions,
     [RefSetExtensions.key]: RefSetExtensions,
+    [RefMapExtensions.key]: RefMapExtensions,
 };
 const Controls = {};
 Object.assign(Controls, {
@@ -73,13 +78,6 @@ const results = {
     patches: Patches,
     all,
 };
-for (const key of Object.keys(Extensions)) {
-    // Exports a constant string for each new new class that can be
-    // used as a key to the Extensions map should they be referenced
-    // individually. Should returned undefined and likely end up in
-    // an error if the class is misreferenced or the code changes
-    results[`k${key}`] = key;
-}
 export default results;
 export { Extensions, Patches, Controls, };
 //# sourceMappingURL=index.js.map

@@ -6,3 +6,9 @@ await rimraf(
   './dist/**/*',
   { glob: true, preserveRoot: true }
 )
+
+await rimraf(
+  './docs/**/*',
+  { glob: true, preserveRoot: true }
+)
+
