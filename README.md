@@ -56,120 +56,148 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
 #### Table of Contents
 
 *   [FunctionExtensions](#functionextensions)
-    *   [isClass](#isclass)
-        *   [Parameters](#parameters)
-    *   [isFunction](#isfunction)
-        *   [Parameters](#parameters-1)
     *   [isAsync](#isasync)
-        *   [Parameters](#parameters-2)
+        *   [Parameters](#parameters)
+    *   [isAsyncGenerator](#isasyncgenerator)
+        *   [Parameters](#parameters-1)
     *   [isBigArrow](#isbigarrow)
-        *   [Parameters](#parameters-3)
+        *   [Parameters](#parameters-2)
     *   [isBound](#isbound)
+        *   [Parameters](#parameters-3)
+    *   [isClass](#isclass)
         *   [Parameters](#parameters-4)
+    *   [isFunction](#isfunction)
+        *   [Parameters](#parameters-5)
+    *   [isGenerator](#isgenerator)
+        *   [Parameters](#parameters-6)
+*   [isAsync](#isasync-1)
+*   [isAsyncGenerator](#isasyncgenerator-1)
+*   [isBigArrow](#isbigarrow-1)
+*   [isBound](#isbound-1)
+*   [isClass](#isclass-1)
+*   [isFunction](#isfunction-1)
+*   [isGenerator](#isgenerator-1)
 *   [ObjectExtensions](#objectextensions)
     *   [isNullDefined](#isnulldefined)
-        *   [Parameters](#parameters-5)
-    *   [hasStringTag](#hasstringtag)
-        *   [Parameters](#parameters-6)
-    *   [getStringTag](#getstringtag)
         *   [Parameters](#parameters-7)
-    *   [getType](#gettype)
+    *   [hasStringTag](#hasstringtag)
         *   [Parameters](#parameters-8)
-    *   [isObject](#isobject)
+    *   [getStringTag](#getstringtag)
         *   [Parameters](#parameters-9)
-    *   [isPrimitive](#isprimitive)
+    *   [getType](#gettype)
         *   [Parameters](#parameters-10)
-    *   [isValidKey](#isvalidkey)
+    *   [isObject](#isobject)
         *   [Parameters](#parameters-11)
-    *   [stripTo](#stripto)
+    *   [isPrimitive](#isprimitive)
         *   [Parameters](#parameters-12)
+    *   [isValidKey](#isvalidkey)
+        *   [Parameters](#parameters-13)
+    *   [stripTo](#stripto)
+        *   [Parameters](#parameters-14)
 *   [stripTo](#stripto-1)
-    *   [Parameters](#parameters-13)
+    *   [Parameters](#parameters-15)
 *   [getKey](#getkey)
-    *   [Parameters](#parameters-14)
+    *   [Parameters](#parameters-16)
+*   [concat](#concat)
+    *   [Parameters](#parameters-17)
+*   [contains](#contains)
+    *   [Parameters](#parameters-18)
+*   [every](#every)
+    *   [Parameters](#parameters-19)
+*   [find](#find)
+    *   [Parameters](#parameters-20)
+*   [findLast](#findlast)
+    *   [Parameters](#parameters-21)
+*   [length](#length)
+*   [map](#map)
+    *   [Parameters](#parameters-22)
+*   [reduce](#reduce)
+    *   [Parameters](#parameters-23)
+*   [some](#some)
+    *   [Parameters](#parameters-24)
 *   [ReflectExtensions](#reflectextensions)
     *   [hasAll](#hasall)
-        *   [Parameters](#parameters-15)
+        *   [Parameters](#parameters-25)
     *   [ownDescriptors](#owndescriptors)
-        *   [Parameters](#parameters-16)
+        *   [Parameters](#parameters-26)
     *   [hasSome](#hassome)
-        *   [Parameters](#parameters-17)
+        *   [Parameters](#parameters-27)
     *   [entries](#entries)
-        *   [Parameters](#parameters-18)
+        *   [Parameters](#parameters-28)
     *   [values](#values)
-        *   [Parameters](#parameters-19)
+        *   [Parameters](#parameters-29)
 *   [StringExtensions](#stringextensions)
     *   [isString](#isstring)
-        *   [Parameters](#parameters-20)
+        *   [Parameters](#parameters-30)
 *   [SymbolExtensions](#symbolextensions)
     *   [isSymbol](#issymbol)
-        *   [Parameters](#parameters-21)
+        *   [Parameters](#parameters-31)
     *   [isRegistered](#isregistered)
-        *   [Parameters](#parameters-22)
+        *   [Parameters](#parameters-32)
     *   [isNonRegistered](#isnonregistered)
-        *   [Parameters](#parameters-23)
+        *   [Parameters](#parameters-33)
 *   [ArrayPrototypeExtensions](#arrayprototypeextensions)
-    *   [contains](#contains)
-        *   [Parameters](#parameters-24)
+    *   [contains](#contains-1)
+        *   [Parameters](#parameters-34)
     *   [findEntry](#findentry)
-        *   [Parameters](#parameters-25)
+        *   [Parameters](#parameters-35)
     *   [first](#first)
     *   [last](#last)
 *   [object](#object)
 *   [constructor](#constructor)
-    *   [Parameters](#parameters-26)
+    *   [Parameters](#parameters-36)
 *   [isAccessor](#isaccessor)
 *   [isData](#isdata)
 *   [isDescriptor](#isdescriptor)
 *   [configurable](#configurable)
 *   [configurable](#configurable-1)
-    *   [Parameters](#parameters-27)
+    *   [Parameters](#parameters-37)
 *   [enumerable](#enumerable)
 *   [enumerable](#enumerable-1)
-    *   [Parameters](#parameters-28)
+    *   [Parameters](#parameters-38)
 *   [writable](#writable)
 *   [writable](#writable-1)
-    *   [Parameters](#parameters-29)
+    *   [Parameters](#parameters-39)
 *   [value](#value)
 *   [value](#value-1)
-    *   [Parameters](#parameters-30)
+    *   [Parameters](#parameters-40)
 *   [get](#get)
 *   [get](#get-1)
-    *   [Parameters](#parameters-31)
+    *   [Parameters](#parameters-41)
 *   [boundGet](#boundget)
 *   [set](#set)
 *   [set](#set-1)
-    *   [Parameters](#parameters-32)
+    *   [Parameters](#parameters-42)
 *   [boundSet](#boundset)
 *   [hasObject](#hasobject)
 *   [object](#object-1)
 *   [object](#object-2)
-    *   [Parameters](#parameters-33)
+    *   [Parameters](#parameters-43)
 *   [for](#for)
-    *   [Parameters](#parameters-34)
+    *   [Parameters](#parameters-44)
 *   [applyTo](#applyto)
-    *   [Parameters](#parameters-35)
+    *   [Parameters](#parameters-45)
 *   [toPrimitive](#toprimitive)
-    *   [Parameters](#parameters-36)
+    *   [Parameters](#parameters-46)
 *   [toStringTag](#tostringtag)
 *   [for](#for-1)
-    *   [Parameters](#parameters-37)
+    *   [Parameters](#parameters-47)
 *   [getData](#getdata)
-    *   [Parameters](#parameters-38)
+    *   [Parameters](#parameters-48)
 *   [getAccessor](#getaccessor)
-    *   [Parameters](#parameters-39)
+    *   [Parameters](#parameters-49)
 *   [base](#base)
-    *   [Parameters](#parameters-40)
+    *   [Parameters](#parameters-50)
 *   [accessor](#accessor)
-    *   [Parameters](#parameters-41)
+    *   [Parameters](#parameters-51)
 *   [data](#data)
-    *   [Parameters](#parameters-42)
+    *   [Parameters](#parameters-52)
 *   [isDescriptor](#isdescriptor-1)
-    *   [Parameters](#parameters-43)
+    *   [Parameters](#parameters-53)
 *   [isData](#isdata-1)
-    *   [Parameters](#parameters-44)
+    *   [Parameters](#parameters-54)
 *   [isAccessor](#isaccessor-1)
-    *   [Parameters](#parameters-45)
+    *   [Parameters](#parameters-55)
 *   [flexible](#flexible)
 *   [enigmatic](#enigmatic)
 *   [intrinsic](#intrinsic)
@@ -178,85 +206,85 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
 *   [ACCESSOR\_KEYS](#accessor_keys)
 *   [DATA\_KEYS](#data_keys)
 *   [maskAs](#maskas)
-    *   [Parameters](#parameters-46)
+    *   [Parameters](#parameters-56)
 *   [maskAsString](#maskasstring)
-    *   [Parameters](#parameters-47)
+    *   [Parameters](#parameters-57)
 *   [maskAsNumber](#maskasnumber)
-    *   [Parameters](#parameters-48)
+    *   [Parameters](#parameters-58)
 *   [GenericMask](#genericmask)
-    *   [Parameters](#parameters-49)
+    *   [Parameters](#parameters-59)
 *   [StringMask](#stringmask)
-    *   [Parameters](#parameters-50)
+    *   [Parameters](#parameters-60)
 *   [NumberMask](#numbermask)
-    *   [Parameters](#parameters-51)
+    *   [Parameters](#parameters-61)
 *   [RefSet](#refset)
     *   [objectifying](#objectifying)
-        *   [Parameters](#parameters-52)
+        *   [Parameters](#parameters-62)
     *   [objectifyValues](#objectifyvalues)
     *   [objectifyValues](#objectifyvalues-1)
-        *   [Parameters](#parameters-53)
+        *   [Parameters](#parameters-63)
     *   [add](#add)
-        *   [Parameters](#parameters-54)
+        *   [Parameters](#parameters-64)
     *   [addAll](#addall)
-        *   [Parameters](#parameters-55)
+        *   [Parameters](#parameters-65)
     *   [clean](#clean)
     *   [entries](#entries-1)
-        *   [Parameters](#parameters-56)
+        *   [Parameters](#parameters-66)
     *   [forEach](#foreach)
-        *   [Parameters](#parameters-57)
+        *   [Parameters](#parameters-67)
     *   [values](#values-1)
     *   [keys](#keys)
     *   [has](#has)
-        *   [Parameters](#parameters-58)
-    *   [contains](#contains-1)
-        *   [Parameters](#parameters-59)
+        *   [Parameters](#parameters-68)
+    *   [contains](#contains-2)
+        *   [Parameters](#parameters-69)
     *   [filter](#filter)
-        *   [Parameters](#parameters-60)
-    *   [find](#find)
-        *   [Parameters](#parameters-61)
-    *   [map](#map)
-        *   [Parameters](#parameters-62)
+        *   [Parameters](#parameters-70)
+    *   [find](#find-1)
+        *   [Parameters](#parameters-71)
+    *   [map](#map-1)
+        *   [Parameters](#parameters-72)
     *   [toStringTag](#tostringtag-1)
 *   [RefMap](#refmap)
-    *   [Parameters](#parameters-63)
+    *   [Parameters](#parameters-73)
     *   [objectifying](#objectifying-1)
-        *   [Parameters](#parameters-64)
+        *   [Parameters](#parameters-74)
     *   [asObject](#asobject)
     *   [objectifyValues](#objectifyvalues-2)
     *   [objectifyValues](#objectifyvalues-3)
-        *   [Parameters](#parameters-65)
+        *   [Parameters](#parameters-75)
     *   [get](#get-2)
-        *   [Parameters](#parameters-66)
+        *   [Parameters](#parameters-76)
     *   [set](#set-2)
-        *   [Parameters](#parameters-67)
+        *   [Parameters](#parameters-77)
     *   [setAll](#setall)
-        *   [Parameters](#parameters-68)
+        *   [Parameters](#parameters-78)
     *   [clean](#clean-1)
     *   [entries](#entries-2)
-        *   [Parameters](#parameters-69)
+        *   [Parameters](#parameters-79)
     *   [forEach](#foreach-1)
-        *   [Parameters](#parameters-70)
+        *   [Parameters](#parameters-80)
     *   [values](#values-2)
     *   [hasValue](#hasvalue)
-        *   [Parameters](#parameters-71)
+        *   [Parameters](#parameters-81)
     *   [filter](#filter-1)
-        *   [Parameters](#parameters-72)
-    *   [find](#find-1)
-        *   [Parameters](#parameters-73)
-    *   [map](#map-1)
-        *   [Parameters](#parameters-74)
+        *   [Parameters](#parameters-82)
+    *   [find](#find-2)
+        *   [Parameters](#parameters-83)
+    *   [map](#map-2)
+        *   [Parameters](#parameters-84)
     *   [iterator](#iterator)
     *   [toStringTag](#tostringtag-2)
 *   [isValidReference](#isvalidreference)
-    *   [Parameters](#parameters-75)
+    *   [Parameters](#parameters-85)
 *   [AsyncIterable](#asynciterable)
-    *   [Parameters](#parameters-76)
+    *   [Parameters](#parameters-86)
     *   [asyncIterator](#asynciterator)
     *   [toStringTag](#tostringtag-3)
     *   [isAsyncIterable](#isasynciterable)
-        *   [Parameters](#parameters-77)
+        *   [Parameters](#parameters-87)
 *   [AsyncIterator](#asynciterator-1)
-    *   [Parameters](#parameters-78)
+    *   [Parameters](#parameters-88)
     *   [asArray](#asarray)
     *   [asyncIterable](#asynciterable-1)
     *   [next](#next)
@@ -264,14 +292,14 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [asyncIterator](#asynciterator-2)
     *   [toStringTag](#tostringtag-4)
 *   [Iterable](#iterable)
-    *   [Parameters](#parameters-79)
+    *   [Parameters](#parameters-89)
     *   [iterator](#iterator-1)
     *   [asArray](#asarray-1)
     *   [toStringTag](#tostringtag-5)
     *   [isIterable](#isiterable)
-        *   [Parameters](#parameters-80)
+        *   [Parameters](#parameters-90)
 *   [Iterator](#iterator-2)
-    *   [Parameters](#parameters-81)
+    *   [Parameters](#parameters-91)
     *   [asArray](#asarray-2)
     *   [iterable](#iterable-1)
     *   [next](#next-1)
@@ -290,33 +318,6 @@ async functions, and arrow functions in a more intuitive and straightforward
 manner. This class is part of the `@nejs/extension` library and enhances the
 capabilities of function handling and introspection in JavaScript.
 
-#### isClass
-
-Determines if a given value is a class. It checks if the value is an
-instance of `Function` and if its string representation includes the
-keyword 'class'. This method is useful for distinguishing classes from
-other function types in JavaScript.
-
-##### Parameters
-
-*   `value` **any** The value to be checked.
-
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is a class, otherwise
-`false`.
-
-#### isFunction
-
-Checks if a given value is a regular function. This method verifies if
-the value is an instance of `Function`, which includes regular functions,
-classes, and async functions but excludes arrow functions.
-
-##### Parameters
-
-*   `value` **any** The value to be checked.
-
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is a regular function,
-otherwise `false`.
-
 #### isAsync
 
 Determines if a given value is an asynchronous function. It checks if the
@@ -330,6 +331,18 @@ identifying async functions.
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is an async function,
 otherwise `false`.
+
+#### isAsyncGenerator
+
+The function checks if a given value is an async generator function
+
+##### Parameters
+
+*   `value` **any** The `value` parameter is the value that we want to
+    check if it is a generator function.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** `true` if the value is an instance of a function and
+its string tag is 'AsyncGeneratorFunction', otherwise it returns `false`.
 
 #### isBigArrow
 
@@ -361,6 +374,111 @@ are indicative of bound functions in JavaScript.
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is a bound function,
 otherwise `false`. Bound functions have a specific format in their
 string representation and do not have their own `prototype` property.
+
+#### isClass
+
+Determines if a given value is a class. It checks if the value is an
+instance of `Function` and if its string representation includes the
+keyword 'class'. This method is useful for distinguishing classes from
+other function types in JavaScript.
+
+##### Parameters
+
+*   `value` **any** The value to be checked.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is a class, otherwise
+`false`.
+
+#### isFunction
+
+Checks if a given value is a regular function. This method verifies if
+the value is an instance of `Function`, which includes regular functions,
+classes, and async functions but excludes arrow functions.
+
+##### Parameters
+
+*   `value` **any** The value to be checked.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is a regular function,
+otherwise `false`.
+
+#### isGenerator
+
+The function checks if a given value is a generator function
+
+##### Parameters
+
+*   `value` **any** The `value` parameter is the value that we want to
+    check if it is a generator function.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** `true` if the value is an instance of a function and
+its string tag is 'GeneratorFunction', otherwise it returns `false`.
+
+### isAsync
+
+Determines if a given value is an asynchronous function. It checks if the
+value is an instance of `Function` and if its string representation
+includes the keyword 'Async'. This method is particularly useful for
+identifying async functions.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is an async function,
+otherwise `false`.
+
+### isAsyncGenerator
+
+The function checks if a given value is an async generator function
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** `true` if the value is an instance of a function and
+its string tag is 'AsyncGeneratorFunction', otherwise it returns `false`.
+
+### isBigArrow
+
+Checks if a given value is an arrow function. It verifies if the value is
+an instance of `Function`, if its string representation includes the '=>'
+symbol, and if it lacks a prototype, which is a characteristic of arrow
+functions in JavaScript.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is an arrow function,
+otherwise `false`.
+
+### isBound
+
+Determines if a given value is a bound function. Bound functions are
+created using the `Function.prototype.bind` method, which allows setting
+the `this` value at the time of binding. This method checks if the value
+is an instance of `Function`, if its string representation starts with
+'bound', and if it lacks a `prototype` property. These characteristics
+are indicative of bound functions in JavaScript.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is a bound function,
+otherwise `false`. Bound functions have a specific format in their
+string representation and do not have their own `prototype` property.
+
+### isClass
+
+Determines if a given value is a class. It checks if the value is an
+instance of `Function` and if its string representation includes the
+keyword 'class'. This method is useful for distinguishing classes from
+other function types in JavaScript.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is a class, otherwise
+`false`.
+
+### isFunction
+
+Checks if a given value is a regular function. This method verifies if
+the value is an instance of `Function`, which includes regular functions,
+classes, and async functions but excludes arrow functions.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns `true` if the value is a regular function,
+otherwise `false`.
+
+### isGenerator
+
+The function checks if a given value is a generator function
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** `true` if the value is an instance of a function and
+its string tag is 'GeneratorFunction', otherwise it returns `false`.
 
 ### ObjectExtensions
 
@@ -528,6 +646,159 @@ in a map.
 
 Returns **any** the key associated with the given value. If a matching key is
 found, it is returned. If no matching key is found, null is returned.
+
+### concat
+
+Merges multiple iterables into the set. Each element from the iterables
+is added to the set, ensuring uniqueness of all elements. This method
+mutates the original set.
+
+#### Parameters
+
+*   `iterables` **...[Iterable](#iterable)** One or more iterable objects (like Set
+    or Array) whose elements will be added to the set.
+
+### contains
+
+Checks to see if any value within the `Set` loosely equals the supplied
+value.
+
+#### Parameters
+
+*   `value` **any** any value that might be loosely equal to an item in the
+    set, as opposed to [Set.has](Set.has) which is the equivalent of a strict or
+    triple equals (`===`) check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** `true` if any value within the set is loosely equal to
+the supplied value, `false` otherwise
+
+### every
+
+Checks if every element in the set passes the test implemented by the
+provided function. The function is called with each element of the set.
+Note: Since sets do not have indices, the index parameter is always NaN.
+
+#### Parameters
+
+*   `everyFn` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The function to test each element. Receives
+    the element, index (always NaN), and the set itself.
+*   `thisArg` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional. Value to use as `this` when executing
+    `everyFn`.
+
+<!---->
+
+*   Throws **[TypeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError)** If `everyFn` is not a function.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** True if every element passes the test, false otherwise.
+
+### find
+
+Finds the first element in the set satisfying the provided testing
+function. If no elements satisfy the testing function, undefined is
+returned. The function is called with each element of the set.
+Note: Since sets do not have indices, the index parameter is always NaN.
+
+#### Parameters
+
+*   `findFn` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The function to execute on each element. It
+    receives the element, index (always NaN), and the set itself.
+*   `thisArg` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional. Value to use as `this` when executing
+    `findFn`.
+
+<!---->
+
+*   Throws **[TypeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError)** If `findFn` is not a function.
+
+Returns **any** The first element that satisfies `findFn`, or undefined.
+
+### findLast
+
+Finds the last element in the set satisfying the provided testing function.
+If no elements satisfy the testing function, undefined is returned. The
+function is called with each element of the set in reverse order.
+Note: Since sets do not have indices, the index parameter is always NaN.
+
+#### Parameters
+
+*   `findFn` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The function to execute on each element. It
+    receives the element, index (always NaN), and the set itself.
+*   `thisArg` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional. Value to use as `this` when executing
+    `findFn`.
+
+<!---->
+
+*   Throws **[TypeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError)** If `findFn` is not a function.
+
+Returns **any** The last element that satisfies `findFn`, or undefined.
+
+### length
+
+A getter property that returns the number of elements in the set.
+This is an alias for the `size` property of the set.
+
+Returns **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The number of elements in the set.
+
+### map
+
+Creates a new array populated with the results of calling the provided
+function on every element in the set. The function is called with each
+element of the set. Note: Since sets do not have indices, the index
+parameter is always NaN.
+
+#### Parameters
+
+*   `mapFn` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The function to execute on each element. It
+    receives the element, index (always NaN), and the set itself.
+*   `thisArg` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional. Value to use as `this` when executing
+    `mapFn`.
+
+<!---->
+
+*   Throws **[TypeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError)** If `mapFn` is not a function.
+
+Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** A new array with each element being the result of the
+`mapFn`.
+
+### reduce
+
+Applies a function against an accumulator and each element in the set to
+reduce it to a single value. The function is called with each element of
+the set. Note: Since sets do not have indices, the index parameter is
+always NaN.
+
+#### Parameters
+
+*   `reduceFn` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The function to execute on each element. It
+    receives the accumulator, element, index (always NaN), and the set itself.
+*   `initialValue` **any** The initial value to start reducing from.
+*   `thisArg` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional. Value to use as `this` when executing
+    `reduceFn`.
+
+<!---->
+
+*   Throws **[TypeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError)** If `reduceFn` is not a function.
+
+Returns **any** The reduced value.
+
+### some
+
+Tests whether at least one element in the set passes the test implemented
+by the provided function. The function is called with each element of the
+set. Note: Since sets do not have indices, the index parameter is always NaN.
+
+#### Parameters
+
+*   `someFn` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The function to test each element. It receives
+    the element, index (always NaN), and the set itself.
+*   `thisArg` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional. Value to use as `this` when executing
+    `someFn`.
+
+<!---->
+
+*   Throws **[TypeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError)** If `someFn` is not a function.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** True if at least one element passes the test, false
+otherwise.
 
 ### ReflectExtensions
 

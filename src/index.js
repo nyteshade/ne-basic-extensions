@@ -1,6 +1,7 @@
-import { FunctionExtensions } from './functionextensions.js'
+import { FunctionExtensions, FunctionPrototypeExtensions } from './functionextensions.js'
 import { ObjectExtensions, ObjectPrototypeExtensions } from './objectextensions.js'
 import { MapPrototypeExtensions } from './mapextensions.js'
+import { SetPrototypeExtensions } from './setextensions.js'
 import { ReflectExtensions } from './reflectextensions.js'
 import { StringExtensions } from './stringextensions.js'
 import { SymbolExtensions } from './symbolextensions.js'
@@ -28,8 +29,10 @@ const Patches = new Map([
   [Symbol, SymbolExtensions],
 
   [Object.prototype, ObjectPrototypeExtensions],
+  [Function.prototype, FunctionPrototypeExtensions],
   [Array.prototype, ArrayPrototypeExtensions],
   [Map.prototype, MapPrototypeExtensions],
+  [Set.prototype, SetPrototypeExtensions],
   [globalThis, GlobalFunctionsAndProps],
 ])
 

@@ -62,5 +62,5 @@
   "dependencies": {
     "@nejs/extension": "^2.1.0"
   },
-  "browser": "dist/@nejs/basic-extensions.bundle.1.6.1.js"
+  "browser": "dist/@nejs/basic-extensions.bundle.1.7.0.js"
 }

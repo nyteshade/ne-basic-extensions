@@ -4,6 +4,7 @@ exports.Controls = exports.Patches = exports.Extensions = exports.all = void 0;
 const functionextensions_js_1 = require("./functionextensions.js");
 const objectextensions_js_1 = require("./objectextensions.js");
 const mapextensions_js_1 = require("./mapextensions.js");
+const setextensions_js_1 = require("./setextensions.js");
 const reflectextensions_js_1 = require("./reflectextensions.js");
 const stringextensions_js_1 = require("./stringextensions.js");
 const symbolextensions_js_1 = require("./symbolextensions.js");
@@ -21,8 +22,10 @@ const Patches = new Map([
     [String, stringextensions_js_1.StringExtensions],
     [Symbol, symbolextensions_js_1.SymbolExtensions],
     [Object.prototype, objectextensions_js_1.ObjectPrototypeExtensions],
+    [Function.prototype, functionextensions_js_1.FunctionPrototypeExtensions],
     [Array.prototype, arrayextensions_js_1.ArrayPrototypeExtensions],
     [Map.prototype, mapextensions_js_1.MapPrototypeExtensions],
+    [Set.prototype, setextensions_js_1.SetPrototypeExtensions],
     [globalThis, globals_js_1.GlobalFunctionsAndProps],
 ]);
 exports.Patches = Patches;

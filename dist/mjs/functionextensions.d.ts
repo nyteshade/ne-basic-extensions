@@ -8,4 +8,5 @@
  * capabilities of function handling and introspection in JavaScript.
  */
 export const FunctionExtensions: Patch;
+export const FunctionPrototypeExtensions: Patch;
 import { Patch } from '@nejs/extension';
