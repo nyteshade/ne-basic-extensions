@@ -5,6 +5,9 @@ declare namespace results {
     export { Patches as patches };
     export { all };
 }
-export const Extensions: {};
-export const Patches: Map<Object, import("@nejs/extension").Patch>;
+export namespace Extensions {
+    export { GlobalFunctionsAndProps as global };
+}
+export const Patches: Map<any, any>;
 export const Controls: {};
+import { GlobalFunctionsAndProps } from './globals.js';

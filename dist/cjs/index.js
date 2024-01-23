@@ -13,30 +13,38 @@ const descriptor_js_1 = require("./newClasses/descriptor.js");
 const globals_js_1 = require("./globals.js");
 const refset_js_1 = require("./newClasses/refset.js");
 const refmap_js_1 = require("./newClasses/refmap.js");
+const deferred_js_1 = require("./newClasses/deferred.js");
 const asyncIterable_js_1 = require("./newClasses/asyncIterable.js");
 const iterable_js_1 = require("./newClasses/iterable.js");
-const Patches = new Map([
+const StaticPatches = [
     [Object, objectextensions_js_1.ObjectExtensions],
     [Function, functionextensions_js_1.FunctionExtensions],
     [Reflect, reflectextensions_js_1.ReflectExtensions],
     [String, stringextensions_js_1.StringExtensions],
     [Symbol, symbolextensions_js_1.SymbolExtensions],
+];
+const InstancePatches = [
     [Object.prototype, objectextensions_js_1.ObjectPrototypeExtensions],
     [Function.prototype, functionextensions_js_1.FunctionPrototypeExtensions],
     [Array.prototype, arrayextensions_js_1.ArrayPrototypeExtensions],
     [Map.prototype, mapextensions_js_1.MapPrototypeExtensions],
     [Set.prototype, setextensions_js_1.SetPrototypeExtensions],
-    [globalThis, globals_js_1.GlobalFunctionsAndProps],
+];
+const Patches = new Map([
+    ...StaticPatches,
+    ...InstancePatches,
 ]);
 exports.Patches = Patches;
 const Extensions = {
-    [descriptor_js_1.DescriptorExtensions.key]: descriptor_js_1.DescriptorExtensions,
+    global: globals_js_1.GlobalFunctionsAndProps,
     [asyncIterable_js_1.AsyncIterableExtensions.key]: asyncIterable_js_1.AsyncIterableExtensions,
     [asyncIterable_js_1.AsyncIteratorExtensions.key]: asyncIterable_js_1.AsyncIteratorExtensions,
+    [deferred_js_1.DeferredExtension.key]: deferred_js_1.DeferredExtension,
+    [descriptor_js_1.DescriptorExtensions.key]: descriptor_js_1.DescriptorExtensions,
     [iterable_js_1.IterableExtensions.key]: iterable_js_1.IterableExtensions,
     [iterable_js_1.IteratorExtensions.key]: iterable_js_1.IteratorExtensions,
-    [refset_js_1.RefSetExtensions.key]: refset_js_1.RefSetExtensions,
     [refmap_js_1.RefMapExtensions.key]: refmap_js_1.RefMapExtensions,
+    [refset_js_1.RefSetExtensions.key]: refset_js_1.RefSetExtensions,
 };
 exports.Extensions = Extensions;
 const Controls = {};
@@ -49,15 +57,27 @@ Object.assign(Controls, {
     enablePatches() {
         Patches.forEach((extension) => { extension.apply(); });
     },
+    enableStaticPatches(filter = (extension) => true) {
+        StaticPatches.filter(filter).forEach(extension => extension.apply());
+    },
+    enableInstancePatches(filter = (extension) => true) {
+        InstancePatches.filter(filter).forEach(extension => extension.apply());
+    },
     enableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.apply(); });
     },
-    disableAll(owners) {
+    disableAll() {
         Controls.disablePatches();
         Controls.disableExtensions();
     },
     disablePatches() {
         Patches.forEach((extension) => { extension.revert(); });
+    },
+    disableStaticPatches(filter = (extension) => true) {
+        StaticPatches.filter(filter).forEach(extension => extension.revert());
+    },
+    disableInstancePatches(filter = (extension) => true) {
+        InstancePatches.filter(filter).forEach(extension => extension.revert());
     },
     disableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.revert(); });

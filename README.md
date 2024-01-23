@@ -277,14 +277,29 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [toStringTag](#tostringtag-2)
 *   [isValidReference](#isvalidreference)
     *   [Parameters](#parameters-85)
-*   [AsyncIterable](#asynciterable)
+*   [Deferred](#deferred)
     *   [Parameters](#parameters-86)
+    *   [value](#value-2)
+    *   [reason](#reason)
+    *   [settled](#settled)
+    *   [promise](#promise)
+    *   [resolve](#resolve)
+        *   [Parameters](#parameters-87)
+    *   [reject](#reject)
+        *   [Parameters](#parameters-88)
+    *   [species](#species)
+*   [promise](#promise-1)
+*   [reject](#reject-1)
+*   [resolve](#resolve-1)
+*   [settled](#settled-1)
+*   [AsyncIterable](#asynciterable)
+    *   [Parameters](#parameters-89)
     *   [asyncIterator](#asynciterator)
     *   [toStringTag](#tostringtag-3)
     *   [isAsyncIterable](#isasynciterable)
-        *   [Parameters](#parameters-87)
+        *   [Parameters](#parameters-90)
 *   [AsyncIterator](#asynciterator-1)
-    *   [Parameters](#parameters-88)
+    *   [Parameters](#parameters-91)
     *   [asArray](#asarray)
     *   [asyncIterable](#asynciterable-1)
     *   [next](#next)
@@ -292,14 +307,14 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [asyncIterator](#asynciterator-2)
     *   [toStringTag](#tostringtag-4)
 *   [Iterable](#iterable)
-    *   [Parameters](#parameters-89)
+    *   [Parameters](#parameters-92)
     *   [iterator](#iterator-1)
     *   [asArray](#asarray-1)
     *   [toStringTag](#tostringtag-5)
     *   [isIterable](#isiterable)
-        *   [Parameters](#parameters-90)
+        *   [Parameters](#parameters-93)
 *   [Iterator](#iterator-2)
-    *   [Parameters](#parameters-91)
+    *   [Parameters](#parameters-94)
     *   [asArray](#asarray-2)
     *   [iterable](#iterable-1)
     *   [next](#next-1)
@@ -2111,6 +2126,135 @@ A static method to check if a given value is a valid target for a WeakRef.
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** True if the value is a valid WeakRef target,
 false otherwise.
+
+### Deferred
+
+**Extends Promise**
+
+Deferreds, which were first introduced by jQuery for browsers in the early
+2000s, are a way to manage asynchronous operations. They have been widely
+used and replicated by engineers since then. Although the Promise class in
+modern JavaScript provides a static method called `withResolvers` that
+returns an object with similar properties to a Deferred, it is not directly
+supported by Node.js.
+
+    const withResolvers = Promise.withResolvers()
+    Reflect.has(withResolvers, 'promise') // true
+    Reflect.has(withResolvers, 'resolve') // true
+    Reflect.has(withResolvers, 'reject')  // true
+
+This Deferred class extends the Promise class, allowing it to capture the
+value or reason for easy access after resolution, akin to
+[Promise.withResolvers](Promise.withResolvers). As it extends [Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise), it is
+'thenable' and works with `await` as if it were a native Promise. This
+allows seamless integration with code expecting Promise-like objects.
+
+#### Parameters
+
+*   `options` **[object](#object)** see above for examples on supported options, but
+    when supplied, the constructor can take instructions on how to auto
+    resolve or reject the deferred created here.
+
+#### value
+
+When the Deferred is settled with [Deferred.resolve](Deferred.resolve), the `value`
+passed to that function will be set here as well.
+
+Type: any
+
+#### reason
+
+When the Deferred is settled with [Deferred.reject](Deferred.reject), the `reason`
+passed to that rejection will also be stored here.
+
+Type: any
+
+#### settled
+
+Returns a boolean value that indicates whether or not this Deferred
+has been settled (either resolve or reject have been invoked).
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** `true` if either [Deferred.resolve](Deferred.resolve) or
+[Deferred.reject](Deferred.reject) have been invoked; `false` otherwise
+
+#### promise
+
+Accessor for the promise managed by this Deferred instance.
+
+This getter provides access to the internal promise which is controlled
+by the Deferred's resolve and reject methods. It allows external code to
+attach callbacks for the resolution or rejection of the Deferred without
+the ability to directly resolve or reject it.
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** The promise controlled by this Deferred instance.
+
+#### resolve
+
+Resolves the Deferred with the given value. If the value is a thenable
+(i.e., has a "then" method), the Deferred will "follow" that thenable,
+adopting its eventual state; otherwise, the Deferred will be fulfilled
+with the value. This function behaves the same as Promise.resolve.
+
+##### Parameters
+
+*   `value` **any** The value to resolve the Deferred with.
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** A Promise that is resolved with the given value.
+
+#### reject
+
+Rejects the Deferred with the given reason. This function behaves the
+same as Promise.reject. The Deferred will be rejected with the provided
+reason.
+
+##### Parameters
+
+*   `reason` **any** The reason to reject the Deferred with.
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** A Promise that is rejected with the given reason.
+
+#### species
+
+A getter for the species symbol which returns a custom DeferredPromise
+class. This class extends from Deferred and is used to ensure that the
+constructor signature matches that of a Promise. The executor function
+passed to the constructor of this class is used to initialize the Deferred
+object with resolve and reject functions, similar to how a Promise would
+be initialized.
+
+Returns **DeferredPromise** A DeferredPromise class that extends Deferred.
+
+### promise
+
+The promise backing this deferred object. Created when the constructor
+runs, this promise is what all `Promise.prototype` functions are routed
+to.
+
+Type: [Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+
+### reject
+
+The reject() resolver that will be assigned when a new instance is
+created. Invoking this function with or without a `reason` will cause
+the deferred's promise to be settled.
+
+Type: [function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)
+
+### resolve
+
+The resolve() resolver that will be assigned when a new instance is
+created. Invoking this function with or without a `value` will cause
+the deferred's promise to be settled.
+
+Type: [function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)
+
+### settled
+
+When either [Deferred.resolve](Deferred.resolve) or [Deferred.reject](Deferred.reject) are called,
+this property is set to `true`. Its current status at any time can be
+queried using the [Deferred.settled](Deferred.settled) getter.
+
+Type: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
 
 ### AsyncIterable
 
