@@ -51,11 +51,15 @@ Object.assign(Controls, {
     enablePatches() {
         Patches.forEach((extension) => { extension.apply(); });
     },
-    enableStaticPatches(filter = (extension) => true) {
-        StaticPatches.filter(filter).forEach(extension => extension.apply());
+    enableStaticPatches(filter = ([owner, extension]) => true) {
+        const patches = StaticPatches.filter(toFilterFn(filter));
+        patches.forEach(([_, extension]) => extension.apply());
+        return patches;
     },
-    enableInstancePatches(filter = (extension) => true) {
-        InstancePatches.filter(filter).forEach(extension => extension.apply());
+    enableInstancePatches(filter = ([owner, extension]) => true) {
+        const patches = InstancePatches.filter(toFilterFn(filter));
+        patches.forEach(([_, extension]) => extension.apply());
+        return patches;
     },
     enableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.apply(); });
@@ -67,11 +71,15 @@ Object.assign(Controls, {
     disablePatches() {
         Patches.forEach((extension) => { extension.revert(); });
     },
-    disableStaticPatches(filter = (extension) => true) {
-        StaticPatches.filter(filter).forEach(extension => extension.revert());
+    disableStaticPatches(filter = ([owner, extension]) => true) {
+        const patches = StaticPatches.filter(toFilterFn(filter));
+        patches.forEach(([_, extension]) => extension.revert());
+        return patches;
     },
-    disableInstancePatches(filter = (extension) => true) {
-        InstancePatches.filter(filter).forEach(extension => extension.revert());
+    disableInstancePatches(filter = ([owner, extension]) => true) {
+        const patches = InstancePatches.filter(toFilterFn(filter));
+        patches.forEach(([_, extension]) => extension.revert());
+        return patches;
     },
     disableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.revert(); });
@@ -97,10 +105,36 @@ export const all = (() => {
 })();
 const results = {
     ...Controls,
+    Extensions,
+    Patches,
+    StaticPatches,
+    InstancePatches,
+    Controls,
     extensions: Extensions,
     patches: Patches,
     all,
 };
 export default results;
-export { Extensions, Patches, Controls, };
+export { Extensions, Patches, StaticPatches, InstancePatches, Controls, };
+function toFilterFn(filter = ([owner, extension]) => true) {
+    let filterFn = filter;
+    if (typeof filterFn !== 'function') {
+        const elements = Array.isArray(filter) ? filter : [filter];
+        filterFn = ([owner, _]) => {
+            for (const element of elements) {
+                const elementStr = String(element);
+                if (elementStr.startsWith('^')) {
+                    if ((owner?.name ?? owner) != elementStr.substring(1)) {
+                        return true;
+                    }
+                }
+                if ((owner?.name ?? owner) == elementStr) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+    return filterFn;
+}
 //# sourceMappingURL=index.js.map
