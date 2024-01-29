@@ -123,9 +123,9 @@ exports.all = (() => {
     };
     StaticPatches.reduce(staticPatchReducer, dest.patches);
     InstancePatches.reduce(instancePatchReducer, dest.patches);
-    (Object.entries(Extensions)
-        .map(([k, v]) => [k, v, k])
-        .reduce(staticPatchReducer, dest.classes));
+    (Object.values(Extensions)
+        .flatMap(extension => [...extension])
+        .reduce(entriesReducer, dest.classes));
     for (const [key, entry] of globals_js_1.GlobalFunctionsAndProps) {
         const descriptor = new descriptor_js_1.Descriptor(entry.descriptor, entry.owner);
         Object.defineProperty(dest.global, key, descriptor.toObject(true));
