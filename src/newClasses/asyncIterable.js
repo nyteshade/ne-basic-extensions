@@ -17,24 +17,32 @@ export class AsyncIterable {
 
   /**
    * Constructs an instance of AsyncIterable. Similar to Iterable, it can be
-   * initialized with either an iterable object or individual elements. The
-   * elements can be promises, direct values, or a mix of both. If the first
-   * argument is an iterable, the instance is initialized with the elements
-   * from the iterable, followed by any additional arguments. If the first
-   * argument is not an iterable, all arguments are treated as individual
-   * elements.
+   * initialized with either an iterable object, an async generator function,
+   * or individual elements. The elements can be promises, direct values, or a
+   * mix of both. If the first argument is an iterable or an async generator
+   * function, the instance is initialized with the elements from the iterable
+   * or the generated elements from the async generator function, followed by
+   * any additional arguments. If the first argument is not an iterable or an
+   * async generator function, all arguments are treated as individual elements.
    *
-   * @param {Iterable|Promise|*} elementsOrFirstElement - An iterable object,
-   * a Promise, or the first element.
+   * @param {Iterable|AsyncGeneratorFunction|Promise|*} elementsOrFirstElement - 
+   * An iterable object, an async generator function, a Promise, or the first 
+   * element.
    * @param {...Promise|*} moreElements - Additional elements if the first
-   * argument is not an iterable.
+   * argument is not an iterable or an async generator function.
    */
   constructor(elementsOrFirstElement, ...moreElements) {
     if (
       elementsOrFirstElement != null &&
-      typeof elementsOrFirstElement[Symbol.iterator] === 'function'
+      (typeof elementsOrFirstElement[Symbol.iterator] === 'function' ||
+       typeof elementsOrFirstElement[Symbol.asyncIterator] === 'function')
     ) {
       this.#elements = [...elementsOrFirstElement, ...moreElements];
+    } else if (
+      typeof elementsOrFirstElement === 'function' &&
+      elementsOrFirstElement.constructor.name === 'AsyncGeneratorFunction'
+    ) {
+      this.#elements = elementsOrFirstElement();
     } else {
       this.#elements = [elementsOrFirstElement, ...moreElements];
     }
@@ -51,10 +59,10 @@ export class AsyncIterable {
    * a Promise.
    */
   async *[Symbol.asyncIterator]() {
-    for (const element of this.#elements) {
-      // Treat each element as a promise. If it's not, it's automatically
-      // wrapped as a resolved promise.
-      yield Promise.resolve(element);
+    for await (const element of this.#elements) {
+      // No need to wrap as a promise here since `for await...of` can handle
+      // both Promises and non-Promise values.
+      yield element;
     }
   }
 
@@ -98,18 +106,25 @@ export class AsyncIterator {
   /**
    * Creates a new `AsyncIterator` object instance.
    *
-   * @param {object} asyncIterable any object that has a
-   * `[Symbol.asyncIterable]` property assigned to a generator function.
+   * @param {object|AsyncGeneratorFunction} asyncIterable any object that has a
+   * `[Symbol.asyncIterable]` property assigned to a generator function or an
+   * async generator function itself.
    */
   constructor(asyncIterable) {
-    if (!asyncIterable || !Reflect.has(asyncIterable, Symbol.asyncIterator)) {
+    if (typeof asyncIterable === 'function' &&
+        asyncIterable.constructor.name === 'AsyncGeneratorFunction') {
+      this.#asyncIterable = asyncIterable();
+    } else if (
+      !asyncIterable || 
+      !Reflect.has(asyncIterable, Symbol.asyncIterator)
+    ) {
       throw new TypeError(
         'Value used to instantiate AsyncIterator is not an async iterable'
       );
+    } else {
+      this.#asyncIterable = asyncIterable;
     }
-
-    this.#asyncIterable = asyncIterable;
-    this.#asyncIterator = asyncIterable[Symbol.asyncIterator]();
+    this.#asyncIterator = this.#asyncIterable[Symbol.asyncIterator]();
   }
 
   /**

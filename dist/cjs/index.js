@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Controls = exports.InstancePatches = exports.StaticPatches = exports.Patches = exports.Extensions = exports.all = void 0;
+exports.GlobalFunctionsAndProps = exports.Controls = exports.InstancePatches = exports.StaticPatches = exports.Patches = exports.Extensions = exports.all = void 0;
 const functionextensions_js_1 = require("./functionextensions.js");
 const objectextensions_js_1 = require("./objectextensions.js");
 const mapextensions_js_1 = require("./mapextensions.js");
@@ -11,25 +11,26 @@ const symbolextensions_js_1 = require("./symbolextensions.js");
 const arrayextensions_js_1 = require("./arrayextensions.js");
 const descriptor_js_1 = require("./newClasses/descriptor.js");
 const globals_js_1 = require("./globals.js");
+Object.defineProperty(exports, "GlobalFunctionsAndProps", { enumerable: true, get: function () { return globals_js_1.GlobalFunctionsAndProps; } });
 const refset_js_1 = require("./newClasses/refset.js");
 const refmap_js_1 = require("./newClasses/refmap.js");
 const deferred_js_1 = require("./newClasses/deferred.js");
 const asyncIterable_js_1 = require("./newClasses/asyncIterable.js");
 const iterable_js_1 = require("./newClasses/iterable.js");
 const StaticPatches = [
-    [Object, objectextensions_js_1.ObjectExtensions],
-    [Function, functionextensions_js_1.FunctionExtensions],
-    [Reflect, reflectextensions_js_1.ReflectExtensions],
-    [String, stringextensions_js_1.StringExtensions],
-    [Symbol, symbolextensions_js_1.SymbolExtensions],
+    [Object, objectextensions_js_1.ObjectExtensions, Object.name],
+    [Function, functionextensions_js_1.FunctionExtensions, Function.name],
+    [Reflect, reflectextensions_js_1.ReflectExtensions, 'Reflect'], // Missing a .name property
+    [String, stringextensions_js_1.StringExtensions, String.name],
+    [Symbol, symbolextensions_js_1.SymbolExtensions, 'Symbol'], // Missing a .name property
 ];
 exports.StaticPatches = StaticPatches;
 const InstancePatches = [
-    [Object.prototype, objectextensions_js_1.ObjectPrototypeExtensions],
-    [Function.prototype, functionextensions_js_1.FunctionPrototypeExtensions],
-    [Array.prototype, arrayextensions_js_1.ArrayPrototypeExtensions],
-    [Map.prototype, mapextensions_js_1.MapPrototypeExtensions],
-    [Set.prototype, setextensions_js_1.SetPrototypeExtensions],
+    [Object.prototype, objectextensions_js_1.ObjectPrototypeExtensions, Object.name],
+    [Function.prototype, functionextensions_js_1.FunctionPrototypeExtensions, Function.name],
+    [Array.prototype, arrayextensions_js_1.ArrayPrototypeExtensions, Array.name],
+    [Map.prototype, mapextensions_js_1.MapPrototypeExtensions, Map.name],
+    [Set.prototype, setextensions_js_1.SetPrototypeExtensions, Set.name],
 ];
 exports.InstancePatches = InstancePatches;
 const Patches = new Map([
@@ -38,7 +39,6 @@ const Patches = new Map([
 ]);
 exports.Patches = Patches;
 const Extensions = {
-    global: globals_js_1.GlobalFunctionsAndProps,
     [asyncIterable_js_1.AsyncIterableExtensions.key]: asyncIterable_js_1.AsyncIterableExtensions,
     [asyncIterable_js_1.AsyncIteratorExtensions.key]: asyncIterable_js_1.AsyncIteratorExtensions,
     [deferred_js_1.DeferredExtension.key]: deferred_js_1.DeferredExtension,
@@ -71,6 +71,7 @@ Object.assign(Controls, {
     },
     enableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.apply(); });
+        globals_js_1.GlobalFunctionsAndProps.apply();
     },
     disableAll() {
         Controls.disablePatches();
@@ -91,30 +92,51 @@ Object.assign(Controls, {
     },
     disableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.revert(); });
+        globals_js_1.GlobalFunctionsAndProps.revert();
     },
 });
 exports.all = (() => {
-    const extensions = [
-        ...Array.from(Patches.values()),
-        ...Array.from(Object.values(Extensions)),
-    ];
-    const dest = extensions.reduce((accumulator, extension) => {
-        Reflect.ownKeys(extension.patchEntries).reduce((_, key) => {
-            const entry = extension.patchEntries[key];
-            if (entry.isAccessor)
-                accumulator[key] = new descriptor_js_1.Descriptor(entry.descriptor);
-            else
-                accumulator[key] = entry.computed;
-            return accumulator;
-        }, accumulator);
+    const dest = {
+        patches: {},
+        classes: {},
+        global: {},
+    };
+    const entriesReducer = (accumulator, [key, entry]) => {
+        const descriptor = new descriptor_js_1.Descriptor(entry.descriptor, entry.owner);
+        descriptor.applyTo(accumulator, key, true);
         return accumulator;
-    }, {});
+    };
+    const staticPatchReducer = (accumulator, [_, patch, ownerName]) => {
+        if (!accumulator?.[ownerName]) {
+            accumulator[ownerName] = {};
+        }
+        [...patch].reduce(entriesReducer, accumulator[ownerName]);
+        return accumulator;
+    };
+    const instancePatchReducer = (accumulator, [_, patch, ownerName]) => {
+        if (!accumulator?.[ownerName])
+            accumulator[ownerName] = {};
+        if (!accumulator[ownerName]?.prototype)
+            accumulator[ownerName].prototype = {};
+        [...patch].reduce(entriesReducer, accumulator[ownerName].prototype);
+        return accumulator;
+    };
+    StaticPatches.reduce(staticPatchReducer, dest.patches);
+    InstancePatches.reduce(instancePatchReducer, dest.patches);
+    (Object.entries(Extensions)
+        .map(([k, v]) => [k, v, k])
+        .reduce(staticPatchReducer, dest.classes));
+    for (const [key, entry] of globals_js_1.GlobalFunctionsAndProps) {
+        const descriptor = new descriptor_js_1.Descriptor(entry.descriptor, entry.owner);
+        Object.defineProperty(dest.global, key, descriptor.toObject(true));
+    }
     return dest;
 })();
 const results = {
     ...Controls,
     Extensions,
     Patches,
+    GlobalFunctionsAndProps: globals_js_1.GlobalFunctionsAndProps,
     StaticPatches,
     InstancePatches,
     Controls,

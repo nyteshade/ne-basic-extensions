@@ -20,13 +20,20 @@ const { isObject, isValidKey } = objectextensions_js_1.ObjectExtensions.patches;
 const { hasSome } = reflectextensions_js_1.ReflectExtensions.patches;
 class Descriptor {
     /**
-     * Creates a new instance of Descriptor either from another object or
-     * around the supplied object descriptor value.
+     * Constructs a Descriptor instance which wraps and manages an object
+     * property descriptor. The constructor can handle an existing descriptor
+     * object or create a new one based on an object and a property key.
      *
-     * @param {object} object either an object descriptor or the object
-     * from which to get the descriptor
-     * @param {symbol|string} key a valid key for accessing the descriptor
-     * on the aforesupplied object.
+     * @param {object|Descriptor} object - The target object or an existing
+     * Descriptor instance. If it's an object, it is used in conjunction with
+     * `key` to create a descriptor. If it's a Descriptor instance, it is used
+     * directly as the descriptor.
+     * @param {string|symbol} [key] - The property key for which the descriptor
+     * is to be created. This parameter is ignored if `object` is a Descriptor
+     * instance. If `key` is an object and `object` is a valid descriptor, `key`
+     * is treated as the associated object.
+     * @throws {Error} Throws an error if the constructed descriptor is not
+     * valid.
      */
     constructor(object, key) {
         /**
@@ -53,28 +60,39 @@ class Descriptor {
          */
         _Descriptor_object.set(this, undefined
         /**
-         * Creates a new instance of Descriptor either from another object or
-         * around the supplied object descriptor value.
+         * Constructs a Descriptor instance which wraps and manages an object
+         * property descriptor. The constructor can handle an existing descriptor
+         * object or create a new one based on an object and a property key.
          *
-         * @param {object} object either an object descriptor or the object
-         * from which to get the descriptor
-         * @param {symbol|string} key a valid key for accessing the descriptor
-         * on the aforesupplied object.
+         * @param {object|Descriptor} object - The target object or an existing
+         * Descriptor instance. If it's an object, it is used in conjunction with
+         * `key` to create a descriptor. If it's a Descriptor instance, it is used
+         * directly as the descriptor.
+         * @param {string|symbol} [key] - The property key for which the descriptor
+         * is to be created. This parameter is ignored if `object` is a Descriptor
+         * instance. If `key` is an object and `object` is a valid descriptor, `key`
+         * is treated as the associated object.
+         * @throws {Error} Throws an error if the constructed descriptor is not
+         * valid.
          */
         );
         if ((object ?? key) === undefined) {
             __classPrivateFieldSet(this, _Descriptor_desc, Descriptor.enigmatic, "f");
         }
-        if (Descriptor.isDescriptor(object)) {
+        else if (Descriptor.isDescriptor(object)) {
             __classPrivateFieldSet(this, _Descriptor_desc, object, "f");
-            __classPrivateFieldSet(this, _Descriptor_object, undefined, "f");
+            __classPrivateFieldSet(this, _Descriptor_object, isObject(key) ? key : undefined, "f");
         }
         else if (isObject(object) && isValidKey(key)) {
             __classPrivateFieldSet(this, _Descriptor_desc, Object.getOwnPropertyDescriptor(object, key), "f");
             __classPrivateFieldSet(this, _Descriptor_object, object, "f");
         }
         if (!this.isDescriptor) {
-            console.error('Current descriptor:', __classPrivateFieldGet(this, _Descriptor_desc, "f"));
+            console.error(`
+      Descriptor(object,key) FAILED:
+        object:      ${object === globalThis ? '[GLOBAL]' : (typeof key === 'object' ? JSON.stringify(object) : String(object))}
+        key:         ${key === globalThis ? '[GLOBAL]' : (typeof key === 'object' ? JSON.stringify(key) : String(key))}
+        descriptor:  `, __classPrivateFieldGet(this, _Descriptor_desc, "f"));
             throw new Error(`Not a valid descriptor:`, __classPrivateFieldGet(this, _Descriptor_desc, "f"));
         }
     }
@@ -316,11 +334,44 @@ class Descriptor {
      * @param {string|symbol} forKey the string or symbol for which this
      * descriptor will abe applied
      */
-    applyTo(object, forKey) {
+    applyTo(object, forKey, bindAccessors = false) {
         if (!isObject(object) || !isValidKey(forKey)) {
             throw new Error(`Cannot apply descriptor to non-object or invalid key`);
         }
-        return Object.defineProperty(object, forKey, __classPrivateFieldGet(this, _Descriptor_desc, "f"));
+        return Object.defineProperty(object, forKey, this.toObject(bindAccessors));
+    }
+    /**
+     * Converts this Descriptor class instance into a basic object descriptor
+     * that is accepted by all the standard JavaScript runtime methods that
+     * deal with object descriptors.
+     *
+     * @param {boolean|object} bindAccessors if `true`, a non-fatal attempt to
+     * bind accessor getter and setter methods is made before returning the
+     * object. If `bindAccessors` is truthy and is also an object, this is the
+     * object the accessors will be bound to. If the value is falsy or if the
+     * descriptor instance represents a data descriptor, nothing happens.
+     * @returns {object} the object instance's basic object representation as
+     * a descriptor.
+     */
+    toObject(bindAccessors = false) {
+        let descriptor = { ...__classPrivateFieldGet(this, _Descriptor_desc, "f") };
+        if (bindAccessors && this.isAccessor) {
+            if (this.hasObject) {
+                descriptor = {
+                    ...descriptor,
+                    get: this.boundGet,
+                    set: this.boundSet
+                };
+            }
+            else if (isObject(bindAccessors)) {
+                descriptor = {
+                    ...descriptor,
+                    get: this.get?.bind(bindAccessors),
+                    set: this.set?.bind(bindAccessors)
+                };
+            }
+        }
+        return descriptor;
     }
     /**
      * Converts this descriptor object into a base representation
@@ -348,7 +399,7 @@ class Descriptor {
             case 'number':
                 return NaN;
             default:
-                return __classPrivateFieldGet(this, _Descriptor_desc, "f");
+                return this.toObject();
         }
     }
     /**

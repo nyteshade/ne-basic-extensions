@@ -14,25 +14,24 @@ import { DeferredExtension } from './newClasses/deferred.js';
 import { AsyncIteratorExtensions, AsyncIterableExtensions } from './newClasses/asyncIterable.js';
 import { IteratorExtensions, IterableExtensions } from './newClasses/iterable.js';
 const StaticPatches = [
-    [Object, ObjectExtensions],
-    [Function, FunctionExtensions],
-    [Reflect, ReflectExtensions],
-    [String, StringExtensions],
-    [Symbol, SymbolExtensions],
+    [Object, ObjectExtensions, Object.name],
+    [Function, FunctionExtensions, Function.name],
+    [Reflect, ReflectExtensions, 'Reflect'], // Missing a .name property
+    [String, StringExtensions, String.name],
+    [Symbol, SymbolExtensions, 'Symbol'], // Missing a .name property
 ];
 const InstancePatches = [
-    [Object.prototype, ObjectPrototypeExtensions],
-    [Function.prototype, FunctionPrototypeExtensions],
-    [Array.prototype, ArrayPrototypeExtensions],
-    [Map.prototype, MapPrototypeExtensions],
-    [Set.prototype, SetPrototypeExtensions],
+    [Object.prototype, ObjectPrototypeExtensions, Object.name],
+    [Function.prototype, FunctionPrototypeExtensions, Function.name],
+    [Array.prototype, ArrayPrototypeExtensions, Array.name],
+    [Map.prototype, MapPrototypeExtensions, Map.name],
+    [Set.prototype, SetPrototypeExtensions, Set.name],
 ];
 const Patches = new Map([
     ...StaticPatches,
     ...InstancePatches,
 ]);
 const Extensions = {
-    global: GlobalFunctionsAndProps,
     [AsyncIterableExtensions.key]: AsyncIterableExtensions,
     [AsyncIteratorExtensions.key]: AsyncIteratorExtensions,
     [DeferredExtension.key]: DeferredExtension,
@@ -63,6 +62,7 @@ Object.assign(Controls, {
     },
     enableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.apply(); });
+        GlobalFunctionsAndProps.apply();
     },
     disableAll() {
         Controls.disablePatches();
@@ -83,30 +83,51 @@ Object.assign(Controls, {
     },
     disableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.revert(); });
+        GlobalFunctionsAndProps.revert();
     },
 });
 export const all = (() => {
-    const extensions = [
-        ...Array.from(Patches.values()),
-        ...Array.from(Object.values(Extensions)),
-    ];
-    const dest = extensions.reduce((accumulator, extension) => {
-        Reflect.ownKeys(extension.patchEntries).reduce((_, key) => {
-            const entry = extension.patchEntries[key];
-            if (entry.isAccessor)
-                accumulator[key] = new Descriptor(entry.descriptor);
-            else
-                accumulator[key] = entry.computed;
-            return accumulator;
-        }, accumulator);
+    const dest = {
+        patches: {},
+        classes: {},
+        global: {},
+    };
+    const entriesReducer = (accumulator, [key, entry]) => {
+        const descriptor = new Descriptor(entry.descriptor, entry.owner);
+        descriptor.applyTo(accumulator, key, true);
         return accumulator;
-    }, {});
+    };
+    const staticPatchReducer = (accumulator, [_, patch, ownerName]) => {
+        if (!accumulator?.[ownerName]) {
+            accumulator[ownerName] = {};
+        }
+        [...patch].reduce(entriesReducer, accumulator[ownerName]);
+        return accumulator;
+    };
+    const instancePatchReducer = (accumulator, [_, patch, ownerName]) => {
+        if (!accumulator?.[ownerName])
+            accumulator[ownerName] = {};
+        if (!accumulator[ownerName]?.prototype)
+            accumulator[ownerName].prototype = {};
+        [...patch].reduce(entriesReducer, accumulator[ownerName].prototype);
+        return accumulator;
+    };
+    StaticPatches.reduce(staticPatchReducer, dest.patches);
+    InstancePatches.reduce(instancePatchReducer, dest.patches);
+    (Object.entries(Extensions)
+        .map(([k, v]) => [k, v, k])
+        .reduce(staticPatchReducer, dest.classes));
+    for (const [key, entry] of GlobalFunctionsAndProps) {
+        const descriptor = new Descriptor(entry.descriptor, entry.owner);
+        Object.defineProperty(dest.global, key, descriptor.toObject(true));
+    }
     return dest;
 })();
 const results = {
     ...Controls,
     Extensions,
     Patches,
+    GlobalFunctionsAndProps,
     StaticPatches,
     InstancePatches,
     Controls,
@@ -115,7 +136,7 @@ const results = {
     all,
 };
 export default results;
-export { Extensions, Patches, StaticPatches, InstancePatches, Controls, };
+export { Extensions, Patches, StaticPatches, InstancePatches, Controls, GlobalFunctionsAndProps, };
 function toFilterFn(filter = ([owner, extension]) => true) {
     let filterFn = filter;
     if (typeof filterFn !== 'function') {

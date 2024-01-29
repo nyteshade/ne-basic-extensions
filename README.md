@@ -177,27 +177,29 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [Parameters](#parameters-44)
 *   [applyTo](#applyto)
     *   [Parameters](#parameters-45)
-*   [toPrimitive](#toprimitive)
+*   [toObject](#toobject)
     *   [Parameters](#parameters-46)
+*   [toPrimitive](#toprimitive)
+    *   [Parameters](#parameters-47)
 *   [toStringTag](#tostringtag)
 *   [for](#for-1)
-    *   [Parameters](#parameters-47)
-*   [getData](#getdata)
     *   [Parameters](#parameters-48)
-*   [getAccessor](#getaccessor)
+*   [getData](#getdata)
     *   [Parameters](#parameters-49)
-*   [base](#base)
+*   [getAccessor](#getaccessor)
     *   [Parameters](#parameters-50)
-*   [accessor](#accessor)
+*   [base](#base)
     *   [Parameters](#parameters-51)
-*   [data](#data)
+*   [accessor](#accessor)
     *   [Parameters](#parameters-52)
-*   [isDescriptor](#isdescriptor-1)
+*   [data](#data)
     *   [Parameters](#parameters-53)
-*   [isData](#isdata-1)
+*   [isDescriptor](#isdescriptor-1)
     *   [Parameters](#parameters-54)
-*   [isAccessor](#isaccessor-1)
+*   [isData](#isdata-1)
     *   [Parameters](#parameters-55)
+*   [isAccessor](#isaccessor-1)
+    *   [Parameters](#parameters-56)
 *   [flexible](#flexible)
 *   [enigmatic](#enigmatic)
 *   [intrinsic](#intrinsic)
@@ -206,100 +208,100 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
 *   [ACCESSOR\_KEYS](#accessor_keys)
 *   [DATA\_KEYS](#data_keys)
 *   [maskAs](#maskas)
-    *   [Parameters](#parameters-56)
-*   [maskAsString](#maskasstring)
     *   [Parameters](#parameters-57)
-*   [maskAsNumber](#maskasnumber)
+*   [maskAsString](#maskasstring)
     *   [Parameters](#parameters-58)
-*   [GenericMask](#genericmask)
+*   [maskAsNumber](#maskasnumber)
     *   [Parameters](#parameters-59)
-*   [StringMask](#stringmask)
+*   [GenericMask](#genericmask)
     *   [Parameters](#parameters-60)
-*   [NumberMask](#numbermask)
+*   [StringMask](#stringmask)
     *   [Parameters](#parameters-61)
+*   [NumberMask](#numbermask)
+    *   [Parameters](#parameters-62)
 *   [RefSet](#refset)
     *   [objectifying](#objectifying)
-        *   [Parameters](#parameters-62)
+        *   [Parameters](#parameters-63)
     *   [objectifyValues](#objectifyvalues)
     *   [objectifyValues](#objectifyvalues-1)
-        *   [Parameters](#parameters-63)
-    *   [add](#add)
         *   [Parameters](#parameters-64)
-    *   [addAll](#addall)
+    *   [add](#add)
         *   [Parameters](#parameters-65)
+    *   [addAll](#addall)
+        *   [Parameters](#parameters-66)
     *   [clean](#clean)
     *   [entries](#entries-1)
-        *   [Parameters](#parameters-66)
-    *   [forEach](#foreach)
         *   [Parameters](#parameters-67)
+    *   [forEach](#foreach)
+        *   [Parameters](#parameters-68)
     *   [values](#values-1)
     *   [keys](#keys)
     *   [has](#has)
-        *   [Parameters](#parameters-68)
-    *   [contains](#contains-2)
         *   [Parameters](#parameters-69)
-    *   [filter](#filter)
+    *   [contains](#contains-2)
         *   [Parameters](#parameters-70)
-    *   [find](#find-1)
+    *   [filter](#filter)
         *   [Parameters](#parameters-71)
-    *   [map](#map-1)
+    *   [find](#find-1)
         *   [Parameters](#parameters-72)
+    *   [map](#map-1)
+        *   [Parameters](#parameters-73)
     *   [toStringTag](#tostringtag-1)
 *   [RefMap](#refmap)
-    *   [Parameters](#parameters-73)
+    *   [Parameters](#parameters-74)
     *   [objectifying](#objectifying-1)
-        *   [Parameters](#parameters-74)
+        *   [Parameters](#parameters-75)
     *   [asObject](#asobject)
     *   [objectifyValues](#objectifyvalues-2)
     *   [objectifyValues](#objectifyvalues-3)
-        *   [Parameters](#parameters-75)
-    *   [get](#get-2)
         *   [Parameters](#parameters-76)
-    *   [set](#set-2)
+    *   [get](#get-2)
         *   [Parameters](#parameters-77)
-    *   [setAll](#setall)
+    *   [set](#set-2)
         *   [Parameters](#parameters-78)
+    *   [setAll](#setall)
+        *   [Parameters](#parameters-79)
     *   [clean](#clean-1)
     *   [entries](#entries-2)
-        *   [Parameters](#parameters-79)
-    *   [forEach](#foreach-1)
         *   [Parameters](#parameters-80)
+    *   [forEach](#foreach-1)
+        *   [Parameters](#parameters-81)
     *   [values](#values-2)
     *   [hasValue](#hasvalue)
-        *   [Parameters](#parameters-81)
-    *   [filter](#filter-1)
         *   [Parameters](#parameters-82)
-    *   [find](#find-2)
+    *   [filter](#filter-1)
         *   [Parameters](#parameters-83)
-    *   [map](#map-2)
+    *   [find](#find-2)
         *   [Parameters](#parameters-84)
+    *   [map](#map-2)
+        *   [Parameters](#parameters-85)
     *   [iterator](#iterator)
     *   [toStringTag](#tostringtag-2)
 *   [isValidReference](#isvalidreference)
-    *   [Parameters](#parameters-85)
-*   [Deferred](#deferred)
     *   [Parameters](#parameters-86)
+*   [Deferred](#deferred)
+    *   [Parameters](#parameters-87)
     *   [value](#value-2)
     *   [reason](#reason)
     *   [settled](#settled)
     *   [promise](#promise)
     *   [resolve](#resolve)
-        *   [Parameters](#parameters-87)
-    *   [reject](#reject)
         *   [Parameters](#parameters-88)
+    *   [reject](#reject)
+        *   [Parameters](#parameters-89)
     *   [species](#species)
 *   [promise](#promise-1)
 *   [reject](#reject-1)
 *   [resolve](#resolve-1)
 *   [settled](#settled-1)
 *   [AsyncIterable](#asynciterable)
-    *   [Parameters](#parameters-89)
+    *   [Parameters](#parameters-90)
     *   [asyncIterator](#asynciterator)
     *   [toStringTag](#tostringtag-3)
     *   [isAsyncIterable](#isasynciterable)
-        *   [Parameters](#parameters-90)
+        *   [Parameters](#parameters-91)
 *   [AsyncIterator](#asynciterator-1)
-    *   [Parameters](#parameters-91)
+    *   [Parameters](#parameters-92)
     *   [asArray](#asarray)
     *   [asyncIterable](#asynciterable-1)
     *   [next](#next)
@@ -307,14 +309,14 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [asyncIterator](#asynciterator-2)
     *   [toStringTag](#tostringtag-4)
 *   [Iterable](#iterable)
-    *   [Parameters](#parameters-92)
+    *   [Parameters](#parameters-93)
     *   [iterator](#iterator-1)
     *   [asArray](#asarray-1)
     *   [toStringTag](#tostringtag-5)
     *   [isIterable](#isiterable)
-        *   [Parameters](#parameters-93)
+        *   [Parameters](#parameters-94)
 *   [Iterator](#iterator-2)
-    *   [Parameters](#parameters-94)
+    *   [Parameters](#parameters-95)
     *   [asArray](#asarray-2)
     *   [iterable](#iterable-1)
     *   [next](#next-1)
@@ -1056,15 +1058,25 @@ Type: [object](#object)
 
 ### constructor
 
-Creates a new instance of Descriptor either from another object or
-around the supplied object descriptor value.
+Constructs a Descriptor instance which wraps and manages an object
+property descriptor. The constructor can handle an existing descriptor
+object or create a new one based on an object and a property key.
 
 #### Parameters
 
-*   `object` **[object](#object)** either an object descriptor or the object
-    from which to get the descriptor
-*   `key` **([symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** a valid key for accessing the descriptor
-    on the aforesupplied object.
+*   `object` **([object](#object) | Descriptor)** The target object or an existing
+    Descriptor instance. If it's an object, it is used in conjunction with
+    `key` to create a descriptor. If it's a Descriptor instance, it is used
+    directly as the descriptor.
+*   `key` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol))?** The property key for which the descriptor
+    is to be created. This parameter is ignored if `object` is a Descriptor
+    instance. If `key` is an object and `object` is a valid descriptor, `key`
+    is treated as the associated object.
+
+<!---->
+
+*   Throws **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** Throws an error if the constructed descriptor is not
+    valid.
 
 ### isAccessor
 
@@ -1270,6 +1282,24 @@ the specified object using the specified key.
 *   `object` **[object](#object)** the object to apply this descriptor to
 *   `forKey` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol))** the string or symbol for which this
     descriptor will abe applied
+*   `bindAccessors`   (optional, default `false`)
+
+### toObject
+
+Converts this Descriptor class instance into a basic object descriptor
+that is accepted by all the standard JavaScript runtime methods that
+deal with object descriptors.
+
+#### Parameters
+
+*   `bindAccessors` **([boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | [object](#object))** if `true`, a non-fatal attempt to
+    bind accessor getter and setter methods is made before returning the
+    object. If `bindAccessors` is truthy and is also an object, this is the
+    object the accessors will be bound to. If the value is falsy or if the
+    descriptor instance represents a data descriptor, nothing happens. (optional, default `false`)
+
+Returns **[object](#object)** the object instance's basic object representation as
+a descriptor.
 
 ### toPrimitive
 
@@ -2267,10 +2297,10 @@ arrives over time.
 
 #### Parameters
 
-*   `elementsOrFirstElement` **([Iterable](#iterable) | [Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise) | any)** An iterable object,
-    a Promise, or the first element.
+*   `elementsOrFirstElement` **([Iterable](#iterable) | AsyncGeneratorFunction | [Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise) | any)** An iterable object, an async generator function, a Promise, or the first
+    element.
 *   `moreElements` **...([Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise) | any)** Additional elements if the first
-    argument is not an iterable.
+    argument is not an iterable or an async generator function.
 
 #### asyncIterator
 
@@ -2317,8 +2347,9 @@ function.
 
 #### Parameters
 
-*   `asyncIterable` **[object](#object)** any object that has a
-    `[Symbol.asyncIterable]` property assigned to a generator function.
+*   `asyncIterable` **([object](#object) | AsyncGeneratorFunction)** any object that has a
+    `[Symbol.asyncIterable]` property assigned to a generator function or an
+    async generator function itself.
 
 #### asArray
 

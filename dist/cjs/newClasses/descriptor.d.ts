@@ -204,15 +204,22 @@ export class Descriptor {
      */
     static get DATA_KEYS(): string[];
     /**
-     * Creates a new instance of Descriptor either from another object or
-     * around the supplied object descriptor value.
+     * Constructs a Descriptor instance which wraps and manages an object
+     * property descriptor. The constructor can handle an existing descriptor
+     * object or create a new one based on an object and a property key.
      *
-     * @param {object} object either an object descriptor or the object
-     * from which to get the descriptor
-     * @param {symbol|string} key a valid key for accessing the descriptor
-     * on the aforesupplied object.
+     * @param {object|Descriptor} object - The target object or an existing
+     * Descriptor instance. If it's an object, it is used in conjunction with
+     * `key` to create a descriptor. If it's a Descriptor instance, it is used
+     * directly as the descriptor.
+     * @param {string|symbol} [key] - The property key for which the descriptor
+     * is to be created. This parameter is ignored if `object` is a Descriptor
+     * instance. If `key` is an object and `object` is a valid descriptor, `key`
+     * is treated as the associated object.
+     * @throws {Error} Throws an error if the constructed descriptor is not
+     * valid.
      */
-    constructor(object: object, key: symbol | string);
+    constructor(object: object | Descriptor, key?: string | symbol | undefined);
     /**
      * Detects whether or not this instance is an accessor object descriptor
      *
@@ -379,7 +386,21 @@ export class Descriptor {
      * @param {string|symbol} forKey the string or symbol for which this
      * descriptor will abe applied
      */
-    applyTo(object: object, forKey: string | symbol): object;
+    applyTo(object: object, forKey: string | symbol, bindAccessors?: boolean): object;
+    /**
+     * Converts this Descriptor class instance into a basic object descriptor
+     * that is accepted by all the standard JavaScript runtime methods that
+     * deal with object descriptors.
+     *
+     * @param {boolean|object} bindAccessors if `true`, a non-fatal attempt to
+     * bind accessor getter and setter methods is made before returning the
+     * object. If `bindAccessors` is truthy and is also an object, this is the
+     * object the accessors will be bound to. If the value is falsy or if the
+     * descriptor instance represents a data descriptor, nothing happens.
+     * @returns {object} the object instance's basic object representation as
+     * a descriptor.
+     */
+    toObject(bindAccessors?: boolean | object): object;
     /**
      * Converts this descriptor object into a base representation
      *

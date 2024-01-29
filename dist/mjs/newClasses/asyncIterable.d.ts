@@ -24,19 +24,21 @@ export class AsyncIterable {
     static isAsyncIterable(value: any): boolean;
     /**
      * Constructs an instance of AsyncIterable. Similar to Iterable, it can be
-     * initialized with either an iterable object or individual elements. The
-     * elements can be promises, direct values, or a mix of both. If the first
-     * argument is an iterable, the instance is initialized with the elements
-     * from the iterable, followed by any additional arguments. If the first
-     * argument is not an iterable, all arguments are treated as individual
-     * elements.
+     * initialized with either an iterable object, an async generator function,
+     * or individual elements. The elements can be promises, direct values, or a
+     * mix of both. If the first argument is an iterable or an async generator
+     * function, the instance is initialized with the elements from the iterable
+     * or the generated elements from the async generator function, followed by
+     * any additional arguments. If the first argument is not an iterable or an
+     * async generator function, all arguments are treated as individual elements.
      *
-     * @param {Iterable|Promise|*} elementsOrFirstElement - An iterable object,
-     * a Promise, or the first element.
+     * @param {Iterable|AsyncGeneratorFunction|Promise|*} elementsOrFirstElement -
+     * An iterable object, an async generator function, a Promise, or the first
+     * element.
      * @param {...Promise|*} moreElements - Additional elements if the first
-     * argument is not an iterable.
+     * argument is not an iterable or an async generator function.
      */
-    constructor(elementsOrFirstElement: Iterable<any> | Promise<any> | any, ...moreElements: (Promise<any> | any)[]);
+    constructor(elementsOrFirstElement: Iterable<any> | AsyncGeneratorFunction | Promise<any> | any, ...moreElements: (Promise<any> | any)[]);
     /**
      * Implements the async iterable protocol. When an instance of AsyncIterable
      * is used in a `for await...of` loop, this async generator function is
@@ -67,10 +69,11 @@ export class AsyncIterator {
     /**
      * Creates a new `AsyncIterator` object instance.
      *
-     * @param {object} asyncIterable any object that has a
-     * `[Symbol.asyncIterable]` property assigned to a generator function.
+     * @param {object|AsyncGeneratorFunction} asyncIterable any object that has a
+     * `[Symbol.asyncIterable]` property assigned to a generator function or an
+     * async generator function itself.
      */
-    constructor(asyncIterable: object);
+    constructor(asyncIterable: object | AsyncGeneratorFunction);
     /**
      * Returns a new `Array` derived from the iterable this object
      * wraps.

@@ -25,17 +25,19 @@ const extension_1 = require("@nejs/extension");
 class AsyncIterable {
     /**
      * Constructs an instance of AsyncIterable. Similar to Iterable, it can be
-     * initialized with either an iterable object or individual elements. The
-     * elements can be promises, direct values, or a mix of both. If the first
-     * argument is an iterable, the instance is initialized with the elements
-     * from the iterable, followed by any additional arguments. If the first
-     * argument is not an iterable, all arguments are treated as individual
-     * elements.
+     * initialized with either an iterable object, an async generator function,
+     * or individual elements. The elements can be promises, direct values, or a
+     * mix of both. If the first argument is an iterable or an async generator
+     * function, the instance is initialized with the elements from the iterable
+     * or the generated elements from the async generator function, followed by
+     * any additional arguments. If the first argument is not an iterable or an
+     * async generator function, all arguments are treated as individual elements.
      *
-     * @param {Iterable|Promise|*} elementsOrFirstElement - An iterable object,
-     * a Promise, or the first element.
+     * @param {Iterable|AsyncGeneratorFunction|Promise|*} elementsOrFirstElement -
+     * An iterable object, an async generator function, a Promise, or the first
+     * element.
      * @param {...Promise|*} moreElements - Additional elements if the first
-     * argument is not an iterable.
+     * argument is not an iterable or an async generator function.
      */
     constructor(elementsOrFirstElement, ...moreElements) {
         /**
@@ -44,8 +46,13 @@ class AsyncIterable {
          */
         _AsyncIterable_elements.set(this, []);
         if (elementsOrFirstElement != null &&
-            typeof elementsOrFirstElement[Symbol.iterator] === 'function') {
+            (typeof elementsOrFirstElement[Symbol.iterator] === 'function' ||
+                typeof elementsOrFirstElement[Symbol.asyncIterator] === 'function')) {
             __classPrivateFieldSet(this, _AsyncIterable_elements, [...elementsOrFirstElement, ...moreElements], "f");
+        }
+        else if (typeof elementsOrFirstElement === 'function' &&
+            elementsOrFirstElement.constructor.name === 'AsyncGeneratorFunction') {
+            __classPrivateFieldSet(this, _AsyncIterable_elements, elementsOrFirstElement(), "f");
         }
         else {
             __classPrivateFieldSet(this, _AsyncIterable_elements, [elementsOrFirstElement, ...moreElements], "f");
@@ -62,10 +69,10 @@ class AsyncIterable {
      * a Promise.
      */
     async *[(_AsyncIterable_elements = new WeakMap(), Symbol.asyncIterator)]() {
-        for (const element of __classPrivateFieldGet(this, _AsyncIterable_elements, "f")) {
-            // Treat each element as a promise. If it's not, it's automatically
-            // wrapped as a resolved promise.
-            yield Promise.resolve(element);
+        for await (const element of __classPrivateFieldGet(this, _AsyncIterable_elements, "f")) {
+            // No need to wrap as a promise here since `for await...of` can handle
+            // both Promises and non-Promise values.
+            yield element;
         }
     }
     /**
@@ -107,8 +114,9 @@ class AsyncIterator {
     /**
      * Creates a new `AsyncIterator` object instance.
      *
-     * @param {object} asyncIterable any object that has a
-     * `[Symbol.asyncIterable]` property assigned to a generator function.
+     * @param {object|AsyncGeneratorFunction} asyncIterable any object that has a
+     * `[Symbol.asyncIterable]` property assigned to a generator function or an
+     * async generator function itself.
      */
     constructor(asyncIterable) {
         /**
@@ -126,11 +134,18 @@ class AsyncIterator {
          * @private
          */
         _AsyncIterator_asyncIterator.set(this, null);
-        if (!asyncIterable || !Reflect.has(asyncIterable, Symbol.asyncIterator)) {
+        if (typeof asyncIterable === 'function' &&
+            asyncIterable.constructor.name === 'AsyncGeneratorFunction') {
+            __classPrivateFieldSet(this, _AsyncIterator_asyncIterable, asyncIterable(), "f");
+        }
+        else if (!asyncIterable ||
+            !Reflect.has(asyncIterable, Symbol.asyncIterator)) {
             throw new TypeError('Value used to instantiate AsyncIterator is not an async iterable');
         }
-        __classPrivateFieldSet(this, _AsyncIterator_asyncIterable, asyncIterable, "f");
-        __classPrivateFieldSet(this, _AsyncIterator_asyncIterator, asyncIterable[Symbol.asyncIterator](), "f");
+        else {
+            __classPrivateFieldSet(this, _AsyncIterator_asyncIterable, asyncIterable, "f");
+        }
+        __classPrivateFieldSet(this, _AsyncIterator_asyncIterator, __classPrivateFieldGet(this, _AsyncIterator_asyncIterable, "f")[Symbol.asyncIterator](), "f");
     }
     /**
      * Returns a new `Array` derived from the iterable this object
