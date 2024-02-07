@@ -60,7 +60,7 @@
   "type": "module",
   "version": "2.1.0",
   "dependencies": {
-    "@nejs/extension": "^2.6.2"
+    "@nejs/extension": "^2.7.0"
   },
-  "browser": "dist/@nejs/basic-extensions.bundle.2.0.2.js"
+  "browser": "dist/@nejs/basic-extensions.bundle.2.1.0.js"
 }
