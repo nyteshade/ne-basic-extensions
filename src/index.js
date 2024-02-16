@@ -3,7 +3,7 @@ import { ObjectExtensions, ObjectPrototypeExtensions } from './objectextensions.
 import { MapPrototypeExtensions } from './mapextensions.js'
 import { SetPrototypeExtensions } from './setextensions.js'
 import { ReflectExtensions } from './reflectextensions.js'
-import { StringExtensions } from './stringextensions.js'
+import { StringExtensions, StringPrototypeExtensions } from './stringextensions.js'
 import { SymbolExtensions } from './symbolextensions.js'
 import { ArrayPrototypeExtensions } from './arrayextensions.js'
 import { DescriptorExtensions, Descriptor } from './newClasses/descriptor.js'
@@ -32,6 +32,7 @@ const StaticPatches = [
 
 const InstancePatches = [
   [Object.prototype, ObjectPrototypeExtensions, Object.name],
+  [String.prototype, StringPrototypeExtensions, String.name],
   [Function.prototype, FunctionPrototypeExtensions, Function.name],
   [Array.prototype, ArrayPrototypeExtensions, Array.name],
   [Map.prototype, MapPrototypeExtensions, Map.name],
@@ -137,9 +138,9 @@ export const all = (() => {
   const instancePatchReducer = (accumulator, [_, patch, ownerName]) => {
     if (!accumulator?.[ownerName])
       accumulator[ownerName] = {};
-    
+
     if (!accumulator[ownerName]?.prototype)
-      accumulator[ownerName].prototype = {};    
+      accumulator[ownerName].prototype = {};
 
       [...patch].reduce(entriesReducer, accumulator[ownerName].prototype)
     return accumulator
@@ -151,13 +152,13 @@ export const all = (() => {
     .flatMap(extension => [...extension])
     .reduce(entriesReducer, dest.classes)
   )
-  
+
   for (const [key, entry] of GlobalFunctionsAndProps) {
     const descriptor = new Descriptor(entry.descriptor, entry.owner)
     Object.defineProperty(dest.global, key, descriptor.toObject(true))
   }
 
-  return dest  
+  return dest
 })()
 
 const results = {

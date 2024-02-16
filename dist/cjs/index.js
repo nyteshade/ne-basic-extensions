@@ -27,6 +27,7 @@ const StaticPatches = [
 exports.StaticPatches = StaticPatches;
 const InstancePatches = [
     [Object.prototype, objectextensions_js_1.ObjectPrototypeExtensions, Object.name],
+    [String.prototype, stringextensions_js_1.StringPrototypeExtensions, String.name],
     [Function.prototype, functionextensions_js_1.FunctionPrototypeExtensions, Function.name],
     [Array.prototype, arrayextensions_js_1.ArrayPrototypeExtensions, Array.name],
     [Map.prototype, mapextensions_js_1.MapPrototypeExtensions, Map.name],

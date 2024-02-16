@@ -3,7 +3,7 @@ import { ObjectExtensions, ObjectPrototypeExtensions } from './objectextensions.
 import { MapPrototypeExtensions } from './mapextensions.js';
 import { SetPrototypeExtensions } from './setextensions.js';
 import { ReflectExtensions } from './reflectextensions.js';
-import { StringExtensions } from './stringextensions.js';
+import { StringExtensions, StringPrototypeExtensions } from './stringextensions.js';
 import { SymbolExtensions } from './symbolextensions.js';
 import { ArrayPrototypeExtensions } from './arrayextensions.js';
 import { DescriptorExtensions, Descriptor } from './newClasses/descriptor.js';
@@ -22,6 +22,7 @@ const StaticPatches = [
 ];
 const InstancePatches = [
     [Object.prototype, ObjectPrototypeExtensions, Object.name],
+    [String.prototype, StringPrototypeExtensions, String.name],
     [Function.prototype, FunctionPrototypeExtensions, Function.name],
     [Array.prototype, ArrayPrototypeExtensions, Array.name],
     [Map.prototype, MapPrototypeExtensions, Map.name],

@@ -7,4 +7,17 @@
  * utility functions.
  */
 export const StringExtensions: Patch;
+/**
+ * `StringPrototypeExtensions` provides a set of utility methods that are
+ * added to the `String` prototype. This allows all string instances to
+ * access new functionality directly, enhancing their capabilities beyond
+ * the standard `String` class methods. These extensions are applied using
+ * the `Patch` class from '@nejs/extension', ensuring that they do not
+ * interfere with the global namespace or existing properties.
+ *
+ * The extensions include methods for extracting substrings based on
+ * specific tokens, checking the presence of certain patterns, and more,
+ * making string manipulation tasks more convenient and expressive.
+ */
+export const StringPrototypeExtensions: Patch;
 import { Patch } from '@nejs/extension';
