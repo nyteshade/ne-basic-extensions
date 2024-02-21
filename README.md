@@ -290,24 +290,28 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [value](#value-2)
     *   [reason](#reason)
     *   [settled](#settled)
+    *   [wasRejected](#wasrejected)
+    *   [wasResolved](#wasresolved)
     *   [promise](#promise)
     *   [resolve](#resolve)
         *   [Parameters](#parameters-89)
     *   [reject](#reject)
         *   [Parameters](#parameters-90)
+    *   [for](#for-2)
+        *   [Parameters](#parameters-91)
     *   [species](#species)
 *   [promise](#promise-1)
 *   [reject](#reject-1)
 *   [resolve](#resolve-1)
 *   [settled](#settled-1)
 *   [AsyncIterable](#asynciterable)
-    *   [Parameters](#parameters-91)
+    *   [Parameters](#parameters-92)
     *   [asyncIterator](#asynciterator)
     *   [toStringTag](#tostringtag-3)
     *   [isAsyncIterable](#isasynciterable)
-        *   [Parameters](#parameters-92)
+        *   [Parameters](#parameters-93)
 *   [AsyncIterator](#asynciterator-1)
-    *   [Parameters](#parameters-93)
+    *   [Parameters](#parameters-94)
     *   [asArray](#asarray)
     *   [asyncIterable](#asynciterable-1)
     *   [next](#next)
@@ -315,14 +319,14 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [asyncIterator](#asynciterator-2)
     *   [toStringTag](#tostringtag-4)
 *   [Iterable](#iterable)
-    *   [Parameters](#parameters-94)
+    *   [Parameters](#parameters-95)
     *   [iterator](#iterator-1)
     *   [asArray](#asarray-1)
     *   [toStringTag](#tostringtag-5)
     *   [isIterable](#isiterable)
-        *   [Parameters](#parameters-95)
+        *   [Parameters](#parameters-96)
 *   [Iterator](#iterator-2)
-    *   [Parameters](#parameters-96)
+    *   [Parameters](#parameters-97)
     *   [asArray](#asarray-2)
     *   [iterable](#iterable-1)
     *   [next](#next-1)
@@ -2285,6 +2289,26 @@ has been settled (either resolve or reject have been invoked).
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** `true` if either [Deferred.resolve](Deferred.resolve) or
 [Deferred.reject](Deferred.reject) have been invoked; `false` otherwise
 
+#### wasRejected
+
+A getter that returns a boolean indicating whether the Deferred instance
+was rejected. This property can be used to check if the Deferred has been
+settled with a rejection. It is particularly useful in scenarios where
+the resolution status of the Deferred needs to be checked without
+accessing the rejection reason or invoking any additional logic.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** `true` if the Deferred was rejected, otherwise `false`.
+
+#### wasResolved
+
+A getter that returns a boolean indicating whether the Deferred instance
+was resolved. This property is useful for checking if the Deferred has been
+settled with a resolution, allowing for checks on the Deferred's status
+without needing to access the resolved value or trigger any additional
+logic.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** `true` if the Deferred was resolved, otherwise `false`.
+
 #### promise
 
 Accessor for the promise managed by this Deferred instance.
@@ -2320,6 +2344,25 @@ reason.
 *   `reason` **any** The reason to reject the Deferred with.
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** A Promise that is rejected with the given reason.
+
+#### for
+
+Customizes the output of `util.inspect` on instances of Deferred when
+used in Node.js. This method is invoked by Node.js's `util.inspect`
+utility to format the inspection output of a Deferred instance.
+
+The output includes the state of the Deferred (resolved, rejected, or
+unsettled) along with the resolved value or rejection reason, if
+applicable. This provides a quick, readable status of the Deferred
+instance directly in the console or debugging tools.
+
+##### Parameters
+
+*   `depth` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The depth to which `util.inspect` will recurse.
+*   `options` **[object](#object)** Formatting options provided by `util.inspect`.
+*   `inspect` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** Reference to the `util.inspect` function.
+
+Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** A formatted string representing the Deferred instance.
 
 #### species
 

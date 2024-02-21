@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Deferred_promise, _Deferred_reject, _Deferred_resolve, _Deferred_settled;
+var _Deferred_promise, _Deferred_reject, _Deferred_resolve, _Deferred_rejected, _Deferred_resolved, _Deferred_settled;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeferredExtension = exports.Deferred = void 0;
 const extension_1 = require("@nejs/extension");
@@ -130,7 +130,9 @@ class Deferred extends Promise {
          *
          * @type {function}
          */
-        _Deferred_resolve.set(this, null
+        _Deferred_resolve.set(this, null);
+        _Deferred_rejected.set(this, false);
+        _Deferred_resolved.set(this, false
         /**
          * When the Deferred is settled with {@link Deferred.resolve}, the `value`
          * passed to that function will be set here as well.
@@ -205,6 +207,8 @@ class Deferred extends Promise {
             }
             // Mark the Deferred instance as settled
             __classPrivateFieldSet(this, _Deferred_settled, true, "f");
+            // Mark the Deferred instance as resolved
+            __classPrivateFieldSet(this, _Deferred_resolved, true, "f");
             // Resolve the promise with the provided value
             return _resolve(value);
         }, "f");
@@ -216,6 +220,8 @@ class Deferred extends Promise {
             }
             // Mark the Deferred instance as settled
             __classPrivateFieldSet(this, _Deferred_settled, true, "f");
+            // Mark the Deferred as being rejected.
+            __classPrivateFieldSet(this, _Deferred_rejected, true, "f");
             // Reject the promise with the provided reason
             return _reject(reason);
         }, "f");
@@ -238,6 +244,30 @@ class Deferred extends Promise {
      */
     get settled() {
         return __classPrivateFieldGet(this, _Deferred_settled, "f");
+    }
+    /**
+     * A getter that returns a boolean indicating whether the Deferred instance
+     * was rejected. This property can be used to check if the Deferred has been
+     * settled with a rejection. It is particularly useful in scenarios where
+     * the resolution status of the Deferred needs to be checked without
+     * accessing the rejection reason or invoking any additional logic.
+     *
+     * @returns {boolean} `true` if the Deferred was rejected, otherwise `false`.
+     */
+    get wasRejected() {
+        return __classPrivateFieldGet(this, _Deferred_rejected, "f");
+    }
+    /**
+     * A getter that returns a boolean indicating whether the Deferred instance
+     * was resolved. This property is useful for checking if the Deferred has been
+     * settled with a resolution, allowing for checks on the Deferred's status
+     * without needing to access the resolved value or trigger any additional
+     * logic.
+     *
+     * @returns {boolean} `true` if the Deferred was resolved, otherwise `false`.
+     */
+    get wasResolved() {
+        return __classPrivateFieldGet(this, _Deferred_resolved, "f");
     }
     /**
      * Accessor for the promise managed by this Deferred instance.
@@ -276,6 +306,33 @@ class Deferred extends Promise {
         return __classPrivateFieldGet(this, _Deferred_reject, "f").call(this, reason);
     }
     /**
+     * Customizes the output of `util.inspect` on instances of Deferred when
+     * used in Node.js. This method is invoked by Node.js's `util.inspect`
+     * utility to format the inspection output of a Deferred instance.
+     *
+     * The output includes the state of the Deferred (resolved, rejected, or
+     * unsettled) along with the resolved value or rejection reason, if
+     * applicable. This provides a quick, readable status of the Deferred
+     * instance directly in the console or debugging tools.
+     *
+     * @param {number} depth The depth to which `util.inspect` will recurse.
+     * @param {object} options Formatting options provided by `util.inspect`.
+     * @param {function} inspect Reference to the `util.inspect` function.
+     * @returns {string} A formatted string representing the Deferred instance.
+     */
+    [(_Deferred_promise = new WeakMap(), _Deferred_reject = new WeakMap(), _Deferred_resolve = new WeakMap(), _Deferred_rejected = new WeakMap(), _Deferred_resolved = new WeakMap(), _Deferred_settled = new WeakMap(), Symbol.for('nodejs.util.inspect.custom'))](depth, options, inspect) {
+        return [
+            '\x1b[1mDeferred [\x1b[22;3mPromise\x1b[23;1m]\x1b[22m ',
+            '{ ',
+            (this.settled
+                ? (this.wasResolved
+                    ? `resolved with \x1b[32m${this.value}\x1b[39m`
+                    : `rejected with \x1b[31m${this.reason?.message ?? this.reason}\x1b[39m`)
+                : '\x1b[33munsettled valued or reason\x1b[39m'),
+            ' }'
+        ].join('');
+    }
+    /**
      * A getter for the species symbol which returns a custom DeferredPromise
      * class. This class extends from Deferred and is used to ensure that the
      * constructor signature matches that of a Promise. The executor function
@@ -285,7 +342,7 @@ class Deferred extends Promise {
      *
      * @returns {DeferredPromise} A DeferredPromise class that extends Deferred.
      */
-    static get [(_Deferred_promise = new WeakMap(), _Deferred_reject = new WeakMap(), _Deferred_resolve = new WeakMap(), _Deferred_settled = new WeakMap(), Symbol.species)]() {
+    static get [Symbol.species]() {
         return class DeferredPromise extends Deferred {
             /**
              * The constructor for the DeferredPromise class.

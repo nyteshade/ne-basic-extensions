@@ -49,6 +49,10 @@ export class Deferred extends Promise {
    */
   #resolve = null
 
+  #rejected = false
+
+  #resolved = false
+
   /**
    * When the Deferred is settled with {@link Deferred.resolve}, the `value`
    * passed to that function will be set here as well.
@@ -145,6 +149,10 @@ export class Deferred extends Promise {
       }
       // Mark the Deferred instance as settled
       this.#settled = true
+
+      // Mark the Deferred instance as resolved
+      this.#resolved = true
+
       // Resolve the promise with the provided value
       return _resolve(value)
     }
@@ -157,6 +165,10 @@ export class Deferred extends Promise {
       }
       // Mark the Deferred instance as settled
       this.#settled = true
+
+      // Mark the Deferred as being rejected.
+      this.#rejected = true
+
       // Reject the promise with the provided reason
       return _reject(reason)
     }
@@ -182,6 +194,32 @@ export class Deferred extends Promise {
    */
   get settled() {
     return this.#settled
+  }
+
+  /**
+   * A getter that returns a boolean indicating whether the Deferred instance
+   * was rejected. This property can be used to check if the Deferred has been
+   * settled with a rejection. It is particularly useful in scenarios where
+   * the resolution status of the Deferred needs to be checked without
+   * accessing the rejection reason or invoking any additional logic.
+   *
+   * @returns {boolean} `true` if the Deferred was rejected, otherwise `false`.
+   */
+  get wasRejected() {
+    return this.#rejected
+  }
+
+  /**
+   * A getter that returns a boolean indicating whether the Deferred instance
+   * was resolved. This property is useful for checking if the Deferred has been
+   * settled with a resolution, allowing for checks on the Deferred's status
+   * without needing to access the resolved value or trigger any additional
+   * logic.
+   *
+   * @returns {boolean} `true` if the Deferred was resolved, otherwise `false`.
+   */
+  get wasResolved() {
+    return this.#resolved
   }
 
   /**
@@ -221,6 +259,35 @@ export class Deferred extends Promise {
    */
   reject(reason) {
     return this.#reject(reason)
+  }
+
+  /**
+   * Customizes the output of `util.inspect` on instances of Deferred when
+   * used in Node.js. This method is invoked by Node.js's `util.inspect`
+   * utility to format the inspection output of a Deferred instance.
+   *
+   * The output includes the state of the Deferred (resolved, rejected, or
+   * unsettled) along with the resolved value or rejection reason, if
+   * applicable. This provides a quick, readable status of the Deferred
+   * instance directly in the console or debugging tools.
+   *
+   * @param {number} depth The depth to which `util.inspect` will recurse.
+   * @param {object} options Formatting options provided by `util.inspect`.
+   * @param {function} inspect Reference to the `util.inspect` function.
+   * @returns {string} A formatted string representing the Deferred instance.
+   */
+  [Symbol.for('nodejs.util.inspect.custom')](depth, options, inspect) {
+    return [
+      '\x1b[1mDeferred [\x1b[22;3mPromise\x1b[23;1m]\x1b[22m ',
+      '{ ',
+      (this.settled
+        ? (this.wasResolved
+          ? `resolved with \x1b[32m${this.value}\x1b[39m`
+          : `rejected with \x1b[31m${this.reason?.message ?? this.reason}\x1b[39m`)
+        : '\x1b[33munsettled valued or reason\x1b[39m'
+      ),
+      ' }'
+    ].join('')
   }
 
   /**

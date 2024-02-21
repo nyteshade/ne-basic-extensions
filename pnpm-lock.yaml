@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@nejs/extension':
-    specifier: ^2.7.1
-    version: 2.7.1
+    specifier: ^2.7.2
+    version: 2.7.2
 
 devDependencies:
   '@jest/expect':
@@ -1056,8 +1056,8 @@ packages:
       lodash: 4.17.21
     dev: true
 
-  /@nejs/extension@2.7.1:
-    resolution: {integrity: sha512-WQewH/FmcAipktdFs2rtMshlsDKJnnHIFIpPmGahTG/XbNhQc5uO7M2w0vGUmz6XO3QfTed5gWUR42M24LZkug==}
+  /@nejs/extension@2.7.2:
+    resolution: {integrity: sha512-j7xieg7TQZj1dgH5w0dRCeBIfaN+LT9yW5wfvv8t+AqpQ291slw5H3FjMCXyNmkWYQLQ7N/CWXkwv5U5ECCAJA==}
     engines: {node: '>=16'}
     dev: false
 
@@ -3196,7 +3196,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
     dev: true
-    bundledDependencies: false
 
   /cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
@@ -8665,7 +8664,6 @@ packages:
       prop-types: 15.8.1
       react: 15.7.0
     dev: true
-    bundledDependencies: false
 
   /react-icon-base@2.1.0(prop-types@15.8.1)(react-dom@15.7.0)(react@15.7.0):
     resolution: {integrity: sha512-9wwKJa2LB8ujtJB5MAXYYEM7JfYThZTj0YnfGxzLLWkifaLIGc7iTde2EpJ7ka5MjneRHnlxbIn5VV9k2WjUVA==}
@@ -8714,7 +8712,6 @@ packages:
       object-assign: 4.1.1
       prop-types: 15.8.1
     dev: true
-    bundledDependencies: false
 
   /read-pkg-up@2.0.0:
     resolution: {integrity: sha512-1orxQfbWGUiTn9XsPlChs6rLie/AV9jwZTGmu2NZw/CUDJQchXJFYE0Fq5j7+n558T1JhDWLdhyd1Zj+wLY//w==}

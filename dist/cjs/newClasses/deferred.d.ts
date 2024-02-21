@@ -91,6 +91,26 @@ export class Deferred extends Promise<any> {
      */
     get settled(): boolean;
     /**
+     * A getter that returns a boolean indicating whether the Deferred instance
+     * was rejected. This property can be used to check if the Deferred has been
+     * settled with a rejection. It is particularly useful in scenarios where
+     * the resolution status of the Deferred needs to be checked without
+     * accessing the rejection reason or invoking any additional logic.
+     *
+     * @returns {boolean} `true` if the Deferred was rejected, otherwise `false`.
+     */
+    get wasRejected(): boolean;
+    /**
+     * A getter that returns a boolean indicating whether the Deferred instance
+     * was resolved. This property is useful for checking if the Deferred has been
+     * settled with a resolution, allowing for checks on the Deferred's status
+     * without needing to access the resolved value or trigger any additional
+     * logic.
+     *
+     * @returns {boolean} `true` if the Deferred was resolved, otherwise `false`.
+     */
+    get wasResolved(): boolean;
+    /**
      * Accessor for the promise managed by this Deferred instance.
      *
      * This getter provides access to the internal promise which is controlled
