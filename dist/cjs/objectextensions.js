@@ -178,23 +178,55 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
         return result;
     },
 });
+const staticPatches = exports.ObjectExtensions.patches;
 exports.ObjectPrototypeExtensions = new extension_1.Patch(Object.prototype, {
-    /**
-     * Strips an object down to only the keys specified. Optionally, any
-     * accessors can be made to retain their context on the source object.
-     * This is a passthrough to the static {@link Object.stripTo} function
-     *
-     * @param {Array<string|symbol>} keys the keys that should appear in the
-     * final reduced object
-     * @param {boolean} [bindAccessors = true] if this value is true then any
-     * accessors from the source object will continue to have their `this`
-     * value bound to the source. If the getter or setter on that object is
-     * defined using an arrow function, this will not work as intended.
-     * @returns {object} an object containing only the keys and symbols
-     * specified in the `keys` parameter.
-     */
-    stripTo(keys, bindAccessors = true) {
-        return Object.stripTo(this, keys, bindAccessors);
-    }
+    [extension_1.Patch.kMutablyHidden](store) {
+        return {
+            /**
+             * Checks to see if the supplied `value` is both an object, and has the
+             * appropriate symbol defined.
+             *
+             * @param {any} value the value to determine if it contains a defined
+             * `Symbol.toStringTag` defined.
+             * @returns true if the symbol is defined, false otherwise
+             */
+            get hasStringTag() {
+                return staticPatches.hasStringTag(this);
+            },
+            /**
+             * Retrieves the string tag of an object. The string tag is a representation
+             * of the object's type, as defined by its `Object.prototype.toString`
+             * method. This utility method is helpful for getting a more descriptive
+             * type of an object than what is returned by the `typeof` operator,
+             * especially for custom objects.
+             *
+             * @param {*} value - The object whose string tag is to be retrieved.
+             * @param {boolean} strict - if this is set to true, undefined will be
+             * returned whenever a supplied object does not have a
+             * `Symbol.toStringTag` defined, period. if false, the default,
+             * @returns {string} - The string tag of the object, indicating its type.
+             */
+            getStringTag(strict = false) {
+                return staticPatches.getStringTag(this, strict);
+            },
+            /**
+             * Strips an object down to only the keys specified. Optionally, any
+             * accessors can be made to retain their context on the source object.
+             * This is a passthrough to the static {@link Object.stripTo} function
+             *
+             * @param {Array<string|symbol>} keys the keys that should appear in the
+             * final reduced object
+             * @param {boolean} [bindAccessors = true] if this value is true then any
+             * accessors from the source object will continue to have their `this`
+             * value bound to the source. If the getter or setter on that object is
+             * defined using an arrow function, this will not work as intended.
+             * @returns {object} an object containing only the keys and symbols
+             * specified in the `keys` parameter.
+             */
+            stripTo(keys, bindAccessors = true) {
+                return Object.stripTo(this, keys, bindAccessors);
+            }
+        };
+    },
 });
 //# sourceMappingURL=objectextensions.js.map

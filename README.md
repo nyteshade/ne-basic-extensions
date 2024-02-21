@@ -94,118 +94,122 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
         *   [Parameters](#parameters-13)
     *   [stripTo](#stripto)
         *   [Parameters](#parameters-14)
-*   [stripTo](#stripto-1)
+*   [hasStringTag](#hasstringtag-1)
     *   [Parameters](#parameters-15)
-*   [getKey](#getkey)
+*   [getStringTag](#getstringtag-1)
     *   [Parameters](#parameters-16)
-*   [concat](#concat)
+*   [stripTo](#stripto-1)
     *   [Parameters](#parameters-17)
-*   [contains](#contains)
+*   [getKey](#getkey)
     *   [Parameters](#parameters-18)
-*   [every](#every)
+*   [concat](#concat)
     *   [Parameters](#parameters-19)
-*   [find](#find)
+*   [contains](#contains)
     *   [Parameters](#parameters-20)
-*   [findLast](#findlast)
+*   [every](#every)
     *   [Parameters](#parameters-21)
+*   [find](#find)
+    *   [Parameters](#parameters-22)
+*   [findLast](#findlast)
+    *   [Parameters](#parameters-23)
 *   [length](#length)
 *   [map](#map)
-    *   [Parameters](#parameters-22)
-*   [reduce](#reduce)
-    *   [Parameters](#parameters-23)
-*   [some](#some)
     *   [Parameters](#parameters-24)
+*   [reduce](#reduce)
+    *   [Parameters](#parameters-25)
+*   [some](#some)
+    *   [Parameters](#parameters-26)
 *   [ReflectExtensions](#reflectextensions)
     *   [hasAll](#hasall)
-        *   [Parameters](#parameters-25)
-    *   [ownDescriptors](#owndescriptors)
-        *   [Parameters](#parameters-26)
-    *   [hasSome](#hassome)
         *   [Parameters](#parameters-27)
-    *   [entries](#entries)
+    *   [ownDescriptors](#owndescriptors)
         *   [Parameters](#parameters-28)
-    *   [values](#values)
+    *   [hasSome](#hassome)
         *   [Parameters](#parameters-29)
+    *   [entries](#entries)
+        *   [Parameters](#parameters-30)
+    *   [values](#values)
+        *   [Parameters](#parameters-31)
 *   [StringExtensions](#stringextensions)
     *   [isString](#isstring)
-        *   [Parameters](#parameters-30)
+        *   [Parameters](#parameters-32)
     *   [parenthesisPair](#parenthesispair)
     *   [squareBracketsPair](#squarebracketspair)
     *   [curlyBracketsPair](#curlybracketspair)
+*   [extractSubstring](#extractsubstring)
+    *   [Parameters](#parameters-33)
 *   [StringPrototypeExtensions](#stringprototypeextensions)
-    *   [extractSubstring](#extractsubstring)
-        *   [Parameters](#parameters-31)
 *   [SymbolExtensions](#symbolextensions)
     *   [isSymbol](#issymbol)
-        *   [Parameters](#parameters-32)
-    *   [isRegistered](#isregistered)
-        *   [Parameters](#parameters-33)
-    *   [isNonRegistered](#isnonregistered)
         *   [Parameters](#parameters-34)
-*   [ArrayPrototypeExtensions](#arrayprototypeextensions)
-    *   [contains](#contains-1)
+    *   [isRegistered](#isregistered)
         *   [Parameters](#parameters-35)
-    *   [findEntry](#findentry)
+    *   [isNonRegistered](#isnonregistered)
         *   [Parameters](#parameters-36)
-    *   [first](#first)
-    *   [last](#last)
+*   [contains](#contains-1)
+    *   [Parameters](#parameters-37)
+*   [findEntry](#findentry)
+    *   [Parameters](#parameters-38)
+*   [first](#first)
+*   [last](#last)
+*   [ArrayPrototypeExtensions](#arrayprototypeextensions)
 *   [object](#object)
 *   [constructor](#constructor)
-    *   [Parameters](#parameters-37)
+    *   [Parameters](#parameters-39)
 *   [isAccessor](#isaccessor)
 *   [isData](#isdata)
 *   [isDescriptor](#isdescriptor)
 *   [configurable](#configurable)
 *   [configurable](#configurable-1)
-    *   [Parameters](#parameters-38)
+    *   [Parameters](#parameters-40)
 *   [enumerable](#enumerable)
 *   [enumerable](#enumerable-1)
-    *   [Parameters](#parameters-39)
+    *   [Parameters](#parameters-41)
 *   [writable](#writable)
 *   [writable](#writable-1)
-    *   [Parameters](#parameters-40)
+    *   [Parameters](#parameters-42)
 *   [value](#value)
 *   [value](#value-1)
-    *   [Parameters](#parameters-41)
+    *   [Parameters](#parameters-43)
 *   [get](#get)
 *   [get](#get-1)
-    *   [Parameters](#parameters-42)
+    *   [Parameters](#parameters-44)
 *   [boundGet](#boundget)
 *   [set](#set)
 *   [set](#set-1)
-    *   [Parameters](#parameters-43)
+    *   [Parameters](#parameters-45)
 *   [boundSet](#boundset)
 *   [hasObject](#hasobject)
 *   [object](#object-1)
 *   [object](#object-2)
-    *   [Parameters](#parameters-44)
-*   [for](#for)
-    *   [Parameters](#parameters-45)
-*   [applyTo](#applyto)
     *   [Parameters](#parameters-46)
-*   [toObject](#toobject)
+*   [for](#for)
     *   [Parameters](#parameters-47)
-*   [toPrimitive](#toprimitive)
+*   [applyTo](#applyto)
     *   [Parameters](#parameters-48)
+*   [toObject](#toobject)
+    *   [Parameters](#parameters-49)
+*   [toPrimitive](#toprimitive)
+    *   [Parameters](#parameters-50)
 *   [toStringTag](#tostringtag)
 *   [for](#for-1)
-    *   [Parameters](#parameters-49)
-*   [getData](#getdata)
-    *   [Parameters](#parameters-50)
-*   [getAccessor](#getaccessor)
     *   [Parameters](#parameters-51)
-*   [base](#base)
+*   [getData](#getdata)
     *   [Parameters](#parameters-52)
-*   [accessor](#accessor)
+*   [getAccessor](#getaccessor)
     *   [Parameters](#parameters-53)
-*   [data](#data)
+*   [base](#base)
     *   [Parameters](#parameters-54)
-*   [isDescriptor](#isdescriptor-1)
+*   [accessor](#accessor)
     *   [Parameters](#parameters-55)
-*   [isData](#isdata-1)
+*   [data](#data)
     *   [Parameters](#parameters-56)
-*   [isAccessor](#isaccessor-1)
+*   [isDescriptor](#isdescriptor-1)
     *   [Parameters](#parameters-57)
+*   [isData](#isdata-1)
+    *   [Parameters](#parameters-58)
+*   [isAccessor](#isaccessor-1)
+    *   [Parameters](#parameters-59)
 *   [flexible](#flexible)
 *   [enigmatic](#enigmatic)
 *   [intrinsic](#intrinsic)
@@ -214,79 +218,79 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
 *   [ACCESSOR\_KEYS](#accessor_keys)
 *   [DATA\_KEYS](#data_keys)
 *   [maskAs](#maskas)
-    *   [Parameters](#parameters-58)
-*   [maskAsString](#maskasstring)
-    *   [Parameters](#parameters-59)
-*   [maskAsNumber](#maskasnumber)
     *   [Parameters](#parameters-60)
-*   [GenericMask](#genericmask)
+*   [maskAsString](#maskasstring)
     *   [Parameters](#parameters-61)
-*   [StringMask](#stringmask)
+*   [maskAsNumber](#maskasnumber)
     *   [Parameters](#parameters-62)
-*   [NumberMask](#numbermask)
+*   [GenericMask](#genericmask)
     *   [Parameters](#parameters-63)
+*   [StringMask](#stringmask)
+    *   [Parameters](#parameters-64)
+*   [NumberMask](#numbermask)
+    *   [Parameters](#parameters-65)
 *   [RefSet](#refset)
     *   [objectifying](#objectifying)
-        *   [Parameters](#parameters-64)
+        *   [Parameters](#parameters-66)
     *   [objectifyValues](#objectifyvalues)
     *   [objectifyValues](#objectifyvalues-1)
-        *   [Parameters](#parameters-65)
-    *   [add](#add)
-        *   [Parameters](#parameters-66)
-    *   [addAll](#addall)
         *   [Parameters](#parameters-67)
+    *   [add](#add)
+        *   [Parameters](#parameters-68)
+    *   [addAll](#addall)
+        *   [Parameters](#parameters-69)
     *   [clean](#clean)
     *   [entries](#entries-1)
-        *   [Parameters](#parameters-68)
+        *   [Parameters](#parameters-70)
     *   [forEach](#foreach)
-        *   [Parameters](#parameters-69)
+        *   [Parameters](#parameters-71)
     *   [values](#values-1)
     *   [keys](#keys)
     *   [has](#has)
-        *   [Parameters](#parameters-70)
-    *   [contains](#contains-2)
-        *   [Parameters](#parameters-71)
-    *   [filter](#filter)
         *   [Parameters](#parameters-72)
-    *   [find](#find-1)
+    *   [contains](#contains-2)
         *   [Parameters](#parameters-73)
-    *   [map](#map-1)
+    *   [filter](#filter)
         *   [Parameters](#parameters-74)
+    *   [find](#find-1)
+        *   [Parameters](#parameters-75)
+    *   [map](#map-1)
+        *   [Parameters](#parameters-76)
     *   [toStringTag](#tostringtag-1)
 *   [RefMap](#refmap)
-    *   [Parameters](#parameters-75)
+    *   [Parameters](#parameters-77)
     *   [objectifying](#objectifying-1)
-        *   [Parameters](#parameters-76)
+        *   [Parameters](#parameters-78)
     *   [asObject](#asobject)
     *   [objectifyValues](#objectifyvalues-2)
     *   [objectifyValues](#objectifyvalues-3)
-        *   [Parameters](#parameters-77)
-    *   [get](#get-2)
-        *   [Parameters](#parameters-78)
-    *   [set](#set-2)
         *   [Parameters](#parameters-79)
-    *   [setAll](#setall)
+    *   [get](#get-2)
         *   [Parameters](#parameters-80)
+    *   [set](#set-2)
+        *   [Parameters](#parameters-81)
+    *   [setAll](#setall)
+        *   [Parameters](#parameters-82)
     *   [clean](#clean-1)
     *   [entries](#entries-2)
-        *   [Parameters](#parameters-81)
+        *   [Parameters](#parameters-83)
     *   [forEach](#foreach-1)
-        *   [Parameters](#parameters-82)
+        *   [Parameters](#parameters-84)
     *   [values](#values-2)
     *   [hasValue](#hasvalue)
-        *   [Parameters](#parameters-83)
-    *   [filter](#filter-1)
-        *   [Parameters](#parameters-84)
-    *   [find](#find-2)
         *   [Parameters](#parameters-85)
-    *   [map](#map-2)
+    *   [filter](#filter-1)
         *   [Parameters](#parameters-86)
+    *   [find](#find-2)
+        *   [Parameters](#parameters-87)
+    *   [map](#map-2)
+        *   [Parameters](#parameters-88)
     *   [iterator](#iterator)
     *   [toStringTag](#tostringtag-2)
 *   [isValidReference](#isvalidreference)
-    *   [Parameters](#parameters-87)
+    *   [Parameters](#parameters-89)
 *   [Deferred](#deferred)
-    *   [Parameters](#parameters-88)
+    *   [Parameters](#parameters-90)
     *   [value](#value-2)
     *   [reason](#reason)
     *   [settled](#settled)
@@ -294,24 +298,24 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [wasResolved](#wasresolved)
     *   [promise](#promise)
     *   [resolve](#resolve)
-        *   [Parameters](#parameters-89)
-    *   [reject](#reject)
-        *   [Parameters](#parameters-90)
-    *   [for](#for-2)
         *   [Parameters](#parameters-91)
+    *   [reject](#reject)
+        *   [Parameters](#parameters-92)
+    *   [for](#for-2)
+        *   [Parameters](#parameters-93)
     *   [species](#species)
 *   [promise](#promise-1)
 *   [reject](#reject-1)
 *   [resolve](#resolve-1)
 *   [settled](#settled-1)
 *   [AsyncIterable](#asynciterable)
-    *   [Parameters](#parameters-92)
+    *   [Parameters](#parameters-94)
     *   [asyncIterator](#asynciterator)
     *   [toStringTag](#tostringtag-3)
     *   [isAsyncIterable](#isasynciterable)
-        *   [Parameters](#parameters-93)
+        *   [Parameters](#parameters-95)
 *   [AsyncIterator](#asynciterator-1)
-    *   [Parameters](#parameters-94)
+    *   [Parameters](#parameters-96)
     *   [asArray](#asarray)
     *   [asyncIterable](#asynciterable-1)
     *   [next](#next)
@@ -319,14 +323,14 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [asyncIterator](#asynciterator-2)
     *   [toStringTag](#tostringtag-4)
 *   [Iterable](#iterable)
-    *   [Parameters](#parameters-95)
+    *   [Parameters](#parameters-97)
     *   [iterator](#iterator-1)
     *   [asArray](#asarray-1)
     *   [toStringTag](#tostringtag-5)
     *   [isIterable](#isiterable)
-        *   [Parameters](#parameters-96)
+        *   [Parameters](#parameters-98)
 *   [Iterator](#iterator-2)
-    *   [Parameters](#parameters-97)
+    *   [Parameters](#parameters-99)
     *   [asArray](#asarray-2)
     *   [iterable](#iterable-1)
     *   [next](#next-1)
@@ -637,6 +641,35 @@ accessors can be made to retain their context on the source object.
 
 Returns **[object](#object)** an object containing only the keys and symbols
 specified in the `keys` parameter.
+
+### hasStringTag
+
+Checks to see if the supplied `value` is both an object, and has the
+appropriate symbol defined.
+
+#### Parameters
+
+*   `value` **any** the value to determine if it contains a defined
+    `Symbol.toStringTag` defined.
+
+Returns **any** true if the symbol is defined, false otherwise
+
+### getStringTag
+
+Retrieves the string tag of an object. The string tag is a representation
+of the object's type, as defined by its `Object.prototype.toString`
+method. This utility method is helpful for getting a more descriptive
+type of an object than what is returned by the `typeof` operator,
+especially for custom objects.
+
+#### Parameters
+
+*   `strict` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** if this is set to true, undefined will be
+    returned whenever a supplied object does not have a
+    `Symbol.toStringTag` defined, period. if false, the default, (optional, default `false`)
+*   `value` **any** The object whose string tag is to be retrieved.
+
+Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The string tag of the object, indicating its type.
 
 ### stripTo
 
@@ -978,20 +1011,7 @@ Returns **\[[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference
 opening curly bracket '{' as the first element, and the closing curly
 bracket '}' as the second element.
 
-### StringPrototypeExtensions
-
-`StringPrototypeExtensions` provides a set of utility methods that are
-added to the `String` prototype. This allows all string instances to
-access new functionality directly, enhancing their capabilities beyond
-the standard `String` class methods. These extensions are applied using
-the `Patch` class from '@nejs/extension', ensuring that they do not
-interfere with the global namespace or existing properties.
-
-The extensions include methods for extracting substrings based on
-specific tokens, checking the presence of certain patterns, and more,
-making string manipulation tasks more convenient and expressive.
-
-#### extractSubstring
+### extractSubstring
 
 Extracts a substring from the current string, starting at a given offset
 and bounded by specified opening and closing tokens. This method is
@@ -999,7 +1019,7 @@ particularly useful for parsing nested structures or quoted strings,
 where the level of nesting or the presence of escape characters must
 be considered.
 
-##### Parameters
+#### Parameters
 
 *   `offset` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The position in the string from which to start the
     search for the substring. (optional, default `0`)
@@ -1012,6 +1032,19 @@ extracted substring, and `newOffset`, the position in the original
 string immediately after the end of the extracted substring. If no
 substring is found, `extracted` is `null` and `newOffset` is the same
 as the input offset.
+
+### StringPrototypeExtensions
+
+`StringPrototypeExtensions` provides a set of utility methods that are
+added to the `String` prototype. This allows all string instances to
+access new functionality directly, enhancing their capabilities beyond
+the standard `String` class methods. These extensions are applied using
+the `Patch` class from '@nejs/extension', ensuring that they do not
+interfere with the global namespace or existing properties.
+
+The extensions include methods for extracting substrings based on
+specific tokens, checking the presence of certain patterns, and more,
+making string manipulation tasks more convenient and expressive.
 
 ### SymbolExtensions
 
@@ -1074,34 +1107,25 @@ created by passing a value directly to the `Symbol` function, such as
 Returns **any** true if the `value` in question is both a `symbol` and has
 returns `undefined` if passed to `Symbol.keyFor`
 
-### ArrayPrototypeExtensions
-
-The `ArrayPrototypeExtensions` patch extends the prototype of the built-in
-JavaScript `Array` with additional properties for convenience and improved
-readability. By applying this patch, all array instances gain new getter
-properties `first` and `last`, which provide quick access to the first and
-last elements of the array, respectively. This enhancement simplifies common
-operations on arrays and makes code more expressive and concise.
-
-#### contains
+### contains
 
 Sometimes defining even a short function for the invocation of `find`
 can be troublesome. This helper function performs that job for you. If
 the specified element is in the array, `true` will be returned.
 
-##### Parameters
+#### Parameters
 
 *   `value` **any** the value to search for. This value must triple equals
     the array element in order to return true.
 
 Returns **any** true if the exact element exists in the array, false otherwise
 
-#### findEntry
+### findEntry
 
 The `findEntry` function searches the entries of the object and returns
 the `[index, value]` entry array for the first matching value found.
 
-##### Parameters
+#### Parameters
 
 *   `findFn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** a function that takes the element to be checked
     and returns a boolean value
@@ -1109,7 +1133,7 @@ the `[index, value]` entry array for the first matching value found.
 Returns **any** if `findFn` returns `true`, an array with two elements, the first
 being the index, the second being the value, is returned.
 
-#### first
+### first
 
 A getter property that returns the first element of the array. If the
 array is empty, it returns `undefined`. This property is useful for
@@ -1119,7 +1143,7 @@ without the need for additional checks or method calls.
 Returns **any** The first element of the array or `undefined` if the array
 is empty.
 
-#### last
+### last
 
 A getter property that returns the last element of the array. It
 calculates the last index based on the array's length. If the array is
@@ -1129,6 +1153,15 @@ avoiding manual index calculation.
 
 Returns **any** The last element of the array or `undefined` if the
 array is empty.
+
+### ArrayPrototypeExtensions
+
+The `ArrayPrototypeExtensions` patch extends the prototype of the built-in
+JavaScript `Array` with additional properties for convenience and improved
+readability. By applying this patch, all array instances gain new getter
+properties `first` and `last`, which provide quick access to the first and
+last elements of the array, respectively. This enhancement simplifies common
+operations on arrays and makes code more expressive and concise.
 
 ### object
 

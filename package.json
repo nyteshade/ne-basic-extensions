@@ -55,12 +55,13 @@
     "jsdoc": "jsdoc -c jsdoc-config.json -p -a all -R README.md",
     "documentation": "documentation build src/** -f html --github -o docs && documentation readme src/index.js --section=API",
     "module": "bin/build",
-    "test": "jest"
+    "test": "jest",
+    "repl": "npm run build && node --no-warnings repl.bootstrap.js"
   },
   "type": "module",
   "version": "2.5.0",
   "dependencies": {
     "@nejs/extension": "^2.8.0"
   },
-  "browser": "dist/@nejs/basic-extensions.bundle.2.3.0.js"
+  "browser": "dist/@nejs/basic-extensions.bundle.2.5.0.js"
 }

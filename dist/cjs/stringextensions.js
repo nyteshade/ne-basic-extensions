@@ -82,75 +82,77 @@ exports.StringExtensions = new extension_1.Patch(String, {
  * making string manipulation tasks more convenient and expressive.
  */
 exports.StringPrototypeExtensions = new extension_1.Patch(String.prototype, {
-    /**
-     * Extracts a substring from the current string, starting at a given offset
-     * and bounded by specified opening and closing tokens. This method is
-     * particularly useful for parsing nested structures or quoted strings,
-     * where the level of nesting or the presence of escape characters must
-     * be considered.
-     *
-     * @param {number} offset The position in the string from which to start the
-     * search for the substring.
-     * @param {[string, string]} tokens An array containing two strings: the
-     * opening and closing tokens that define the boundaries of the substring
-     * to be extracted.
-     * @returns {Object} An object with two properties: `extracted`, the
-     * extracted substring, and `newOffset`, the position in the original
-     * string immediately after the end of the extracted substring. If no
-     * substring is found, `extracted` is `null` and `newOffset` is the same
-     * as the input offset.
-     */
-    extractSubstring(offset = 0, tokens = parenthesisPair) {
-        let [openToken, closeToken] = tokens;
-        let depth = 0;
-        let start = -1;
-        let end = -1;
-        let leadingToken = '';
-        let firstToken = 0;
-        for (let i = offset; i < this.length; i++) {
-            const char = this[i];
-            if (char === openToken) {
-                depth++;
-                if (start === -1)
-                    start = i;
-            }
-            else if (char === closeToken) {
-                depth--;
-                if (depth === 0) {
-                    end = i;
-                    break;
+    [extension_1.Patch.kMutablyHidden]: {
+        /**
+         * Extracts a substring from the current string, starting at a given offset
+         * and bounded by specified opening and closing tokens. This method is
+         * particularly useful for parsing nested structures or quoted strings,
+         * where the level of nesting or the presence of escape characters must
+         * be considered.
+         *
+         * @param {number} offset The position in the string from which to start the
+         * search for the substring.
+         * @param {[string, string]} tokens An array containing two strings: the
+         * opening and closing tokens that define the boundaries of the substring
+         * to be extracted.
+         * @returns {Object} An object with two properties: `extracted`, the
+         * extracted substring, and `newOffset`, the position in the original
+         * string immediately after the end of the extracted substring. If no
+         * substring is found, `extracted` is `null` and `newOffset` is the same
+         * as the input offset.
+         */
+        extractSubstring(offset = 0, tokens = parenthesisPair) {
+            let [openToken, closeToken] = tokens;
+            let depth = 0;
+            let start = -1;
+            let end = -1;
+            let leadingToken = '';
+            let firstToken = 0;
+            for (let i = offset; i < this.length; i++) {
+                const char = this[i];
+                if (char === openToken) {
+                    depth++;
+                    if (start === -1)
+                        start = i;
+                }
+                else if (char === closeToken) {
+                    depth--;
+                    if (depth === 0) {
+                        end = i;
+                        break;
+                    }
                 }
             }
-        }
-        let lRange = [
-            Math.max(0, start - 100),
-            start
-        ];
-        let leading = [...this.substring(lRange[0], lRange[1])].reverse().join('');
-        let reversedLeadingToken;
-        try {
-            reversedLeadingToken = /([^ \,\"\'\`]+)/.exec(leading)[1] ?? '';
-            leadingToken = [...reversedLeadingToken].reverse().join('');
-        }
-        catch (ignored) { }
-        if (start !== -1 && end !== -1) {
-            const sliceRange = [start, end + 1];
-            const extracted = this.slice(sliceRange[0], sliceRange[1]);
-            return {
-                extracted,
-                range: [start, end],
-                newOffset: end + 1,
-                leadingToken,
-            };
-        }
-        else {
-            return {
-                extracted: null,
-                range: [start, end],
-                newOffset: offset,
-                leadingToken,
-            };
-        }
+            let lRange = [
+                Math.max(0, start - 100),
+                start
+            ];
+            let leading = [...this.substring(lRange[0], lRange[1])].reverse().join('');
+            let reversedLeadingToken;
+            try {
+                reversedLeadingToken = /([^ \,\"\'\`]+)/.exec(leading)[1] ?? '';
+                leadingToken = [...reversedLeadingToken].reverse().join('');
+            }
+            catch (ignored) { }
+            if (start !== -1 && end !== -1) {
+                const sliceRange = [start, end + 1];
+                const extracted = this.slice(sliceRange[0], sliceRange[1]);
+                return {
+                    extracted,
+                    range: [start, end],
+                    newOffset: end + 1,
+                    leadingToken,
+                };
+            }
+            else {
+                return {
+                    extracted: null,
+                    range: [start, end],
+                    newOffset: offset,
+                    leadingToken,
+                };
+            }
+        },
     },
 });
 //# sourceMappingURL=stringextensions.js.map
