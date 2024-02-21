@@ -58,7 +58,7 @@
     "test": "jest"
   },
   "type": "module",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "dependencies": {
     "@nejs/extension": "^2.8.0"
   },
