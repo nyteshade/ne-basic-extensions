@@ -128,11 +128,28 @@ function overridableGlobal(
   Object.defineProperty(globalThis, property, makeDescriptor());
 }
 
+/**
+ * Generates a snapshot of the current REPL state, categorizing global objects
+ * into classes, functions, properties, symbols, and descriptors. This function
+ * is designed to capture and organize the current state for inspection or
+ * modification purposes. It temporarily disables invocation to safely enumerate
+ * global objects, capturing their descriptors and categorizing them accordingly.
+ * If invocation is already disabled, it returns the current state without
+ * modification. Skipped properties during enumeration are tracked but not
+ * processed further.
+ *
+ * @returns {Object} An object representing the current REPL state, with
+ * properties for classes, functions, properties, symbols, and descriptors
+ * (further divided into accessors and data descriptors). Each category is an
+ * object with keys as the global identifiers and values containing the key,
+ * value, and descriptor of the item.
+ */
 function generateState() {
   const replState = {
     classes: {},
     functions: {},
     properties: {},
+    symbols: {},
     descriptors: {
       accessors: {},
       data: {},
@@ -159,6 +176,10 @@ function generateState() {
       }
       else {
         replState.properties[key] = {key, value, descriptor};
+      }
+
+      if (typeof key === 'symbol') {
+        replState.symbols[key] = { key, value, descriptor };
       }
 
       if (Reflect.has(descriptor, 'get') || Reflect.has(descriptor, 'set')) {

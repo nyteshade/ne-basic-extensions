@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@nejs/extension':
-    specifier: ^2.8.0
-    version: 2.8.0
+    specifier: ^2.15.0
+    version: 2.15.0
 
 devDependencies:
   '@jest/expect':
@@ -1056,8 +1056,8 @@ packages:
       lodash: 4.17.21
     dev: true
 
-  /@nejs/extension@2.8.0:
-    resolution: {integrity: sha512-1pYQY5e/PrphD+D8MmG9bhHve+4QOE7W5IfXYfbBPEp/PIh2Y5W/MqFhRY+RgtGe8IIF7o2kqoHcAIwVjSCxjw==}
+  /@nejs/extension@2.15.0:
+    resolution: {integrity: sha512-jd4Hjr2UDdMERjprdCDaA2c3Sl3nsRV0vxIYCaCUiODYqSQ9YPRZaPgYUO1mD1fe51fe1Djk6931h8mb+OnBbw==}
     engines: {node: '>=16'}
     dev: false
 
