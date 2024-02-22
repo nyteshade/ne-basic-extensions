@@ -59,7 +59,7 @@
     "repl": "npm run build && node --no-warnings repl.bootstrap.js"
   },
   "type": "module",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "dependencies": {
     "@nejs/extension": "^2.15.0"
   },
