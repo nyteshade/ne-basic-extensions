@@ -1,32 +1,51 @@
-import { FunctionExtensions, FunctionPrototypeExtensions } from './functionextensions.js';
-import { ObjectExtensions, ObjectPrototypeExtensions } from './objectextensions.js';
-import { MapPrototypeExtensions } from './mapextensions.js';
-import { SetPrototypeExtensions } from './setextensions.js';
-import { ReflectExtensions } from './reflectextensions.js';
-import { StringExtensions, StringPrototypeExtensions } from './stringextensions.js';
-import { SymbolExtensions } from './symbolextensions.js';
-import { ArrayPrototypeExtensions } from './arrayextensions.js';
-import { DescriptorExtensions, Descriptor } from './newClasses/descriptor.js';
-import { GlobalFunctionsAndProps } from './globals.js';
-import { RefSetExtensions } from './newClasses/refset.js';
-import { RefMapExtensions } from './newClasses/refmap.js';
-import { DeferredExtension } from './newClasses/deferred.js';
-import { AsyncIteratorExtensions, AsyncIterableExtensions } from './newClasses/asyncIterable.js';
-import { IteratorExtensions, IterableExtensions } from './newClasses/iterable.js';
+import { ArrayExtensions, ArrayPrototypeExtensions } from './array.extensions.js';
+import { BigIntExtensions, BigIntPrototypeExtensions } from './big.int.extension.js';
+import { FunctionExtensions, FunctionPrototypeExtensions } from './function.extensions.js';
+import { GlobalFunctionsAndProps } from './global.this.js';
+import { JSONExtensions } from './json.extensions.js';
+import { MapExtensions, MapPrototypeExtensions } from './map.extensions.js';
+import { NumberExtensions, NumberPrototypeExtensions } from './number.extension.js';
+import { ObjectExtensions, ObjectPrototypeExtensions } from './object.extensions.js';
+import { ReflectExtensions } from './reflect.extensions.js';
+import { RegExpExtensions } from './regular.expression.extensions.js';
+import { SetExtensions, SetPrototypeExtensions } from './set.extensions.js';
+import { StringExtensions, StringPrototypeExtensions } from './string.extensions.js';
+import { SymbolExtensions, SymbolPrototypeExtensions } from './symbol.extensions.js';
+import { DeferredExtension } from './classes/deferred.js';
+import { DescriptorExtensions, Descriptor } from './classes/descriptor.js';
+import { IntrospectorExtensions } from './classes/introspector.js';
+import { IteratorExtensions, IterableExtensions } from './classes/iterable.js';
+import { ParamParserExtensions } from './classes/param.parser.js';
+import { PluggableProxyExtensions, ProxyHandlerExtensions, PluggableProxyExtensionSet } from './classes/pluggable.proxy.js';
+import { RefMapExtensions } from './classes/refmap.js';
+import { RefSetExtensions } from './classes/refset.js';
+import { SymkeysExtension } from './classes/symkeys.js';
+import { TypeExtensions } from './classes/type.js';
+import { AsyncIteratorExtensions, AsyncIterableExtensions } from './classes/asyncIterable.js';
 const StaticPatches = [
-    [Object, ObjectExtensions, Object.name],
+    [Array, ArrayExtensions, Array.name],
+    [BigInt, BigIntExtensions, BigInt.name],
     [Function, FunctionExtensions, Function.name],
+    [JSON, JSONExtensions, 'JSON'], // Missing a .name property
+    [Map, MapExtensions, Map.name],
+    [Number, NumberExtensions, Number.name],
+    [Object, ObjectExtensions, Object.name],
     [Reflect, ReflectExtensions, 'Reflect'], // Missing a .name property
+    [RegExp, RegExpExtensions, RegExp.name],
+    [Set, SetExtensions, Set.name],
     [String, StringExtensions, String.name],
     [Symbol, SymbolExtensions, 'Symbol'], // Missing a .name property
 ];
 const InstancePatches = [
-    [Object.prototype, ObjectPrototypeExtensions, Object.name],
-    [String.prototype, StringPrototypeExtensions, String.name],
-    [Function.prototype, FunctionPrototypeExtensions, Function.name],
     [Array.prototype, ArrayPrototypeExtensions, Array.name],
+    [BigInt.prototype, BigIntPrototypeExtensions, BigInt.name],
+    [Function.prototype, FunctionPrototypeExtensions, Function.name],
     [Map.prototype, MapPrototypeExtensions, Map.name],
+    [Number.prototype, NumberPrototypeExtensions, Number.name],
+    [Object.prototype, ObjectPrototypeExtensions, Object.name],
     [Set.prototype, SetPrototypeExtensions, Set.name],
+    [String.prototype, StringPrototypeExtensions, String.name],
+    [Symbol.prototype, SymbolPrototypeExtensions, Symbol.name],
 ];
 const Patches = new Map([
     ...StaticPatches,
@@ -37,11 +56,22 @@ const Extensions = {
     [AsyncIteratorExtensions.key]: AsyncIteratorExtensions,
     [DeferredExtension.key]: DeferredExtension,
     [DescriptorExtensions.key]: DescriptorExtensions,
+    [IntrospectorExtensions.key]: IntrospectorExtensions,
     [IterableExtensions.key]: IterableExtensions,
     [IteratorExtensions.key]: IteratorExtensions,
+    [ParamParserExtensions.key]: ParamParserExtensions,
+    [PluggableProxyExtensions.key]: PluggableProxyExtensions,
+    [ProxyHandlerExtensions.key]: ProxyHandlerExtensions,
     [RefMapExtensions.key]: RefMapExtensions,
     [RefSetExtensions.key]: RefSetExtensions,
+    [SymkeysExtension.key]: SymkeysExtension,
+    [TypeExtensions.key]: TypeExtensions,
 };
+export const Classes = {};
+for (const extension of Object.values(Extensions)) {
+    const fnOrClass = extension.class || extension.function;
+    Classes[fnOrClass.name] = fnOrClass;
+}
 const Controls = {};
 Object.assign(Controls, {
     enableAll() {

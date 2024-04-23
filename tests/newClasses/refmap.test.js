@@ -1,5 +1,6 @@
-const { Extensions } = require('../../dist/cjs/index.js')
-const RefMap = Extensions.RefMap.class
+const { Classes } = require('../../dist/cjs/index.js')
+const { RefMap } = Classes
+
 
 describe('RefMap', () => {
   let refMap;

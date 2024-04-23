@@ -49,7 +49,8 @@
   "name": "@nejs/basic-extensions",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "build": "bin/clean && bin/esbuild && bin/build && npm run documentation",
+    "build": "bin/clean && bin/esbuild && bin/build",
+    "distribute": "bin/clean && bin/esbuild && bin/build && npm run documentation",
     "browser": "bin/esbuild",
     "clean": "bin/clean",
     "jsdoc": "jsdoc -c jsdoc-config.json -p -a all -R README.md",
@@ -61,7 +62,8 @@
   "type": "module",
   "version": "2.7.0",
   "dependencies": {
-    "@nejs/extension": "^2.15.0"
+    "@nejs/extension": "^2.15.0",
+    "zod": "^3.22.5"
   },
-  "browser": "dist/@nejs/basic-extensions.bundle.2.6.0.js"
+  "browser": "dist/@nejs/basic-extensions.bundle.2.7.0.js"
 }
