@@ -1,7 +1,7 @@
-import { Patch } from '@nejs/extension';
+import { Patch, PatchToggle } from '@nejs/extension';
 import { Symkeys } from './classes/symkeys.js';
 import { JSONExtensions } from './json.extensions.js';
-const { extractFrom, mightContain } = JSONExtensions.patches;
+const JSONToggle = new PatchToggle(JSONExtensions);
 /**
  * `SymbolExtensions` is a patch for the JavaScript built-in `Symbol` class. It
  * adds utility methods to the `Symbol` class without modifying the global namespace
@@ -11,31 +11,14 @@ const { extractFrom, mightContain } = JSONExtensions.patches;
  * utility functions.
  */
 export const SymbolExtensions = new Patch(Symbol, {
-    /**
-     * Creates a new Symbol with the given name and optional data. If data
-     * is provided, it will be stringified and appended to the symbol's
-     * name. This method is useful for creating unique symbols that carry
-     * additional metadata.
-     *
-     * @param {string} name The name of the symbol.
-     * @param {*} [data] Optional data to be associated with the symbol.
-     * @returns {symbol} A new symbol created with Symbol.for(), using the
-     * provided name and stringified data (if provided).
-     *
-     * @example
-     * const symbolWithData = Symbol.withData('mySymbol', { foo: 'bar' })
-     * console.log(symbolWithData.toString())
-     * // Output: "Symbol(mySymbol {"foo":"bar"})"
-     *
-     * @example
-     * const symbolWithoutData = Symbol.withData('mySymbol')
-     * console.log(symbolWithoutData.toString())
-     * // Output: "Symbol(mySymbol)"
-     */
-    withData(name, data) {
-        return data !== undefined
-            ? Symbol.for(`${name} ${JSON.stringify(data)}`)
-            : Symbol.for(name);
+    add(named, associatedData = {}) {
+        return this.keys.add(named, associatedData);
+    },
+    deleteData(forSymbol, replaceWith = undefined) {
+        return this.keys.deleteData(forSymbol, replaceWith);
+    },
+    hasData(forSymbol) {
+        return this.keys.hasData(forSymbol);
     },
     /**
      * The `isSymbol` method does exactly what one would it expect. It returns
@@ -117,6 +100,35 @@ export const SymbolExtensions = new Patch(Symbol, {
      * kOriginal.data = [Object.prototype, Array.prototype] // ...both work
      */
     keys: new Symkeys('nejs'),
+    setData(forSymbol, value) {
+        this.keys.setData(forSymbol, value);
+    },
+    /**
+     * Creates a new Symbol with the given name and optional data. If data
+     * is provided, it will be stringified and appended to the symbol's
+     * name. This method is useful for creating unique symbols that carry
+     * additional metadata.
+     *
+     * @param {string} name The name of the symbol.
+     * @param {*} [data] Optional data to be associated with the symbol.
+     * @returns {symbol} A new symbol created with Symbol.for(), using the
+     * provided name and stringified data (if provided).
+     *
+     * @example
+     * const symbolWithData = Symbol.withData('mySymbol', { foo: 'bar' })
+     * console.log(symbolWithData.toString())
+     * // Output: "Symbol(mySymbol {"foo":"bar"})"
+     *
+     * @example
+     * const symbolWithoutData = Symbol.withData('mySymbol')
+     * console.log(symbolWithoutData.toString())
+     * // Output: "Symbol(mySymbol)"
+     */
+    withData(name, data) {
+        return data !== undefined
+            ? Symbol.for(`${name} ${JSON.stringify(data)}`)
+            : Symbol.for(name);
+    },
 });
 export const SymbolPrototypeExtensions = new Patch(Symbol.prototype, {
     [Patch.kMutablyHidden]: {
@@ -184,7 +196,22 @@ export const SymbolPrototypeExtensions = new Patch(Symbol.prototype, {
                     return possibleData;
                 }
             }
-            return extractFrom(string);
+            let result = undefined;
+            let revertToggle = false;
+            if (!JSONExtensions.applied) {
+                JSONToggle.start();
+                revertToggle = true;
+            }
+            if (JSON.mightContain(this.description)) {
+                try {
+                    result = JSON.extractFrom(this.description);
+                }
+                catch (ignore) { }
+            }
+            if (revertToggle) {
+                JSONToggle.stop();
+            }
+            return result;
         },
         /**
          * Sets the data associated with a symbol.
@@ -249,8 +276,102 @@ export const SymbolPrototypeExtensions = new Patch(Symbol.prototype, {
          * console.log(sym.mightHaveEmbeddedJSON) // Output: false
          */
         get mightHaveEmbeddedJSON() {
-            return mightContain(this.description) && typeof this.data === 'function';
+            return mightContain(this.description);
         },
-    }
+        get sgrString() {
+            let revert = false;
+            let detail = undefined;
+            let { sgr } = String;
+            if (!sgr) {
+                sgr = (string, ...args) => string;
+            }
+            if (!JSONExtensions.applied) {
+                JSONToggle.start();
+                revert = true;
+            }
+            if ((detail = JSON.mightContain(this.description, true))) {
+                let jsonText = detail[2][0];
+                let index = detail[1];
+                if (~index && jsonText && jsonText.length > 30) {
+                    let desc = this.description;
+                    let newDescription = [
+                        sgr(`Symbol.for(${desc.slice(0, index)}`, 'green'),
+                        sgr(jsonText.slice(0, 10), 'di'),
+                        '...',
+                        sgr(jsonText.slice(-5), 'di'),
+                        sgr(`${desc.slice(index + jsonText.length + 1)})`, 'green'),
+                    ].join('');
+                    if (revert) {
+                        JSONToggle.stop();
+                    }
+                    return `${newDescription}`;
+                }
+            }
+            if (revert) {
+                JSONToggle.stop();
+            }
+            return newDescription;
+        },
+        /**
+         * Custom inspect method for Node.js util.inspect.
+         *
+         * NOTE: this will only apply if looking at an instance of Symbol,
+         * sadly; {@see SymbolPrototypeExtensions.instance}
+         *
+         * This method is used by Node.js util.inspect to provide a custom
+         * representation of the symbol when inspected. It checks if the
+         * symbol's description might contain JSON data and if so, it
+         * truncates the JSON data in the description to a maximum of 30
+         * characters and formats the output with colors using the `sgr`
+         * function from the `String` object.
+         *
+         * @param {number} depth - The current depth of the recursive
+         * inspection.
+         * @param {Object} options - The options object passed to
+         * util.inspect.
+         * @param {Function} inspect - The original util.inspect function.
+         *
+         * @returns {string} - The formatted representation of the symbol.
+         *
+         * @example
+         * const sym = Symbol.for('fun {"name":"John Doe"}')
+         * console.log(util.inspect(sym))
+         * // Output: Symbol.for(fun {"name":"John ...hn Doe"})
+         */
+        [Symbol.for('nodejs.util.inspect.custom')](depth, options, inspect) {
+            let revert = false;
+            let detail = undefined;
+            let { sgr } = String;
+            if (!sgr) {
+                sgr = (string, ...args) => string;
+            }
+            if (!JSONExtensions.applied) {
+                JSONToggle.start();
+                revert = true;
+            }
+            if ((detail = JSON.mightContain(this.description, true))) {
+                let jsonText = detail[2][0];
+                let index = detail[1];
+                if (~index && jsonText && jsonText.length > 30) {
+                    let desc = this.description;
+                    let newDescription = [
+                        sgr(`Symbol.for(${desc.slice(0, index)}`, 'green'),
+                        sgr(jsonText.slice(0, 10), 'di'),
+                        '...',
+                        sgr(jsonText.slice(-5), 'di'),
+                        sgr(`${desc.slice(index + jsonText.length + 1)})`, 'green'),
+                    ].join('');
+                    if (revert) {
+                        JSONToggle.stop();
+                    }
+                    return `${newDescription}`;
+                }
+            }
+            if (revert) {
+                JSONToggle.stop();
+            }
+            return inspect(this, { colors: true });
+        },
+    },
 });
 //# sourceMappingURL=symbol.extensions.js.map

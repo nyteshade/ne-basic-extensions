@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@nejs/extension':
-        specifier: ^2.15.0
-        version: 2.15.0
+        specifier: ^2.20.0
+        version: 2.20.0
       zod:
         specifier: ^3.22.5
         version: 3.22.5
@@ -517,8 +517,8 @@ packages:
     resolution: {integrity: sha512-mh8LbS9d4Jq84KLw8pzho7XC2q2/IJGiJss3xwRoLD1A+EE16SjN4PfaG4jRCzKegTFLlN0Zd8SdUPE6XdoPFg==}
     engines: {node: '>=v12.0.0'}
 
-  '@nejs/extension@2.15.0':
-    resolution: {integrity: sha512-jd4Hjr2UDdMERjprdCDaA2c3Sl3nsRV0vxIYCaCUiODYqSQ9YPRZaPgYUO1mD1fe51fe1Djk6931h8mb+OnBbw==}
+  '@nejs/extension@2.20.0':
+    resolution: {integrity: sha512-ywSTvUb1kwiNnuM8oeXvvQdTJxecJLj/zwoxD2RIj16AEZpFzKoVGeXkZdp9tycud0LvTt/hR0s2ofomdeeYIw==}
     engines: {node: '>=16'}
 
   '@pkgjs/parseargs@0.11.0':
@@ -5932,7 +5932,7 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  '@nejs/extension@2.15.0': {}
+  '@nejs/extension@2.20.0': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true

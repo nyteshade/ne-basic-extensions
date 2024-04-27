@@ -65,8 +65,9 @@ exports.JSONExtensions = new extension_1.Patch(JSON, {
          * // Using `mightContain`
          * console.log(JSON.mightContain(str))  // Output: true
          */
-        mightContain(string) {
-            return !!this.JSONStartPattern.exec(string);
+        mightContain(string, detail = false) {
+            const results = this.JSONStartPattern.exec(string);
+            return detail ? [!!results, results?.index ?? -1, results] : !!results;
         },
         /**
          * Getter method for the JSONStartPattern.

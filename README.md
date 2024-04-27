@@ -450,39 +450,47 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [randomRGBA](#randomrgba)
         *   [Parameters](#parameters-109)
         *   [Examples](#examples-113)
+    *   [sgr](#sgr)
+        *   [Parameters](#parameters-110)
+    *   [wrap](#wrap)
+        *   [Parameters](#parameters-111)
+        *   [Examples](#examples-114)
 *   [isString](#isstring-1)
-    *   [Examples](#examples-114)
-*   [ifString](#ifstring-1)
-    *   [Parameters](#parameters-110)
     *   [Examples](#examples-115)
-*   [instance](#instance-2)
+*   [ifString](#ifstring-1)
+    *   [Parameters](#parameters-112)
     *   [Examples](#examples-116)
+*   [instance](#instance-2)
+    *   [Examples](#examples-117)
 *   [extractSubstring](#extractsubstring)
-    *   [Parameters](#parameters-111)
+    *   [Parameters](#parameters-113)
 *   [StringPrototypeExtensions](#stringprototypeextensions)
 *   [SymbolExtensions](#symbolextensions)
-    *   [withData](#withdata)
-        *   [Parameters](#parameters-112)
-        *   [Examples](#examples-117)
     *   [isSymbol](#issymbol)
-        *   [Parameters](#parameters-113)
-    *   [isRegistered](#isregistered)
         *   [Parameters](#parameters-114)
-    *   [isNonRegistered](#isnonregistered)
+    *   [isRegistered](#isregistered)
         *   [Parameters](#parameters-115)
+    *   [isNonRegistered](#isnonregistered)
+        *   [Parameters](#parameters-116)
     *   [keys](#keys)
         *   [Examples](#examples-118)
+    *   [withData](#withdata)
+        *   [Parameters](#parameters-117)
+        *   [Examples](#examples-119)
 *   [instance](#instance-3)
-    *   [Examples](#examples-119)
-*   [data](#data)
     *   [Examples](#examples-120)
-*   [data](#data-1)
-    *   [Parameters](#parameters-116)
+*   [data](#data)
     *   [Examples](#examples-121)
-*   [mightHaveEmbeddedJSON](#mighthaveembeddedjson)
+*   [data](#data-1)
+    *   [Parameters](#parameters-118)
     *   [Examples](#examples-122)
+*   [mightHaveEmbeddedJSON](#mighthaveembeddedjson)
+    *   [Examples](#examples-123)
+*   [for](#for)
+    *   [Parameters](#parameters-119)
+    *   [Examples](#examples-124)
 *   [Deferred](#deferred)
-    *   [Parameters](#parameters-117)
+    *   [Parameters](#parameters-120)
     *   [value](#value-1)
     *   [reason](#reason)
     *   [settled](#settled)
@@ -490,11 +498,11 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [wasResolved](#wasresolved)
     *   [promise](#promise)
     *   [resolve](#resolve)
-        *   [Parameters](#parameters-118)
+        *   [Parameters](#parameters-121)
     *   [reject](#reject)
-        *   [Parameters](#parameters-119)
-    *   [for](#for)
-        *   [Parameters](#parameters-120)
+        *   [Parameters](#parameters-122)
+    *   [for](#for-1)
+        *   [Parameters](#parameters-123)
     *   [species](#species)
 *   [promise](#promise-1)
 *   [reject](#reject-1)
@@ -502,61 +510,61 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
 *   [settled](#settled-1)
 *   [object](#object)
 *   [constructor](#constructor)
-    *   [Parameters](#parameters-121)
+    *   [Parameters](#parameters-124)
 *   [isAccessor](#isaccessor-1)
 *   [isData](#isdata-1)
 *   [isDescriptor](#isdescriptor)
 *   [configurable](#configurable)
 *   [configurable](#configurable-1)
-    *   [Parameters](#parameters-122)
+    *   [Parameters](#parameters-125)
 *   [enumerable](#enumerable)
 *   [enumerable](#enumerable-1)
-    *   [Parameters](#parameters-123)
+    *   [Parameters](#parameters-126)
 *   [writable](#writable)
 *   [writable](#writable-1)
-    *   [Parameters](#parameters-124)
+    *   [Parameters](#parameters-127)
 *   [value](#value-2)
 *   [value](#value-3)
-    *   [Parameters](#parameters-125)
+    *   [Parameters](#parameters-128)
 *   [get](#get)
 *   [get](#get-1)
-    *   [Parameters](#parameters-126)
+    *   [Parameters](#parameters-129)
 *   [boundGet](#boundget)
 *   [set](#set)
 *   [set](#set-1)
-    *   [Parameters](#parameters-127)
+    *   [Parameters](#parameters-130)
 *   [boundSet](#boundset)
 *   [hasObject](#hasobject)
 *   [object](#object-1)
 *   [object](#object-2)
-    *   [Parameters](#parameters-128)
-*   [for](#for-1)
-    *   [Parameters](#parameters-129)
-*   [applyTo](#applyto)
-    *   [Parameters](#parameters-130)
-*   [toObject](#toobject)
     *   [Parameters](#parameters-131)
-*   [toPrimitive](#toprimitive)
-    *   [Parameters](#parameters-132)
-*   [toStringTag](#tostringtag)
 *   [for](#for-2)
+    *   [Parameters](#parameters-132)
+*   [applyTo](#applyto)
     *   [Parameters](#parameters-133)
-*   [getData](#getdata)
+*   [toObject](#toobject)
     *   [Parameters](#parameters-134)
-*   [getAccessor](#getaccessor)
+*   [toPrimitive](#toprimitive)
     *   [Parameters](#parameters-135)
-*   [base](#base)
+*   [toStringTag](#tostringtag)
+*   [for](#for-3)
     *   [Parameters](#parameters-136)
-*   [accessor](#accessor)
+*   [getData](#getdata)
     *   [Parameters](#parameters-137)
-*   [data](#data-2)
+*   [getAccessor](#getaccessor)
     *   [Parameters](#parameters-138)
-*   [isDescriptor](#isdescriptor-1)
+*   [base](#base)
     *   [Parameters](#parameters-139)
-*   [isData](#isdata-2)
+*   [accessor](#accessor)
     *   [Parameters](#parameters-140)
-*   [isAccessor](#isaccessor-2)
+*   [data](#data-2)
     *   [Parameters](#parameters-141)
+*   [isDescriptor](#isdescriptor-1)
+    *   [Parameters](#parameters-142)
+*   [isData](#isdata-2)
+    *   [Parameters](#parameters-143)
+*   [isAccessor](#isaccessor-2)
+    *   [Parameters](#parameters-144)
 *   [flexible](#flexible)
 *   [enigmatic](#enigmatic)
 *   [intrinsic](#intrinsic)
@@ -565,14 +573,14 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
 *   [ACCESSOR\_KEYS](#accessor_keys)
 *   [DATA\_KEYS](#data_keys)
 *   [Iterable](#iterable)
-    *   [Parameters](#parameters-142)
+    *   [Parameters](#parameters-145)
     *   [iterator](#iterator)
     *   [asArray](#asarray)
     *   [toStringTag](#tostringtag-1)
     *   [isIterable](#isiterable)
-        *   [Parameters](#parameters-143)
+        *   [Parameters](#parameters-146)
 *   [Iterator](#iterator-1)
-    *   [Parameters](#parameters-144)
+    *   [Parameters](#parameters-147)
     *   [asArray](#asarray-1)
     *   [iterable](#iterable-1)
     *   [next](#next)
@@ -581,44 +589,44 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
     *   [toStringTag](#tostringtag-2)
 *   [mapEach](#mapeach)
 *   [constructor](#constructor-1)
-    *   [Parameters](#parameters-145)
-    *   [Examples](#examples-123)
-*   [parse](#parse)
-    *   [Parameters](#parameters-146)
-*   [validate](#validate)
-    *   [Parameters](#parameters-147)
-*   [tryParsers](#tryparsers)
     *   [Parameters](#parameters-148)
-    *   [Examples](#examples-124)
-*   [safeTryParsers](#safetryparsers)
-    *   [Parameters](#parameters-149)
     *   [Examples](#examples-125)
-*   [NoValidParsersFound](#novalidparsersfound)
-    *   [Examples](#examples-126)
-*   [ParametersMustBeArrayError](#parametersmustbearrayerror)
-    *   [Examples](#examples-127)
-*   [ParsersArrayMustContainParsersError](#parsersarraymustcontainparserserror)
-    *   [Examples](#examples-128)
-*   [toStringTag](#tostringtag-3)
-    *   [Examples](#examples-129)
-*   [hasInstance](#hasinstance)
+*   [parse](#parse)
+    *   [Parameters](#parameters-149)
+*   [validate](#validate)
     *   [Parameters](#parameters-150)
-    *   [Examples](#examples-130)
-*   [response](#response)
+*   [tryParsers](#tryparsers)
     *   [Parameters](#parameters-151)
+    *   [Examples](#examples-126)
+*   [safeTryParsers](#safetryparsers)
+    *   [Parameters](#parameters-152)
+    *   [Examples](#examples-127)
+*   [NoValidParsersFound](#novalidparsersfound)
+    *   [Examples](#examples-128)
+*   [ParametersMustBeArrayError](#parametersmustbearrayerror)
+    *   [Examples](#examples-129)
+*   [ParsersArrayMustContainParsersError](#parsersarraymustcontainparserserror)
+    *   [Examples](#examples-130)
+*   [toStringTag](#tostringtag-3)
     *   [Examples](#examples-131)
+*   [hasInstance](#hasinstance)
+    *   [Parameters](#parameters-153)
+    *   [Examples](#examples-132)
+*   [response](#response)
+    *   [Parameters](#parameters-154)
+    *   [Examples](#examples-133)
 *   [ResponseType](#responsetype)
     *   [Properties](#properties)
-    *   [Examples](#examples-132)
+    *   [Examples](#examples-134)
 *   [nameFromType](#namefromtype)
-    *   [Parameters](#parameters-152)
-    *   [Examples](#examples-133)
+    *   [Parameters](#parameters-155)
+    *   [Examples](#examples-135)
 *   [typeNames](#typenames)
     *   [Properties](#properties-1)
-    *   [Examples](#examples-134)
+    *   [Examples](#examples-136)
 *   [type](#type)
     *   [Properties](#properties-2)
-    *   [Examples](#examples-135)
+    *   [Examples](#examples-137)
 *   [apply](#apply)
 *   [construct](#construct)
 *   [defineProperty](#defineproperty)
@@ -633,112 +641,112 @@ import { FunctionExtensions } from '@nejs/basic-extensions';
 *   [set](#set-2)
 *   [setPrototypeOf](#setprototypeof)
 *   [RefMap](#refmap)
-    *   [Parameters](#parameters-153)
+    *   [Parameters](#parameters-156)
     *   [objectifying](#objectifying)
-        *   [Parameters](#parameters-154)
+        *   [Parameters](#parameters-157)
     *   [asObject](#asobject)
     *   [objectifyValues](#objectifyvalues)
     *   [objectifyValues](#objectifyvalues-1)
-        *   [Parameters](#parameters-155)
-    *   [get](#get-3)
-        *   [Parameters](#parameters-156)
-    *   [set](#set-3)
-        *   [Parameters](#parameters-157)
-    *   [setAll](#setall)
         *   [Parameters](#parameters-158)
+    *   [get](#get-3)
+        *   [Parameters](#parameters-159)
+    *   [set](#set-3)
+        *   [Parameters](#parameters-160)
+    *   [setAll](#setall)
+        *   [Parameters](#parameters-161)
     *   [clean](#clean)
     *   [entries](#entries-1)
-        *   [Parameters](#parameters-159)
+        *   [Parameters](#parameters-162)
     *   [forEach](#foreach)
-        *   [Parameters](#parameters-160)
+        *   [Parameters](#parameters-163)
     *   [values](#values-1)
     *   [hasValue](#hasvalue)
-        *   [Parameters](#parameters-161)
-    *   [filter](#filter)
-        *   [Parameters](#parameters-162)
-    *   [find](#find-1)
-        *   [Parameters](#parameters-163)
-    *   [map](#map-1)
         *   [Parameters](#parameters-164)
+    *   [filter](#filter)
+        *   [Parameters](#parameters-165)
+    *   [find](#find-1)
+        *   [Parameters](#parameters-166)
+    *   [map](#map-1)
+        *   [Parameters](#parameters-167)
     *   [iterator](#iterator-3)
     *   [toStringTag](#tostringtag-4)
 *   [isValidReference](#isvalidreference)
-    *   [Parameters](#parameters-165)
+    *   [Parameters](#parameters-168)
 *   [RefSet](#refset)
     *   [objectifying](#objectifying-1)
-        *   [Parameters](#parameters-166)
+        *   [Parameters](#parameters-169)
     *   [objectifyValues](#objectifyvalues-2)
     *   [objectifyValues](#objectifyvalues-3)
-        *   [Parameters](#parameters-167)
+        *   [Parameters](#parameters-170)
     *   [add](#add)
-        *   [Parameters](#parameters-168)
+        *   [Parameters](#parameters-171)
     *   [addAll](#addall)
-        *   [Parameters](#parameters-169)
+        *   [Parameters](#parameters-172)
     *   [clean](#clean-1)
     *   [entries](#entries-2)
-        *   [Parameters](#parameters-170)
+        *   [Parameters](#parameters-173)
     *   [forEach](#foreach-1)
-        *   [Parameters](#parameters-171)
+        *   [Parameters](#parameters-174)
     *   [values](#values-2)
     *   [keys](#keys-1)
     *   [has](#has-1)
-        *   [Parameters](#parameters-172)
-    *   [contains](#contains-2)
-        *   [Parameters](#parameters-173)
-    *   [filter](#filter-1)
-        *   [Parameters](#parameters-174)
-    *   [find](#find-2)
         *   [Parameters](#parameters-175)
-    *   [map](#map-2)
+    *   [contains](#contains-2)
         *   [Parameters](#parameters-176)
+    *   [filter](#filter-1)
+        *   [Parameters](#parameters-177)
+    *   [find](#find-2)
+        *   [Parameters](#parameters-178)
+    *   [map](#map-2)
+        *   [Parameters](#parameters-179)
     *   [toStringTag](#tostringtag-5)
 *   [Symkeys](#symkeys)
-    *   [Parameters](#parameters-177)
-    *   [Examples](#examples-136)
+    *   [Parameters](#parameters-180)
+    *   [Examples](#examples-138)
     *   [add](#add-1)
-        *   [Parameters](#parameters-178)
-        *   [Examples](#examples-137)
-    *   [data](#data-3)
-        *   [Parameters](#parameters-179)
-        *   [Examples](#examples-138)
-    *   [deleteData](#deletedata)
-        *   [Parameters](#parameters-180)
-        *   [Examples](#examples-139)
-    *   [hasData](#hasdata)
         *   [Parameters](#parameters-181)
-        *   [Examples](#examples-140)
-    *   [setData](#setdata)
+        *   [Examples](#examples-139)
+    *   [data](#data-3)
         *   [Parameters](#parameters-182)
-        *   [Examples](#examples-141)
-    *   [token](#token)
+        *   [Examples](#examples-140)
+    *   [deleteData](#deletedata)
         *   [Parameters](#parameters-183)
-        *   [Examples](#examples-142)
-    *   [separator](#separator)
-        *   [Examples](#examples-143)
-    *   [symbols](#symbols)
-        *   [Examples](#examples-144)
-    *   [calculateName](#calculatename)
+        *   [Examples](#examples-141)
+    *   [hasData](#hasdata)
         *   [Parameters](#parameters-184)
-        *   [Examples](#examples-145)
-    *   [isSymkey](#issymkey)
+        *   [Examples](#examples-142)
+    *   [setData](#setdata)
         *   [Parameters](#parameters-185)
+        *   [Examples](#examples-143)
+    *   [token](#token)
+        *   [Parameters](#parameters-186)
+        *   [Examples](#examples-144)
+    *   [separator](#separator)
+        *   [Examples](#examples-145)
+    *   [symbols](#symbols)
         *   [Examples](#examples-146)
-    *   [token](#token-1)
+    *   [calculateName](#calculatename)
+        *   [Parameters](#parameters-187)
         *   [Examples](#examples-147)
+    *   [isSymkey](#issymkey)
+        *   [Parameters](#parameters-188)
+        *   [Examples](#examples-148)
+    *   [token](#token-1)
+        *   [Examples](#examples-149)
     *   [kDataKey](#kdatakey)
     *   [kPrototype](#kprototype)
     *   [kDomain](#kdomain)
-        *   [Examples](#examples-148)
+        *   [Examples](#examples-150)
     *   [kSeparator](#kseparator)
-        *   [Examples](#examples-149)
+        *   [Examples](#examples-151)
 *   [AsyncIterable](#asynciterable)
-    *   [Parameters](#parameters-186)
+    *   [Parameters](#parameters-189)
     *   [asyncIterator](#asynciterator)
     *   [toStringTag](#tostringtag-6)
     *   [isAsyncIterable](#isasynciterable)
-        *   [Parameters](#parameters-187)
+        *   [Parameters](#parameters-190)
 *   [AsyncIterator](#asynciterator-1)
-    *   [Parameters](#parameters-188)
+    *   [Parameters](#parameters-191)
     *   [asArray](#asarray-2)
     *   [asyncIterable](#asynciterable-1)
     *   [next](#next-1)
@@ -2111,6 +2119,7 @@ returns true. If no potential JSON object is found, the method returns false.
 #### Parameters
 
 *   `string` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The string to check for potential JSON objects.
+*   `detail`   (optional, default `false`)
 
 #### Examples
 
@@ -4641,6 +4650,86 @@ console.log(forcedGreen); // Output: "rgba(58,255,76,0.50)"
 
 Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** A random RGBA color code.
 
+#### sgr
+
+Applies Select Graphic Rendition (SGR) parameters to a given message for
+styling in terminal environments. This function allows for the dynamic
+styling of text output using ANSI escape codes. It supports a variety of
+modes such as color, brightness, and text decorations like bold or underline.
+
+##### Parameters
+
+*   `message` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The message to be styled.
+*   `useModes` **...[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** A series of strings representing the desired
+    styling modes. Modes can include colors (e.g., 'red', 'blue'), brightness
+    ('bright'), foreground/background ('fg', 'bg'), and text decorations
+    ('bold', 'underline'). Modes can be combined in a single string using
+    commas or passed as separate arguments.Colors:    'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'Color Specifiers:    'fg' -> foreground   |  'bg' -> background  |  'bright' -> bright colorsModes:    'blink' or 'k' | 'conceal' or 'c' | 'italics' or 'i'  | 'strike' or 's'
+        'bold' or 'b'  | 'dim' or 'd'     | 'negative' or 'n' | 'underline' or 'u'Examples:*   `sgr('Hello', 'red')` applies red color to 'Hello'.
+    *   `sgr('World', 'green,bold')` applies green color and bold styling
+        to 'World'.
+    *   `sgr('Example', 'bluebgbright')` applies bright blue
+        background color.Short hand syntax is also allowed:*   `sgr('hello', 'biu')` applies bold, italics and underline
+    *   `sgr('hello', 'bi,redfg')` applies bold, italics and red foregroundAs a bonus, there is a secret getter applied to the return string that
+    allows you to invoke `sgr(...).show` to automatically log the output to
+    `console.log`. This is done by wrapping the output string in `Object()`
+    to make it a `String` instance and then adding the property descriptor.
+    A custom `Symbol` is applied to make it evaluate in nodejs as though it
+    were a normal string. To strip the extras, wrap the output in `String()`
+
+Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The message wrapped in ANSI escape codes corresponding
+to the specified modes. The returned string, when printed to a terminal,
+displays the styled message. Additional properties are attached to the
+result for utility purposes, such as 'show' for immediate console output.
+
+#### wrap
+
+Wraps an object's properties into a formatted string.
+
+This method takes an object and a set of options to format the
+object's properties into a string. It allows customization of
+indentation, line endings, maximum line length, and more.
+
+##### Parameters
+
+*   `objectOrLines` &#x20;
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** The formatting options. (optional, default `{}`)
+
+    *   `options.indent` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The number of indentation
+        characters to use. (optional, default `2`)
+    *   `options.indentCharacter` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The character to use
+        for indentation. (optional, default `' '`)
+    *   `options.inspector` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** The inspector to use for retrieving object properties. (optional, default `[Object,'getOwnPropertyNames']`)
+    *   `options.lineEnding` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The line ending character. (optional, default `'\n'`)
+    *   `options.maxLen` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The maximum line length. (optional, default `78`)
+    *   `options.perLine` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** A function to apply
+        per line of output. (optional, default `undefined`)
+    *   `options.perLinePerProperty` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** A function
+        to apply per property per line of output. (optional, default `undefined`)
+    *   `options.preProcess` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** A function to
+        preprocess the object's properties. (optional, default `undefined`)
+    *   `options.preReturn` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** A function to apply
+        to the final output before returning. (optional, default `undefined`)
+    *   `options.separator` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The separator to use
+        between properties. (optional, default `', '`)
+*   `object` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** The object to wrap. (optional, default `globalThis`)
+
+##### Examples
+
+```javascript
+const obj = { a: 1, b: 2, c: 3 }
+const wrapped = StringExtensions.wrap(obj, { maxLen: 20 })
+console.log(wrapped)
+// Output:
+// {
+//   a: 1,
+//   b: 2,
+//   c: 3
+// }
+```
+
+Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The formatted string representation of the object.
+
 ### isString
 
 Determines if the current object is a string.
@@ -4756,35 +4845,6 @@ and retrieving the string tag of an object. These methods are useful for
 enhancing the capabilities of the standard `Symbol` class with additional
 utility functions.
 
-#### withData
-
-Creates a new Symbol with the given name and optional data. If data
-is provided, it will be stringified and appended to the symbol's
-name. This method is useful for creating unique symbols that carry
-additional metadata.
-
-##### Parameters
-
-*   `name` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the symbol.
-*   `data` **any?** Optional data to be associated with the symbol.
-
-##### Examples
-
-```javascript
-const symbolWithData = Symbol.withData('mySymbol', { foo: 'bar' })
-console.log(symbolWithData.toString())
-// Output: "Symbol(mySymbol {"foo":"bar"})"
-```
-
-```javascript
-const symbolWithoutData = Symbol.withData('mySymbol')
-console.log(symbolWithoutData.toString())
-// Output: "Symbol(mySymbol)"
-```
-
-Returns **[symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** A new symbol created with Symbol.for(), using the
-provided name and stringified data (if provided).
-
 #### isSymbol
 
 The `isSymbol` method does exactly what one would it expect. It returns
@@ -4867,6 +4927,35 @@ Symbol.keys[kOriginal] = [Object.prototype, Array.prototype]
 kOriginal.data.original = Object.prototype           // ...and...
 kOriginal.data = [Object.prototype, Array.prototype] // ...both work
 ```
+
+#### withData
+
+Creates a new Symbol with the given name and optional data. If data
+is provided, it will be stringified and appended to the symbol's
+name. This method is useful for creating unique symbols that carry
+additional metadata.
+
+##### Parameters
+
+*   `name` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the symbol.
+*   `data` **any?** Optional data to be associated with the symbol.
+
+##### Examples
+
+```javascript
+const symbolWithData = Symbol.withData('mySymbol', { foo: 'bar' })
+console.log(symbolWithData.toString())
+// Output: "Symbol(mySymbol {"foo":"bar"})"
+```
+
+```javascript
+const symbolWithoutData = Symbol.withData('mySymbol')
+console.log(symbolWithoutData.toString())
+// Output: "Symbol(mySymbol)"
+```
+
+Returns **[symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** A new symbol created with Symbol.for(), using the
+provided name and stringified data (if provided).
 
 ### instance
 
@@ -4999,6 +5088,38 @@ console.log(sym.mightHaveEmbeddedJSON) // Output: false
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Returns true if the symbol might have embedded
 JSON, false otherwise.
+
+### for
+
+Custom inspect method for Node.js util.inspect.
+
+NOTE: this will only apply if looking at an instance of Symbol,
+sadly; {@see SymbolPrototypeExtensions.instance}
+
+This method is used by Node.js util.inspect to provide a custom
+representation of the symbol when inspected. It checks if the
+symbol's description might contain JSON data and if so, it
+truncates the JSON data in the description to a maximum of 30
+characters and formats the output with colors using the `sgr`
+function from the `String` object.
+
+#### Parameters
+
+*   `depth` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The current depth of the recursive
+    inspection.
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** The options object passed to
+    util.inspect.
+*   `inspect` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The original util.inspect function.
+
+#### Examples
+
+```javascript
+const sym = Symbol.for('fun {"name":"John Doe"}')
+console.log(util.inspect(sym))
+// Output: Symbol.for(fun {"name":"John ...hn Doe"})
+```
+
+Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The formatted representation of the symbol.
 
 ### Deferred
 

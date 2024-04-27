@@ -181,18 +181,27 @@ export const ObjectExtensions = new Patch(Object, {
       return Object.defineProperty(object, key, { ...properties, get, set })
     },
 
+    addAccessor(to, key, getter, setter, storage) {
+      const store = storage ?? (!getter && !setter) ? true : undefined;
+      return this.add({ to, key, get: getter, set: setter, storage: store })
+    },
+
+    addData(to, key, value) {
+      return this.add({ to, key, value })
+    },
+
     add(...args) {
       const { isDescriptor } = Descriptor
       const { isObject: isObj } = this
       const { kDescriptorStore } = this
 
-      let toObject, key, value, _get, _set, storage, storageKey
+      let obj, key, value, _get, _set, storage, storageKey
       let _type, _flag, _desc
 
       // Check to see if we received multiple arguments or an object
       if (args.length && isObj(args[0])) {
         ({
-          toObject: obj,
+          to: obj,
           key,
           value,
           get: _get,
@@ -206,7 +215,7 @@ export const ObjectExtensions = new Patch(Object, {
       }
       else if (args.length > 1) {
         ([
-          toObject,
+          to,
           _type,
           key,
           getOrValue,
@@ -217,12 +226,18 @@ export const ObjectExtensions = new Patch(Object, {
           _desc,
         ] = args)
 
+        obj = to
         _type = (
           ['accessor', 'data'].includes(_type.toLowerCase())
           ? _type.toLowerCase() : 'data'
         )
         _get = _type === 'accessor' ? getOrValue : undefined
         _value = _type === 'data' ? getOrValue : undefined
+      }
+
+      if (!this.isObject(obj)) {
+        console.warn('Object.add() must receive an object for `toObject`')
+        return obj;
       }
 
       const more = isDescriptor(_desc) ? _desc : {}
@@ -250,7 +265,7 @@ export const ObjectExtensions = new Patch(Object, {
           }
           // store should be defined by here: object or undefined
 
-          if (!get && !set && makeStore) {
+          if ((!get && !set) && makeStore) {
             // being lazy here, someone has defined we make an accessor but
             // wants the default accessor behaviors with an associated store
             // made by us.
@@ -261,11 +276,11 @@ export const ObjectExtensions = new Patch(Object, {
               writable: true,
             })
 
-            get = () => this[kDescriptorStore].data[storeKey]
+            get = () => this[kDescriptorStore]?.data?.[storeKey]
             set = (value) => { this[kDescriptorStore].data[storeKey] = value }
           }
 
-          else if (get.length && set.length > 1 && store) {
+          else if (get?.length && set?.length > 1 && store) {
             // if we received a get or set that takes more arguments than
             // expected, assume the last argument should be the store variable
             // so we execute the supplied function with the storage and its
