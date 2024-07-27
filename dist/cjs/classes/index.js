@@ -30,6 +30,8 @@ const param_parser_js_1 = require("./param.parser.js");
 __exportStar(require("./param.parser.js"), exports);
 const pluggable_proxy_js_1 = require("./pluggable.proxy.js");
 __exportStar(require("./pluggable.proxy.js"), exports);
+const property_js_1 = require("./property.js");
+__exportStar(require("./property.js"), exports);
 const refmap_js_1 = require("./refmap.js");
 __exportStar(require("./refmap.js"), exports);
 const refset_js_1 = require("./refset.js");
@@ -49,6 +51,7 @@ exports.NewClassesExtension = new extension_1.Patch(globalThis, {
     ParamParser: param_parser_js_1.ParamParser,
     PluggableProxy: pluggable_proxy_js_1.PluggableProxy,
     ProxyHandler: pluggable_proxy_js_1.ProxyHandler,
+    Property: property_js_1.Property,
     RefMap: refmap_js_1.RefMap,
     RefSet: refset_js_1.RefSet,
     Symkeys: symkeys_js_1.Symkeys,

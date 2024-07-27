@@ -16,6 +16,7 @@ import { DescriptorExtensions, Descriptor } from './classes/descriptor.js';
 import { IntrospectorExtensions } from './classes/introspector.js';
 import { IteratorExtensions, IterableExtensions } from './classes/iterable.js';
 import { ParamParserExtensions } from './classes/param.parser.js';
+import { PropertyExtensions } from './classes/property.js';
 import { PluggableProxyExtensions, ProxyHandlerExtensions, PluggableProxyExtensionSet } from './classes/pluggable.proxy.js';
 import { RefMapExtensions } from './classes/refmap.js';
 import { RefSetExtensions } from './classes/refset.js';
@@ -62,6 +63,7 @@ const Extensions = {
     [ParamParserExtensions.key]: ParamParserExtensions,
     [PluggableProxyExtensions.key]: PluggableProxyExtensions,
     [ProxyHandlerExtensions.key]: ProxyHandlerExtensions,
+    [PropertyExtensions.key]: PropertyExtensions,
     [RefMapExtensions.key]: RefMapExtensions,
     [RefSetExtensions.key]: RefSetExtensions,
     [SymkeysExtension.key]: SymkeysExtension,

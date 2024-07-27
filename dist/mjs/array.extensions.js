@@ -244,6 +244,26 @@ export const ArrayPrototypeExtensions = new Patch(Array.prototype, {
         get last() {
             return this[this.length - 1];
         },
+        /**
+         * A getter that returns a new array containing only truthy elements.
+         * Filters out falsy values like null, undefined, 0, false, NaN, and ''.
+         * Useful for quickly removing falsy values from an array.
+         *
+         * @returns {Array} A new array with only truthy elements.
+         */
+        get onlyTruthy() {
+            return this.filter(truthy => !!truthy);
+        },
+        /**
+         * A getter that returns a new array containing only falsy elements.
+         * Keeps falsy values like null, undefined, 0, false, NaN, and ''.
+         * Useful for isolating falsy values in an array for further processing.
+         *
+         * @returns {Array} A new array with only falsy elements.
+         */
+        get onlyFalsy() {
+            return this.filter(falsy => !!!falsy);
+        },
         // expected usage:
         // function example(name, age) {
         //   const variants = [{name}, {age}].variants()

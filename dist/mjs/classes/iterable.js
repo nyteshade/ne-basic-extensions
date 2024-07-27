@@ -193,6 +193,70 @@ export class Iterator {
      * @private
      */
     #iterator = null;
+    /**
+     * Creates an Iterator for the keys of the given object.
+     *
+     * @note alternatives to keyFetcher might be `Reflect.ownKeys` or even
+     * `Object.keys`. Each type of fetcher has their own requirements but
+     * any function that takes an object and returns keys will suffice.
+     *
+     * @param {Object} object - The object whose keys will be iterated.
+     * @param {Function} [mapEach] - Optional function to map each key.
+     * @param {Function} [keyFetcher=Object.getOwnPropertyNames] - Function to
+     * fetch keys from the object. Defaults to Object.getOwnPropertyNames.
+     * @returns {Iterator} An Iterator instance containing the object's keys.
+     */
+    static keys(object, mapEach, keyFetcher) {
+        keyFetcher ??= Object.getOwnPropertyNames;
+        const keys = keyFetcher(object);
+        return new Iterator(keys, mapEach);
+    }
+    /**
+     * Creates an Iterator for the entries of the given object.
+     *
+     * @note alternatives to keyFetcher might be `Reflect.ownKeys` or even
+     * `Object.keys`. Each type of fetcher has their own requirements but
+     * any function that takes an object and returns keys will suffice.
+     *
+     * @param {Object} object - The object whose entries will be iterated.
+     * @param {Function} [mapEach] - Optional function to map each entry.
+     * @param {Function} [keyFetcher=Object.getOwnPropertyNames] - Function to
+     * fetch keys from the object. Defaults to Object.getOwnPropertyNames.
+     * @returns {Iterator} An Iterator instance containing the object's entries.
+     */
+    static entries(object, mapEach, keyFetcher) {
+        keyFetcher ??= Object.getOwnPropertyNames;
+        const keys = keyFetcher(object);
+        const entries = [];
+        for (const key of keys) {
+            entries.push([key, object[key]]);
+        }
+        return new Iterator(entries, mapEach);
+    }
+    /**
+     * Creates an Iterator for the property descriptors of the given object.
+     *
+     * @note alternatives to keyFetcher might be `Reflect.ownKeys` or even
+     * `Object.keys`. Each type of fetcher has their own requirements but
+     * any function that takes an object and returns keys will suffice.
+     *
+     * @param {Object} object - The object whose descriptors will be iterated.
+     * @param {Function} [mapEach] - Optional function to map each descriptor
+     * entry.
+     * @param {Function} [keyFetcher=Object.getOwnPropertyNames] - Function to
+     * fetch keys from the object. Defaults to Object.getOwnPropertyNames.
+     * @returns {Iterator} An Iterator instance containing entries of [key,
+     * descriptor] pairs.
+     */
+    static descriptors(object, mapEach, keyFetcher) {
+        keyFetcher ??= Object.getOwnPropertyNames;
+        const keys = keyFetcher(object);
+        const entries = [];
+        for (const key of keys) {
+            entries.push([key, Object.getOwnPropertyDescriptor(object, key)]);
+        }
+        return new Iterator(entries, mapEach);
+    }
 }
 export const IterableExtensions = new Extension(Iterable);
 export const IteratorExtensions = new Extension(Iterator);

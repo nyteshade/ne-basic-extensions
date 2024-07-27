@@ -1,6 +1,7 @@
 import { Patch } from '@nejs/extension';
 import { SymbolExtensions } from './symbol.extensions.js';
 import { Descriptor } from './classes/descriptor.js';
+import { Property } from './classes/property.js';
 const { keys: symkeys } = SymbolExtensions.patches;
 // Avoid circular dependencies; rewrite here for brevity
 const isFn = o => typeof o === 'function' || o instanceof Function;
@@ -727,6 +728,35 @@ export const ObjectExtensions = new Patch(Object, {
             }
             return result;
         },
+        withProperties(prototype, ...properties) {
+            const props = properties.filter(p => p instanceof Property);
+            const possible = properties.filter(p => Array.isArray(p));
+            if (possible.length) {
+                for (const [key, descriptorOrDataOrAccessorArgs, ...rest] of possible) {
+                    // if arg[1] is a descriptor
+                    if (Property.is.descriptor(descriptorOrDataOrAccessorArgs)) {
+                        props.push(new Property(key, descriptorOrDataOrAccessorArgs));
+                    }
+                    else {
+                        const { get, set } = descriptorOrDataOrAccessorArgs;
+                        const args = [key, descriptorOrDataOrAccessorArgs, ...rest];
+                        if (get || set) {
+                            props.push(Property.accessor(...args));
+                        }
+                        else {
+                            props.push(Property.data(...args));
+                        }
+                    }
+                }
+            }
+            const object = Object.create(prototype ?? Object.prototype);
+            const sorted = props.toSorted((a, b) => a.key < b.key ? -1 : (a.key > b.key ? 1 : 0));
+            for (const property of sorted) {
+                property.apply(object);
+            }
+            Property.data(Symbol.for('properties'), sorted).apply(object);
+            return object;
+        }
     },
 });
 const { isObject: pIsObject, ifObject: pIfObject, isNullDefined: pIsNullDefined, ifNullDefined: pIfNullDefined, isPrimitive: pIsPrimitive, ifPrimitive: pIfPrimitive, isValidKey: pIsValidKey, ifValidKey: pIfValidKey, hasStringTag: pHasStringTag, getStringTag: pGetStringTag, stripTo: pStripTo, } = ObjectExtensions.patches;

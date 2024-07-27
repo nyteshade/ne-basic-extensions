@@ -66,6 +66,50 @@ export class Iterable {
  */
 export class Iterator {
     /**
+     * Creates an Iterator for the keys of the given object.
+     *
+     * @note alternatives to keyFetcher might be `Reflect.ownKeys` or even
+     * `Object.keys`. Each type of fetcher has their own requirements but
+     * any function that takes an object and returns keys will suffice.
+     *
+     * @param {Object} object - The object whose keys will be iterated.
+     * @param {Function} [mapEach] - Optional function to map each key.
+     * @param {Function} [keyFetcher=Object.getOwnPropertyNames] - Function to
+     * fetch keys from the object. Defaults to Object.getOwnPropertyNames.
+     * @returns {Iterator} An Iterator instance containing the object's keys.
+     */
+    static keys(object: Object, mapEach?: Function | undefined, keyFetcher?: Function | undefined): Iterator;
+    /**
+     * Creates an Iterator for the entries of the given object.
+     *
+     * @note alternatives to keyFetcher might be `Reflect.ownKeys` or even
+     * `Object.keys`. Each type of fetcher has their own requirements but
+     * any function that takes an object and returns keys will suffice.
+     *
+     * @param {Object} object - The object whose entries will be iterated.
+     * @param {Function} [mapEach] - Optional function to map each entry.
+     * @param {Function} [keyFetcher=Object.getOwnPropertyNames] - Function to
+     * fetch keys from the object. Defaults to Object.getOwnPropertyNames.
+     * @returns {Iterator} An Iterator instance containing the object's entries.
+     */
+    static entries(object: Object, mapEach?: Function | undefined, keyFetcher?: Function | undefined): Iterator;
+    /**
+     * Creates an Iterator for the property descriptors of the given object.
+     *
+     * @note alternatives to keyFetcher might be `Reflect.ownKeys` or even
+     * `Object.keys`. Each type of fetcher has their own requirements but
+     * any function that takes an object and returns keys will suffice.
+     *
+     * @param {Object} object - The object whose descriptors will be iterated.
+     * @param {Function} [mapEach] - Optional function to map each descriptor
+     * entry.
+     * @param {Function} [keyFetcher=Object.getOwnPropertyNames] - Function to
+     * fetch keys from the object. Defaults to Object.getOwnPropertyNames.
+     * @returns {Iterator} An Iterator instance containing entries of [key,
+     * descriptor] pairs.
+     */
+    static descriptors(object: Object, mapEach?: Function | undefined, keyFetcher?: Function | undefined): Iterator;
+    /**
      * Creates a new `Iterator` object instance.
      *
      * @param {object} iterable any object that has a `[Symbol.iterator]`

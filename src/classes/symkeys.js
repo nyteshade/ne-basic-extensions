@@ -175,7 +175,7 @@ export class Symkeys {
   token(forSymbol) {
     // Use a regular expression to match the token pattern in the symbol
     // description exists on symbol but our JS output target is too old
-    return /^.* \#(.*?)$/.exec(forSymbol).description?.[1];
+    return /^.* \#(.*?)$/.exec(forSymbol)?.description?.[1];
   }
 
   /**
@@ -386,7 +386,7 @@ export class Symkeys {
       return false
     }
 
-    return !!/^@.*? #\w+$/.exec(value.description)
+    return !!/^@.*? #\w+$/.exec(value?.description)
   }
 
   /**

@@ -162,7 +162,7 @@ export class Symkeys {
     token(forSymbol) {
         // Use a regular expression to match the token pattern in the symbol
         // description exists on symbol but our JS output target is too old
-        return /^.* \#(.*?)$/.exec(forSymbol).description?.[1];
+        return /^.* \#(.*?)$/.exec(forSymbol)?.description?.[1];
     }
     /**
      * Retrieves the separator used in the Symkeys instance.
@@ -347,7 +347,7 @@ export class Symkeys {
         if (!(typeof value === 'symbol' || value instanceof Symbol)) {
             return false;
         }
-        return !!/^@.*? #\w+$/.exec(value.description);
+        return !!/^@.*? #\w+$/.exec(value?.description);
     }
     /**
      * Generates a random token string.
