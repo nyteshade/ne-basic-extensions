@@ -13,6 +13,8 @@ import { ParamParser } from './param.parser.js';
 export * from './param.parser.js';
 import { PluggableProxy, ProxyHandler } from './pluggable.proxy.js';
 export * from './pluggable.proxy.js';
+import { Property, PropertyExtensions } from './property.js';
+export * from './property.js';
 import { RefMap } from './refmap.js';
 export * from './refmap.js';
 import { RefSet } from './refset.js';
@@ -32,6 +34,7 @@ export const NewClassesExtension = new Patch(globalThis, {
     ParamParser,
     PluggableProxy,
     ProxyHandler,
+    Property,
     RefMap,
     RefSet,
     Symkeys,

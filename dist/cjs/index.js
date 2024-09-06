@@ -20,6 +20,7 @@ const descriptor_js_1 = require("./classes/descriptor.js");
 const introspector_js_1 = require("./classes/introspector.js");
 const iterable_js_1 = require("./classes/iterable.js");
 const param_parser_js_1 = require("./classes/param.parser.js");
+const property_js_1 = require("./classes/property.js");
 const pluggable_proxy_js_1 = require("./classes/pluggable.proxy.js");
 const refmap_js_1 = require("./classes/refmap.js");
 const refset_js_1 = require("./classes/refset.js");
@@ -69,6 +70,7 @@ const Extensions = {
     [param_parser_js_1.ParamParserExtensions.key]: param_parser_js_1.ParamParserExtensions,
     [pluggable_proxy_js_1.PluggableProxyExtensions.key]: pluggable_proxy_js_1.PluggableProxyExtensions,
     [pluggable_proxy_js_1.ProxyHandlerExtensions.key]: pluggable_proxy_js_1.ProxyHandlerExtensions,
+    [property_js_1.PropertyExtensions.key]: property_js_1.PropertyExtensions,
     [refmap_js_1.RefMapExtensions.key]: refmap_js_1.RefMapExtensions,
     [refset_js_1.RefSetExtensions.key]: refset_js_1.RefSetExtensions,
     [symkeys_js_1.SymkeysExtension.key]: symkeys_js_1.SymkeysExtension,

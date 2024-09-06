@@ -5,6 +5,7 @@ export * from "./introspector.js";
 export * from "./iterable.js";
 export * from "./param.parser.js";
 export * from "./pluggable.proxy.js";
+export * from "./property.js";
 export * from "./refmap.js";
 export * from "./refset.js";
 export * from "./symkeys.js";

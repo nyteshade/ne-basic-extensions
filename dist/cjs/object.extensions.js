@@ -4,6 +4,7 @@ exports.copyObject = exports.ObjectPrototypeExtensions = exports.ObjectExtension
 const extension_1 = require("@nejs/extension");
 const symbol_extensions_js_1 = require("./symbol.extensions.js");
 const descriptor_js_1 = require("./classes/descriptor.js");
+const property_js_1 = require("./classes/property.js");
 const { keys: symkeys } = symbol_extensions_js_1.SymbolExtensions.patches;
 // Avoid circular dependencies; rewrite here for brevity
 const isFn = o => typeof o === 'function' || o instanceof Function;
@@ -730,6 +731,35 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
             }
             return result;
         },
+        withProperties(prototype, ...properties) {
+            const props = properties.filter(p => p instanceof property_js_1.Property);
+            const possible = properties.filter(p => Array.isArray(p));
+            if (possible.length) {
+                for (const [key, descriptorOrDataOrAccessorArgs, ...rest] of possible) {
+                    // if arg[1] is a descriptor
+                    if (property_js_1.Property.is.descriptor(descriptorOrDataOrAccessorArgs)) {
+                        props.push(new property_js_1.Property(key, descriptorOrDataOrAccessorArgs));
+                    }
+                    else {
+                        const { get, set } = descriptorOrDataOrAccessorArgs;
+                        const args = [key, descriptorOrDataOrAccessorArgs, ...rest];
+                        if (get || set) {
+                            props.push(property_js_1.Property.accessor(...args));
+                        }
+                        else {
+                            props.push(property_js_1.Property.data(...args));
+                        }
+                    }
+                }
+            }
+            const object = Object.create(prototype ?? Object.prototype);
+            const sorted = props.toSorted((a, b) => a.key < b.key ? -1 : (a.key > b.key ? 1 : 0));
+            for (const property of sorted) {
+                property.apply(object);
+            }
+            property_js_1.Property.data(Symbol.for('properties'), sorted).apply(object);
+            return object;
+        }
     },
 });
 const { isObject: pIsObject, ifObject: pIfObject, isNullDefined: pIsNullDefined, ifNullDefined: pIfNullDefined, isPrimitive: pIsPrimitive, ifPrimitive: pIfPrimitive, isValidKey: pIsValidKey, ifValidKey: pIfValidKey, hasStringTag: pHasStringTag, getStringTag: pGetStringTag, stripTo: pStripTo, } = exports.ObjectExtensions.patches;
