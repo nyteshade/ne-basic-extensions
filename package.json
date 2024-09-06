@@ -60,10 +60,10 @@
     "repl": "npm run build && node --no-warnings repl.bootstrap.js"
   },
   "type": "module",
-  "version": "2.9.17",
+  "version": "2.9.18",
   "dependencies": {
     "@nejs/extension": "^2.20.0",
     "zod": "^3.22.5"
   },
-  "browser": "dist/@nejs/basic-extensions.bundle.2.9.17.js"
+  "browser": "dist/@nejs/basic-extensions.bundle.2.9.18.js"
 }
