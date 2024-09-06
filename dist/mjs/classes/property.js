@@ -242,7 +242,6 @@ export class Property {
             }
         };
     }
-    #s;
     static {
         const storage = Object.assign(Object.create(null), {
             key: undefined,
@@ -259,21 +258,19 @@ export class Property {
                 },
             },
         });
-        basic_accessor(this.prototype, 'key', defaults.key, storage);
-        basic_accessor(this.prototype, 'meta', defaults.meta, storage);
+        basic_accessor(this.prototype, 'key', storage.key, storage);
+        basic_accessor(this.prototype, 'meta', storage.meta, storage);
     }
 }
 export const PropertyExtensions = new Extension(Property);
 function basic_accessor(prototype, key, initialValue, storage = {}) {
     storage[key] = initialValue;
-    Object.defineProperties(prototype, {
-        [key]: {
-            get() {
-                return storage[key];
-            },
-            set(value) {
-                storage[key] = value;
-            }
+    Object.defineProperty(prototype, key, {
+        get() {
+            return storage[key];
+        },
+        set(value) {
+            storage[key] = value;
         },
         enumerable: true,
         configurable: true,

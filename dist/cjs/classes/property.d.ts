@@ -81,7 +81,6 @@ export class Property {
         key: any;
         descriptor: any;
     }): string;
-    #private;
 }
 export const PropertyExtensions: Extension;
 import { Extension } from '@nejs/extension';
