@@ -1,6 +1,8 @@
 const { Patches } = require('../dist/cjs/index.js')
 const ObjectExtensions = Patches.get(Object)
 
+import { describe, beforeAll, afterAll, test, expect } from 'vitest';
+
 // Apply and revert the patch in the setup and teardown of the tests
 beforeAll(() => {
   ObjectExtensions.apply()

@@ -1,19 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.copyObject = exports.ObjectPrototypeExtensions = exports.ObjectExtensions = void 0;
+exports.ObjectPrototypeExtensions = exports.ObjectExtensions = void 0;
 const extension_1 = require("@nejs/extension");
 const symbol_extensions_js_1 = require("./symbol.extensions.js");
 const descriptor_js_1 = require("./classes/descriptor.js");
 const property_js_1 = require("./classes/property.js");
+const toolkit_js_1 = require("./utils/toolkit.js");
+const copy_object_js_1 = require("./utils/copy.object.js");
 const { keys: symkeys } = symbol_extensions_js_1.SymbolExtensions.patches;
-// Avoid circular dependencies; rewrite here for brevity
-const isFn = o => typeof o === 'function' || o instanceof Function;
-const isStr = o => typeof o === 'string' || o instanceof String;
-const isBool = o => typeof o === 'boolean';
-const isTrue = o => isBool(o) && o === true;
-const isTruthy = o => isTrue(!!o);
-const isFalse = o => isBool(o) && o === false;
-const isFalsy = o => isFalse(!!o);
 /**
  * `ObjectExtensions` is a constant that applies a patch to the global
  * `Object` constructor. This patch extends the `Object` with additional
@@ -28,159 +22,6 @@ const isFalsy = o => isFalse(!!o);
  */
 exports.ObjectExtensions = new extension_1.Patch(Object, {
     [extension_1.Patch.kMutablyHidden]: {
-        /**
-         * Creates a shallow copy of the provided object(s).
-         *
-         * This method uses the `copyObject` function with the `deep` parameter
-         * set to `false`, indicating a shallow copy. It takes a destination
-         * object and any number of source objects, and copies the properties
-         * from the source objects to the destination object. If a property
-         * already exists on the destination object, it will be overwritten.
-         *
-         * Note: This method does not copy nested objects or arrays. They are
-         * copied by reference, not by value. To create a deep copy, use the
-         * `deepCopy` method instead.
-         *
-         * @param {object} destination - The object to which properties will be
-         * copied.
-         * @param {...object} sources - The source object(s) from which
-         * properties will be copied.
-         * @returns {object} The destination object with the copied properties.
-         *
-         * @example
-         * const obj1 = { a: 1, b: 2 };
-         * const obj2 = { b: 3, c: 4 };
-         * const result = ObjectExtensions.copy(obj1, obj2);
-         * console.log(result); // Output: { a: 1, b: 3, c: 4 }
-         */
-        copy(destination, ...sources) {
-            return copyObject(false, destination, ...sources);
-        },
-        /**
-         * Creates a deep copy of the provided object(s).
-         *
-         * This method uses the `copyObject` function with the `deep` parameter
-         * set to `true`, indicating a deep copy. It takes a destination
-         * object and any number of source objects, and copies the properties
-         * from the source objects to the destination object. If a property
-         * already exists on the destination object, it will be overwritten.
-         *
-         * Note: This method copies nested objects or arrays by value, not by
-         * reference. To create a shallow copy, use the `copy` method instead.
-         *
-         * @param {object} destination - The object to which properties will be
-         * copied.
-         * @param {...object} sources - The source object(s) from which
-         * properties will be copied.
-         * @returns {object} The destination object with the copied properties.
-         *
-         * @example
-         * const obj1 = { a: 1, b: { c: 2 } };
-         * const obj2 = { b: { d: 3 }, e: 4 };
-         * const result = ObjectExtensions.deepCopy(obj1, obj2);
-         * console.log(result); // Output: { a: 1, b: { d: 3 }, e: 4 }
-         */
-        deepCopy(destination, ...sources) {
-            return copyObject(true, destination, ...sources);
-        },
-        /**
-         * A getter property that provides access to the definition types used
-         * for object property definitions. These types are used to control the
-         * visibility and mutability of object properties.
-         *
-         * @returns {Object} An object with getter properties for each definition
-         * type. The properties are:
-         * - `mutablyHidden`: A symbol representing a mutably hidden property,
-         *   non-enumerable, but configurable.
-         * - `mutablyVisible`: A symbol representing a mutably visible property,
-         *   enumerable, configurable
-         * - `immutablyHidden`: A symbol representing an immutably hidden property,
-         *   non-enumerable, non-configurable.
-         * - `immutablyVisible`: A symbol representing an immutably visible
-         *   property, enumerable, non-configurable.
-         *
-         * @example
-         * // Get the symbol for a mutably hidden property
-         * const hiddenSymbol = Object.definitionType.mutablyHidden;
-         *
-         * // Define a new mutably hidden property on an object
-         * Object.define(myObject, 'myProperty', myValue, hiddenSymbol);
-         */
-        get definitionType() {
-            return {
-                get mutablyHidden() { return extension_1.Patch.kMutablyHidden; },
-                get mutablyVisible() { return extension_1.Patch.kMutablyVisible; },
-                get immutablyHidden() { return extension_1.Patch.kImmutablyHidden; },
-                get immutablyVisible() { return extension_1.Patch.kImmutablyVisible; },
-            };
-        },
-        /**
-         * Defines a new property on an object with a specified value and
-         * visibility/mutability flag. The flag determines the visibility and
-         * mutability of the property. By default, the property is defined as
-         * mutably hidden.
-         *
-         * @param {object} object - The object on which to define the property.
-         * @param {string} key - The name of the property to be defined.
-         * @param {any} value - The value of the property to be defined.
-         * @param {symbol} [flag=Object.definitionType.mutablyHidden] - The
-         * visibility/mutability flag for the property. This should be one of the
-         * symbols available in `ObjectExtensions.definitionType`.
-         * @returns {object} The object with the newly defined property.
-         *
-         * @example
-         * // Define a new mutably hidden property on an object
-         * const myObject = {};
-         * const myValue = 'Hello, world!';
-         * const hiddenSymbol = Object.definitionType.mutablyHidden;
-         * Object.define(myObject, 'myProperty', myValue, hiddenSymbol);
-         * // myObject now has a mutably hidden property 'myProperty' with value
-         * // 'Hello, world!'
-         */
-        define(object, key, value, flag = Object.definitionType.mutablyHidden) {
-            const properties = extension_1.Patch.getDescriptorOverridesFromSymbol(flag);
-            return Object.defineProperty(object, key, { ...properties, value });
-        },
-        /**
-         * Defines a new accessor property on an object with specified getter and
-         * setter functions and a visibility/mutability flag. The flag determines
-         * the visibility and mutability of the property. By default, the property
-         * is defined as mutably hidden.
-         *
-         * @param {object} object - The object on which to define the property.
-         * @param {string} key - The name of the property to be defined.
-         * @param {function} get - The getter function for the property.
-         * @param {function} set - The setter function for the property.
-         * @param {symbol} [flag=Object.definitionType.mutablyHidden] - The
-         * visibility/mutability flag for the property. This should be one of the
-         * symbols available in `ObjectExtensions.definitionType`.
-         * @returns {object} The object with the newly defined property.
-         *
-         * @example
-         * // Define a new mutably hidden accessor property on an object
-         * const myObject = {};
-         * const hiddenSymbol = ObjectExtensions.definitionType.mutablyHidden;
-         * ObjectExtensions.defineAccessor(
-         *   myObject,
-         *   'myProperty',
-         *   () => 'Hello, world!',
-         *   (value) => console.log(`Setting value: ${value}`),
-         *   hiddenSymbol
-         * );
-         * // myObject now has a mutably hidden property 'myProperty' with getter
-         * // and setter functions
-         */
-        defineAccessor(object, key, get, set, flag = Object.definitionType.mutablyHidden) {
-            const properties = extension_1.Patch.getDescriptorOverridesFromSymbol(flag);
-            return Object.defineProperty(object, key, { ...properties, get, set });
-        },
-        addAccessor(to, key, getter, setter, storage) {
-            const store = storage ?? (!getter && !setter) ? true : undefined;
-            return this.add({ to, key, get: getter, set: setter, storage: store });
-        },
-        addData(to, key, value) {
-            return this.add({ to, key, value });
-        },
         add(...args) {
             const { isDescriptor } = descriptor_js_1.Descriptor;
             const { isObject: isObj } = this;
@@ -236,16 +77,16 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
                     let makeStore = false;
                     let get = _get;
                     let set = _set;
-                    if (!isTruthy(get) && !isFn(get)) {
+                    if (!toolkit_js_1.is.truthy(get) && !toolkit_js_1.is.function(get)) {
                         get = undefined;
                     }
-                    if (!isTruthy(set) && !isFn(set)) {
+                    if (!toolkit_js_1.is.truthy(set) && !toolkit_js_1.is.function(set)) {
                         set = undefined;
                     }
-                    if (isObj(store) || isTrue(store) || isFn(store)) {
-                        makeStore = isTrue(store);
-                        store = isFn(store) ? store() : store;
-                        store = isObj(store) ? store : (makeStore && {} || undefined);
+                    if (isObj(store) || toolkit_js_1.is.true(store) || toolkit_js_1.is.function(store)) {
+                        makeStore = toolkit_js_1.is.true(store);
+                        store = toolkit_js_1.is.fn(store) ? store() : store;
+                        store = toolkit_js_1.is.object(store) ? store : (makeStore && {} || undefined);
                     }
                     // store should be defined by here: object or undefined
                     if ((!get && !set) && makeStore) {
@@ -279,6 +120,159 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
                     break;
             }
             return obj;
+        },
+        addAccessor(to, key, getter, setter, storage) {
+            const store = storage ?? (!getter && !setter) ? true : undefined;
+            return this.add({ to, key, get: getter, set: setter, storage: store });
+        },
+        addData(to, key, value) {
+            return this.add({ to, key, value });
+        },
+        /**
+         * Creates a shallow copy of the provided object(s).
+         *
+         * This method uses the `copyObject` function with the `deep` parameter
+         * set to `false`, indicating a shallow copy. It takes a destination
+         * object and any number of source objects, and copies the properties
+         * from the source objects to the destination object. If a property
+         * already exists on the destination object, it will be overwritten.
+         *
+         * Note: This method does not copy nested objects or arrays. They are
+         * copied by reference, not by value. To create a deep copy, use the
+         * `deepCopy` method instead.
+         *
+         * @param {object} destination - The object to which properties will be
+         * copied.
+         * @param {...object} sources - The source object(s) from which
+         * properties will be copied.
+         * @returns {object} The destination object with the copied properties.
+         *
+         * @example
+         * const obj1 = { a: 1, b: 2 };
+         * const obj2 = { b: 3, c: 4 };
+         * const result = ObjectExtensions.copy(obj1, obj2);
+         * console.log(result); // Output: { a: 1, b: 3, c: 4 }
+         */
+        copy(destination, ...sources) {
+            return (0, copy_object_js_1.copyObject)(false, destination, ...sources);
+        },
+        /**
+         * Creates a deep copy of the provided object(s).
+         *
+         * This method uses the `copyObject` function with the `deep` parameter
+         * set to `true`, indicating a deep copy. It takes a destination
+         * object and any number of source objects, and copies the properties
+         * from the source objects to the destination object. If a property
+         * already exists on the destination object, it will be overwritten.
+         *
+         * Note: This method copies nested objects or arrays by value, not by
+         * reference. To create a shallow copy, use the `copy` method instead.
+         *
+         * @param {object} destination - The object to which properties will be
+         * copied.
+         * @param {...object} sources - The source object(s) from which
+         * properties will be copied.
+         * @returns {object} The destination object with the copied properties.
+         *
+         * @example
+         * const obj1 = { a: 1, b: { c: 2 } };
+         * const obj2 = { b: { d: 3 }, e: 4 };
+         * const result = ObjectExtensions.deepCopy(obj1, obj2);
+         * console.log(result); // Output: { a: 1, b: { d: 3 }, e: 4 }
+         */
+        deepCopy(destination, ...sources) {
+            return (0, copy_object_js_1.copyObject)(true, destination, ...sources);
+        },
+        /**
+         * Defines a new property on an object with a specified value and
+         * visibility/mutability flag. The flag determines the visibility and
+         * mutability of the property. By default, the property is defined as
+         * mutably hidden.
+         *
+         * @param {object} object - The object on which to define the property.
+         * @param {string} key - The name of the property to be defined.
+         * @param {any} value - The value of the property to be defined.
+         * @param {symbol} [flag=Object.definitionType.mutablyHidden] - The
+         * visibility/mutability flag for the property. This should be one of the
+         * symbols available in `ObjectExtensions.definitionType`.
+         * @returns {object} The object with the newly defined property.
+         *
+         * @example
+         * // Define a new mutably hidden property on an object
+         * const myObject = {};
+         * const myValue = 'Hello, world!';
+         * const hiddenSymbol = Object.definitionType.mutablyHidden;
+         * Object.define(myObject, 'myProperty', myValue, hiddenSymbol);
+         * // myObject now has a mutably hidden property 'myProperty' with value
+         * // 'Hello, world!'
+         */
+        define(object, key, value, flag = Object.definitionType.mutablyHidden) {
+            const properties = extension_1.Patch.getDescriptorOverridesFromSymbol(flag);
+            return Object.defineProperty(object, key, { ...properties, value });
+        },
+        /**
+         * A getter property that provides access to the definition types used
+         * for object property definitions. These types are used to control the
+         * visibility and mutability of object properties.
+         *
+         * @returns {Object} An object with getter properties for each definition
+         * type. The properties are:
+         * - `mutablyHidden`: A symbol representing a mutably hidden property,
+         *   non-enumerable, but configurable.
+         * - `mutablyVisible`: A symbol representing a mutably visible property,
+         *   enumerable, configurable
+         * - `immutablyHidden`: A symbol representing an immutably hidden property,
+         *   non-enumerable, non-configurable.
+         * - `immutablyVisible`: A symbol representing an immutably visible
+         *   property, enumerable, non-configurable.
+         *
+         * @example
+         * // Get the symbol for a mutably hidden property
+         * const hiddenSymbol = Object.definitionType.mutablyHidden;
+         *
+         * // Define a new mutably hidden property on an object
+         * Object.define(myObject, 'myProperty', myValue, hiddenSymbol);
+         */
+        get definitionType() {
+            return {
+                get mutablyHidden() { return extension_1.Patch.kMutablyHidden; },
+                get mutablyVisible() { return extension_1.Patch.kMutablyVisible; },
+                get immutablyHidden() { return extension_1.Patch.kImmutablyHidden; },
+                get immutablyVisible() { return extension_1.Patch.kImmutablyVisible; },
+            };
+        },
+        /**
+         * Defines a new accessor property on an object with specified getter and
+         * setter functions and a visibility/mutability flag. The flag determines
+         * the visibility and mutability of the property. By default, the property
+         * is defined as mutably hidden.
+         *
+         * @param {object} object - The object on which to define the property.
+         * @param {string} key - The name of the property to be defined.
+         * @param {function} get - The getter function for the property.
+         * @param {function} set - The setter function for the property.
+         * @param {symbol} [flag=Object.definitionType.mutablyHidden] - The
+         * visibility/mutability flag for the property. This should be one of the
+         * symbols available in `ObjectExtensions.definitionType`.
+         * @returns {object} The object with the newly defined property.
+         *
+         * @example
+         * // Define a new mutably hidden accessor property on an object
+         * const myObject = {};
+         * const hiddenSymbol = ObjectExtensions.definitionType.mutablyHidden;
+         * ObjectExtensions.defineAccessor(
+         *   myObject,
+         *   'myProperty',
+         *   () => 'Hello, world!',
+         *   (value) => console.log(`Setting value: ${value}`),
+         *   hiddenSymbol
+         * );
+         * // myObject now has a mutably hidden property 'myProperty' with getter
+         * // and setter functions
+         */
+        defineAccessor(object, key, get, set, flag = Object.definitionType.mutablyHidden) {
+            const properties = extension_1.Patch.getDescriptorOverridesFromSymbol(flag);
+            return Object.defineProperty(object, key, { ...properties, get, set });
         },
         /**
          * Creates a new object from an array of key-value pairs (entries), with an
@@ -314,10 +308,10 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
          * // with prototype { foo: 'bar' }
          */
         fromEntriesUsing(entries, prototype = Object.prototype, reducer = undefined) {
-            if (!Array.isArray(entries)) {
+            if (!toolkit_js_1.is.array(entries)) {
                 return undefined;
             }
-            const entriesToUse = entries.filter(entry => Array.isArray(entry) && entry.length >= 2);
+            const entriesToUse = entries.filter(entry => toolkit_js_1.is.array(entry) && entry.length >= 2);
             if (!entriesToUse.length) {
                 return undefined;
             }
@@ -377,7 +371,7 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
          * @returns {string} - The string tag of the object, indicating its type.
          */
         getStringTag(value, strict = false) {
-            if (Object.hasStringTag(value)) {
+            if (toolkit_js_1.has.stringTag(value)) {
                 return value[Symbol.toStringTag];
             }
             if (strict) {
@@ -426,7 +420,7 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
          * @returns true if the symbol is defined, false otherwise
          */
         hasStringTag(value) {
-            return Object.isObject(value) && Reflect.has(value, Symbol.toStringTag);
+            return toolkit_js_1.has.stringTag(value);
         },
         /**
          * The function checks if a value is either `undefined` or `null`.
@@ -437,7 +431,7 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
          * and `false` otherwise.
          */
         isNullDefined(value) {
-            return value === undefined || value === null;
+            return toolkit_js_1.is.nullish(value);
         },
         /**
          * The `ifNullDefined` function checks if a given value is either `null` or
@@ -472,7 +466,7 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
          * );
          */
         ifNullDefined(value, thenValue, elseValue) {
-            return isThenElse(this.isNullDefined(value), thenValue, elseValue);
+            return isThenElse(toolkit_js_1.is.nullish(value), thenValue, elseValue);
         },
         /**
          * Checks if the provided value is an object.
@@ -496,22 +490,31 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
          * console.log(isObject(null)); // Output: false
          */
         isObject(value) {
-            return value instanceof Object || value && typeof value === 'object';
+            return toolkit_js_1.is.object(value);
         },
         /**
-         * Determines if the provided value is an object. This method checks whether
-         * the value is an instance of `Object` or if its type is 'object'. It's a
-         * utility method for type-checking, ensuring that a value is an object
-         * before performing operations that are specific to objects.
+         * Executes a conditional function based on whether the provided value
+         * is an object or not. This method first checks if the value is an
+         * object using the `is.object` method from the toolkit. If it is, it
+         * returns the `thenValue`, otherwise it returns the `elseValue`.
          *
-         * @param {*} value - The value to be checked.
-         * @returns {boolean} - Returns `true` if the value is an object,
-         * otherwise `false`.
+         * @param {any} value - The value to be checked.
+         * @param {function | any} thenValue - The value to return if `value`
+         * is an object.
+         * @param {function | any} elseValue - The value to return if `value`
+         * is not an object.
+         * @returns {*} - Returns `thenValue` if the value is an object,
+         * otherwise `elseValue`.
+         *
+         * @example
+         * // returns 'Is Object'
+         * ifObject({}, 'Is Object', 'Not Object')
+         * // returns 'Not Object'
+         * ifObject(42, 'Is Object', 'Not Object')
+         */
+        ifObject(value, thenValue, elseValue) {
+            return isThenElse(toolkit_js_1.is.object(value), thenValue, elseValue);
         },
-        isObject(value) {
-          return value && (value instanceof Object || typeof value === 'object');
-        },
-    
         /**
          * Checks to see if the supplied value is a primitive value.
          *
@@ -520,23 +523,7 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
          * false otherwise.
          */
         isPrimitive(value) {
-            // Check for null as a special case because typeof null
-            // is 'object'
-            if (value === null) {
-                return true;
-            }
-            // Check for other primitives
-            switch (typeof value) {
-                case 'string':
-                case 'number':
-                case 'bigint':
-                case 'boolean':
-                case 'undefined':
-                case 'symbol':
-                    return true;
-                default:
-                    return false;
-            }
+            return toolkit_js_1.is.primitive(value);
         },
         /**
          * Executes a conditional function based on whether the provided value is
@@ -559,7 +546,7 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
          * ifPrimitive({a: 'hello'}, 1, 2)
          */
         ifPrimitive(value, thenValue, elseValue) {
-            return isThenElse(this.isPrimitive(value), thenValue, elseValue);
+            return isThenElse(toolkit_js_1.is.primitive(value), thenValue, elseValue);
         },
         /**
          * Checks if the given value is a valid key for an object. In JavaScript, a
@@ -759,7 +746,26 @@ exports.ObjectExtensions = new extension_1.Patch(Object, {
             }
             property_js_1.Property.data(Symbol.for('properties'), sorted).apply(object);
             return object;
-        }
+        },
+        /**
+         * Retrieves a toolkit object containing various utility functions
+         * for type checking and introspection.
+         *
+         * The toolkit includes many functions. It was designed to read as
+         * though the toolkit were assigned to the variable `it`.
+         *
+         * @example
+         * const is = ObjectExtensions.patches.toolkit
+         * console.log(is.object({})) // Output: true
+         * console.log(is.string('hello')) // Output: true
+         * console.log(is.number(42)) // Output: true
+         *
+         * @returns {object} The toolkit object containing various utility
+         * functions for type checking and introspection.
+         */
+        get toolkit() {
+            return { as: toolkit_js_1.as, has: toolkit_js_1.has, is: toolkit_js_1.is, si: toolkit_js_1.si };
+        },
     },
 });
 const { isObject: pIsObject, ifObject: pIfObject, isNullDefined: pIsNullDefined, ifNullDefined: pIfNullDefined, isPrimitive: pIsPrimitive, ifPrimitive: pIfPrimitive, isValidKey: pIsValidKey, ifValidKey: pIfValidKey, hasStringTag: pHasStringTag, getStringTag: pGetStringTag, stripTo: pStripTo, } = exports.ObjectExtensions.patches;
@@ -1073,86 +1079,13 @@ exports.ObjectPrototypeExtensions = new extension_1.Patch(Object.prototype, {
 // {@see globalThis.isThenElse}
 function isThenElse(bv, tv, ev) {
     if (arguments.length > 1) {
-        var _then = isFunction(tv) ? tv(bv) : tv;
+        var _then = toolkit_js_1.is.function(tv) ? tv(bv) : tv;
         if (arguments.length > 2) {
-            var _else = isFunction(ev) ? tv(bv) : ev;
+            var _else = toolkit_js_1.is.function(ev) ? tv(bv) : ev;
             return bv ? _then : _else;
         }
         return bv || _then;
     }
     return bv;
 }
-/**
- * Creates a deep or shallow copy of the provided source objects and merges
- * them into the destination object. The function uses a Set to keep track
- * of visited objects to avoid circular references.
- *
- * @function
- * @name copyObject
- * @param {boolean} deep - If true, performs a deep copy, otherwise performs
- * a shallow copy.
- * @param {object} destination - The object to which properties will be copied.
- * @param {...object} sources - The source object(s) from which properties
- * will be copied.
- * @returns {object} The destination object with the copied properties.
- *
- * @example
- * // Shallow copy
- * const obj1 = { a: 1, b: { c: 2 } };
- * const obj2 = { b: { d: 3 }, e: 4 };
- * const result = copyObject(false, obj1, obj2);
- * console.log(result); // Output: { a: 1, b: { d: 3 }, e: 4 }
- *
- * @example
- * // Deep copy
- * const obj1 = { a: 1, b: { c: 2 } };
- * const obj2 = { b: { d: 3 }, e: 4 };
- * const result = copyObject(true, obj1, obj2);
- * console.log(result); // Output: { a: 1, b: { c: 2, d: 3 }, e: 4 }
- */
-function copyObject(deep, destination, ...sources) {
-    const visited = new Set();
-    for (const source of sources) {
-        if (source === null || typeof source !== 'object' || visited.has(source)) {
-            continue;
-        }
-        visited.add(source);
-        const keys = Reflect.ownKeys(source);
-        for (const key of keys) {
-            let descriptor;
-            try {
-                descriptor = Object.getOwnPropertyDescriptor(source, key);
-            }
-            catch (err) {
-                console.warn(`Failed to get descriptor for key "${key}": ${err}`);
-                continue;
-            }
-            const isDataDesc = Reflect.has(descriptor, 'value');
-            const keyedValue = descriptor?.value;
-            const conditionsMet = [
-                isDataDesc,
-                keyedValue,
-                typeof keyedValue === 'object',
-                !visited.has(keyedValue)
-            ].every(condition => condition);
-            if (conditionsMet) {
-                visited.add(keyedValue);
-                const prototype = Object.getPrototypeOf(keyedValue);
-                const descriptors = Object.getOwnPropertyDescriptors(keyedValue);
-                const replacement = Object.create(prototype, descriptors);
-                descriptor.value = deep
-                    ? copyObject(deep, replacement, keyedValue)
-                    : replacement;
-            }
-            try {
-                Object.defineProperty(destination, key, descriptor);
-            }
-            catch (err) {
-                console.error(`Failed to define property "${key}": ${err}`);
-            }
-        }
-    }
-    return destination;
-}
-exports.copyObject = copyObject;
 //# sourceMappingURL=object.extensions.js.map

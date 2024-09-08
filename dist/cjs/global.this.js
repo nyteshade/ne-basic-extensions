@@ -1,12 +1,41 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GlobalFunctionsAndProps = void 0;
 const extension_1 = require("@nejs/extension");
 const function_extensions_js_1 = require("./function.extensions.js");
+const copyObject = __importStar(require("./utils/copy.object.js"));
+const toolkit_js_1 = require("./utils/toolkit.js");
 const { isClass, isFunction } = function_extensions_js_1.FunctionExtensions.patches;
 const CustomInspect = Symbol.for('nodejs.util.inspect.custom');
 exports.GlobalFunctionsAndProps = new extension_1.Patch(globalThis, {
     [extension_1.Patch.kMutablyHidden]: {
+        /** copyObject suite exports into global */
+        ...copyObject,
+        /** Type toolkit exports into global */
+        as: toolkit_js_1.as, has: toolkit_js_1.has, is: toolkit_js_1.is, si: toolkit_js_1.si,
         /**
          * The `isThenElse` function is a utility function that behaves like a
          * ternary operator. It takes three arguments: `boolValue`, `thenValue`,

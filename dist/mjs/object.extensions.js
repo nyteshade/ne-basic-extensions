@@ -2,15 +2,9 @@ import { Patch } from '@nejs/extension';
 import { SymbolExtensions } from './symbol.extensions.js';
 import { Descriptor } from './classes/descriptor.js';
 import { Property } from './classes/property.js';
+import { as, has, is, si } from './utils/toolkit.js';
+import { copyObject } from './utils/copy.object.js';
 const { keys: symkeys } = SymbolExtensions.patches;
-// Avoid circular dependencies; rewrite here for brevity
-const isFn = o => typeof o === 'function' || o instanceof Function;
-const isStr = o => typeof o === 'string' || o instanceof String;
-const isBool = o => typeof o === 'boolean';
-const isTrue = o => isBool(o) && o === true;
-const isTruthy = o => isTrue(!!o);
-const isFalse = o => isBool(o) && o === false;
-const isFalsy = o => isFalse(!!o);
 /**
  * `ObjectExtensions` is a constant that applies a patch to the global
  * `Object` constructor. This patch extends the `Object` with additional
@@ -25,6 +19,112 @@ const isFalsy = o => isFalse(!!o);
  */
 export const ObjectExtensions = new Patch(Object, {
     [Patch.kMutablyHidden]: {
+        add(...args) {
+            const { isDescriptor } = Descriptor;
+            const { isObject: isObj } = this;
+            const { kDescriptorStore } = this;
+            let obj, key, value, _get, _set, storage, storageKey;
+            let _type, _flag, _desc;
+            // Check to see if we received multiple arguments or an object
+            if (args.length && isObj(args[0])) {
+                ({
+                    to: obj,
+                    key,
+                    value,
+                    get: _get,
+                    set: _set,
+                    storage,
+                    storageKey,
+                    type: _type = ['accessor', 'data'][1],
+                    flag: _flag = undefined,
+                    descriptorBase: _desc = undefined,
+                } = args[0]);
+            }
+            else if (args.length > 1) {
+                ([
+                    to,
+                    _type,
+                    key,
+                    getOrValue,
+                    _set,
+                    storage,
+                    storageKey,
+                    _flag,
+                    _desc,
+                ] = args);
+                obj = to;
+                _type = (['accessor', 'data'].includes(_type.toLowerCase())
+                    ? _type.toLowerCase() : 'data');
+                _get = _type === 'accessor' ? getOrValue : undefined;
+                _value = _type === 'data' ? getOrValue : undefined;
+            }
+            if (!this.isObject(obj)) {
+                console.warn('Object.add() must receive an object for `toObject`');
+                return obj;
+            }
+            const more = isDescriptor(_desc) ? _desc : {};
+            const flag = _flag || Object.definitionType.mutablyVisible;
+            const props = { ...Patch.getDescriptorOverridesFromSymbol(flag), ...more };
+            const type = (['accessor', 'data'].includes(_type)
+                ? String(_type).toLowerCase() : 'data');
+            switch (type) {
+                case 'accessor':
+                    let store = storage;
+                    let storeKey = storageKey || key;
+                    let makeStore = false;
+                    let get = _get;
+                    let set = _set;
+                    if (!is.truthy(get) && !is.function(get)) {
+                        get = undefined;
+                    }
+                    if (!is.truthy(set) && !is.function(set)) {
+                        set = undefined;
+                    }
+                    if (isObj(store) || is.true(store) || is.function(store)) {
+                        makeStore = is.true(store);
+                        store = is.fn(store) ? store() : store;
+                        store = is.object(store) ? store : (makeStore && {} || undefined);
+                    }
+                    // store should be defined by here: object or undefined
+                    if ((!get && !set) && makeStore) {
+                        // being lazy here, someone has defined we make an accessor but
+                        // wants the default accessor behaviors with an associated store
+                        // made by us.
+                        Object.defineProperty(obj, kDescriptorStore, {
+                            value: symkeys.add('descriptor.store', store),
+                            configurable: true,
+                            enumerable: false,
+                            writable: true,
+                        });
+                        get = () => this[kDescriptorStore]?.data?.[storeKey];
+                        set = (value) => { this[kDescriptorStore].data[storeKey] = value; };
+                    }
+                    else if (get?.length && set?.length > 1 && store) {
+                        // if we received a get or set that takes more arguments than
+                        // expected, assume the last argument should be the store variable
+                        // so we execute the supplied function with the storage and its
+                        // results or byproducts are the result to the get/set we define
+                        const innerGet = get;
+                        const innerSet = set;
+                        get = () => innerGet(store);
+                        set = (value) => innerSet(value, store);
+                    }
+                    // get and set should be in their final state by here
+                    Object.defineProperty(obj, key, { ...props, get, set });
+                    break;
+                case 'data':
+                    Object.defineProperty(obj, key, { ...props, value });
+                    break;
+            }
+            return obj;
+        },
+        addAccessor(to, key, getter, setter, storage) {
+            const store = storage ?? (!getter && !setter) ? true : undefined;
+            return this.add({ to, key, get: getter, set: setter, storage: store });
+        },
+        addData(to, key, value) {
+            return this.add({ to, key, value });
+        },
         /**
          * Creates a shallow copy of the provided object(s).
          *
@@ -81,6 +181,33 @@ export const ObjectExtensions = new Patch(Object, {
             return copyObject(true, destination, ...sources);
         },
         /**
+         * Defines a new property on an object with a specified value and
+         * visibility/mutability flag. The flag determines the visibility and
+         * mutability of the property. By default, the property is defined as
+         * mutably hidden.
+         *
+         * @param {object} object - The object on which to define the property.
+         * @param {string} key - The name of the property to be defined.
+         * @param {any} value - The value of the property to be defined.
+         * @param {symbol} [flag=Object.definitionType.mutablyHidden] - The
+         * visibility/mutability flag for the property. This should be one of the
+         * symbols available in `ObjectExtensions.definitionType`.
+         * @returns {object} The object with the newly defined property.
+         *
+         * @example
+         * // Define a new mutably hidden property on an object
+         * const myObject = {};
+         * const myValue = 'Hello, world!';
+         * const hiddenSymbol = Object.definitionType.mutablyHidden;
+         * Object.define(myObject, 'myProperty', myValue, hiddenSymbol);
+         * // myObject now has a mutably hidden property 'myProperty' with value
+         * // 'Hello, world!'
+         */
+        define(object, key, value, flag = Object.definitionType.mutablyHidden) {
+            const properties = Patch.getDescriptorOverridesFromSymbol(flag);
+            return Object.defineProperty(object, key, { ...properties, value });
+        },
+        /**
          * A getter property that provides access to the definition types used
          * for object property definitions. These types are used to control the
          * visibility and mutability of object properties.
@@ -110,33 +237,6 @@ export const ObjectExtensions = new Patch(Object, {
                 get immutablyHidden() { return Patch.kImmutablyHidden; },
                 get immutablyVisible() { return Patch.kImmutablyVisible; },
             };
-        },
-        /**
-         * Defines a new property on an object with a specified value and
-         * visibility/mutability flag. The flag determines the visibility and
-         * mutability of the property. By default, the property is defined as
-         * mutably hidden.
-         *
-         * @param {object} object - The object on which to define the property.
-         * @param {string} key - The name of the property to be defined.
-         * @param {any} value - The value of the property to be defined.
-         * @param {symbol} [flag=Object.definitionType.mutablyHidden] - The
-         * visibility/mutability flag for the property. This should be one of the
-         * symbols available in `ObjectExtensions.definitionType`.
-         * @returns {object} The object with the newly defined property.
-         *
-         * @example
-         * // Define a new mutably hidden property on an object
-         * const myObject = {};
-         * const myValue = 'Hello, world!';
-         * const hiddenSymbol = Object.definitionType.mutablyHidden;
-         * Object.define(myObject, 'myProperty', myValue, hiddenSymbol);
-         * // myObject now has a mutably hidden property 'myProperty' with value
-         * // 'Hello, world!'
-         */
-        define(object, key, value, flag = Object.definitionType.mutablyHidden) {
-            const properties = Patch.getDescriptorOverridesFromSymbol(flag);
-            return Object.defineProperty(object, key, { ...properties, value });
         },
         /**
          * Defines a new accessor property on an object with specified getter and
@@ -170,112 +270,6 @@ export const ObjectExtensions = new Patch(Object, {
         defineAccessor(object, key, get, set, flag = Object.definitionType.mutablyHidden) {
             const properties = Patch.getDescriptorOverridesFromSymbol(flag);
             return Object.defineProperty(object, key, { ...properties, get, set });
-        },
-        addAccessor(to, key, getter, setter, storage) {
-            const store = storage ?? (!getter && !setter) ? true : undefined;
-            return this.add({ to, key, get: getter, set: setter, storage: store });
-        },
-        addData(to, key, value) {
-            return this.add({ to, key, value });
-        },
-        add(...args) {
-            const { isDescriptor } = Descriptor;
-            const { isObject: isObj } = this;
-            const { kDescriptorStore } = this;
-            let obj, key, value, _get, _set, storage, storageKey;
-            let _type, _flag, _desc;
-            // Check to see if we received multiple arguments or an object
-            if (args.length && isObj(args[0])) {
-                ({
-                    to: obj,
-                    key,
-                    value,
-                    get: _get,
-                    set: _set,
-                    storage,
-                    storageKey,
-                    type: _type = ['accessor', 'data'][1],
-                    flag: _flag = undefined,
-                    descriptorBase: _desc = undefined,
-                } = args[0]);
-            }
-            else if (args.length > 1) {
-                ([
-                    to,
-                    _type,
-                    key,
-                    getOrValue,
-                    _set,
-                    storage,
-                    storageKey,
-                    _flag,
-                    _desc,
-                ] = args);
-                obj = to;
-                _type = (['accessor', 'data'].includes(_type.toLowerCase())
-                    ? _type.toLowerCase() : 'data');
-                _get = _type === 'accessor' ? getOrValue : undefined;
-                _value = _type === 'data' ? getOrValue : undefined;
-            }
-            if (!this.isObject(obj)) {
-                console.warn('Object.add() must receive an object for `toObject`');
-                return obj;
-            }
-            const more = isDescriptor(_desc) ? _desc : {};
-            const flag = _flag || Object.definitionType.mutablyVisible;
-            const props = { ...Patch.getDescriptorOverridesFromSymbol(flag), ...more };
-            const type = (['accessor', 'data'].includes(_type)
-                ? String(_type).toLowerCase() : 'data');
-            switch (type) {
-                case 'accessor':
-                    let store = storage;
-                    let storeKey = storageKey || key;
-                    let makeStore = false;
-                    let get = _get;
-                    let set = _set;
-                    if (!isTruthy(get) && !isFn(get)) {
-                        get = undefined;
-                    }
-                    if (!isTruthy(set) && !isFn(set)) {
-                        set = undefined;
-                    }
-                    if (isObj(store) || isTrue(store) || isFn(store)) {
-                        makeStore = isTrue(store);
-                        store = isFn(store) ? store() : store;
-                        store = isObj(store) ? store : (makeStore && {} || undefined);
-                    }
-                    // store should be defined by here: object or undefined
-                    if ((!get && !set) && makeStore) {
-                        // being lazy here, someone has defined we make an accessor but
-                        // wants the default accessor behaviors with an associated store
-                        // made by us.
-                        Object.defineProperty(obj, kDescriptorStore, {
-                            value: symkeys.add('descriptor.store', store),
-                            configurable: true,
-                            enumerable: false,
-                            writable: true,
-                        });
-                        get = () => this[kDescriptorStore]?.data?.[storeKey];
-                        set = (value) => { this[kDescriptorStore].data[storeKey] = value; };
-                    }
-                    else if (get?.length && set?.length > 1 && store) {
-                        // if we received a get or set that takes more arguments than
-                        // expected, assume the last argument should be the store variable
-                        // so we execute the supplied function with the storage and its
-                        // results or byproducts are the result to the get/set we define
-                        const innerGet = get;
-                        const innerSet = set;
-                        get = () => innerGet(store);
-                        set = (value) => innerSet(value, store);
-                    }
-                    // get and set should be in their final state by here
-                    Object.defineProperty(obj, key, { ...props, get, set });
-                    break;
-                case 'data':
-                    Object.defineProperty(obj, key, { ...props, value });
-                    break;
-            }
-            return obj;
         },
         /**
          * Creates a new object from an array of key-value pairs (entries), with an
@@ -311,10 +305,10 @@ export const ObjectExtensions = new Patch(Object, {
          * // with prototype { foo: 'bar' }
          */
         fromEntriesUsing(entries, prototype = Object.prototype, reducer = undefined) {
-            if (!Array.isArray(entries)) {
+            if (!is.array(entries)) {
                 return undefined;
             }
-            const entriesToUse = entries.filter(entry => Array.isArray(entry) && entry.length >= 2);
+            const entriesToUse = entries.filter(entry => is.array(entry) && entry.length >= 2);
             if (!entriesToUse.length) {
                 return undefined;
             }
@@ -374,7 +368,7 @@ export const ObjectExtensions = new Patch(Object, {
          * @returns {string} - The string tag of the object, indicating its type.
          */
         getStringTag(value, strict = false) {
-            if (Object.hasStringTag(value)) {
+            if (has.stringTag(value)) {
                 return value[Symbol.toStringTag];
             }
             if (strict) {
@@ -423,7 +417,7 @@ export const ObjectExtensions = new Patch(Object, {
          * @returns true if the symbol is defined, false otherwise
          */
         hasStringTag(value) {
-            return Object.isObject(value) && Reflect.has(value, Symbol.toStringTag);
+            return has.stringTag(value);
         },
         /**
          * The function checks if a value is either `undefined` or `null`.
@@ -434,7 +428,7 @@ export const ObjectExtensions = new Patch(Object, {
          * and `false` otherwise.
          */
         isNullDefined(value) {
-            return value === undefined || value === null;
+            return is.nullish(value);
         },
         /**
          * The `ifNullDefined` function checks if a given value is either `null` or
@@ -469,7 +463,7 @@ export const ObjectExtensions = new Patch(Object, {
          * );
          */
         ifNullDefined(value, thenValue, elseValue) {
-            return isThenElse(this.isNullDefined(value), thenValue, elseValue);
+            return isThenElse(is.nullish(value), thenValue, elseValue);
         },
         /**
          * Checks if the provided value is an object.
@@ -493,22 +487,31 @@ export const ObjectExtensions = new Patch(Object, {
          * console.log(isObject(null)); // Output: false
          */
         isObject(value) {
-            return value instanceof Object || value && typeof value === 'object';
+            return is.object(value);
         },
         /**
-         * Determines if the provided value is an object. This method checks whether
-         * the value is an instance of `Object` or if its type is 'object'. It's a
-         * utility method for type-checking, ensuring that a value is an object
-         * before performing operations that are specific to objects.
+         * Executes a conditional function based on whether the provided value
+         * is an object or not. This method first checks if the value is an
+         * object using the `is.object` method from the toolkit. If it is, it
+         * returns the `thenValue`, otherwise it returns the `elseValue`.
          *
-         * @param {*} value - The value to be checked.
-         * @returns {boolean} - Returns `true` if the value is an object,
-         * otherwise `false`.
+         * @param {any} value - The value to be checked.
+         * @param {function | any} thenValue - The value to return if `value`
+         * is an object.
+         * @param {function | any} elseValue - The value to return if `value`
+         * is not an object.
+         * @returns {*} - Returns `thenValue` if the value is an object,
+         * otherwise `elseValue`.
+         *
+         * @example
+         * // returns 'Is Object'
+         * ifObject({}, 'Is Object', 'Not Object')
+         * // returns 'Not Object'
+         * ifObject(42, 'Is Object', 'Not Object')
+         */
+        ifObject(value, thenValue, elseValue) {
+            return isThenElse(is.object(value), thenValue, elseValue);
         },
-        isObject(value) {
-          return value && (value instanceof Object || typeof value === 'object');
-        },
-    
         /**
          * Checks to see if the supplied value is a primitive value.
          *
@@ -517,23 +520,7 @@ export const ObjectExtensions = new Patch(Object, {
          * false otherwise.
          */
         isPrimitive(value) {
-            // Check for null as a special case because typeof null
-            // is 'object'
-            if (value === null) {
-                return true;
-            }
-            // Check for other primitives
-            switch (typeof value) {
-                case 'string':
-                case 'number':
-                case 'bigint':
-                case 'boolean':
-                case 'undefined':
-                case 'symbol':
-                    return true;
-                default:
-                    return false;
-            }
+            return is.primitive(value);
         },
         /**
          * Executes a conditional function based on whether the provided value is
@@ -556,7 +543,7 @@ export const ObjectExtensions = new Patch(Object, {
          * ifPrimitive({a: 'hello'}, 1, 2)
          */
         ifPrimitive(value, thenValue, elseValue) {
-            return isThenElse(this.isPrimitive(value), thenValue, elseValue);
+            return isThenElse(is.primitive(value), thenValue, elseValue);
         },
         /**
          * Checks if the given value is a valid key for an object. In JavaScript, a
@@ -756,7 +743,26 @@ export const ObjectExtensions = new Patch(Object, {
             }
             Property.data(Symbol.for('properties'), sorted).apply(object);
             return object;
-        }
+        },
+        /**
+         * Retrieves a toolkit object containing various utility functions
+         * for type checking and introspection.
+         *
+         * The toolkit includes many functions. It was designed to read as
+         * though the toolkit were assigned to the variable `it`.
+         *
+         * @example
+         * const is = ObjectExtensions.patches.toolkit
+         * console.log(is.object({})) // Output: true
+         * console.log(is.string('hello')) // Output: true
+         * console.log(is.number(42)) // Output: true
+         *
+         * @returns {object} The toolkit object containing various utility
+         * functions for type checking and introspection.
+         */
+        get toolkit() {
+            return { as, has, is, si };
+        },
     },
 });
 const { isObject: pIsObject, ifObject: pIfObject, isNullDefined: pIsNullDefined, ifNullDefined: pIfNullDefined, isPrimitive: pIsPrimitive, ifPrimitive: pIfPrimitive, isValidKey: pIsValidKey, ifValidKey: pIfValidKey, hasStringTag: pHasStringTag, getStringTag: pGetStringTag, stripTo: pStripTo, } = ObjectExtensions.patches;
@@ -1070,85 +1076,13 @@ export const ObjectPrototypeExtensions = new Patch(Object.prototype, {
 // {@see globalThis.isThenElse}
 function isThenElse(bv, tv, ev) {
     if (arguments.length > 1) {
-        var _then = isFunction(tv) ? tv(bv) : tv;
+        var _then = is.function(tv) ? tv(bv) : tv;
         if (arguments.length > 2) {
-            var _else = isFunction(ev) ? tv(bv) : ev;
+            var _else = is.function(ev) ? tv(bv) : ev;
             return bv ? _then : _else;
         }
         return bv || _then;
     }
     return bv;
-}
-/**
- * Creates a deep or shallow copy of the provided source objects and merges
- * them into the destination object. The function uses a Set to keep track
- * of visited objects to avoid circular references.
- *
- * @function
- * @name copyObject
- * @param {boolean} deep - If true, performs a deep copy, otherwise performs
- * a shallow copy.
- * @param {object} destination - The object to which properties will be copied.
- * @param {...object} sources - The source object(s) from which properties
- * will be copied.
- * @returns {object} The destination object with the copied properties.
- *
- * @example
- * // Shallow copy
- * const obj1 = { a: 1, b: { c: 2 } };
- * const obj2 = { b: { d: 3 }, e: 4 };
- * const result = copyObject(false, obj1, obj2);
- * console.log(result); // Output: { a: 1, b: { d: 3 }, e: 4 }
- *
- * @example
- * // Deep copy
- * const obj1 = { a: 1, b: { c: 2 } };
- * const obj2 = { b: { d: 3 }, e: 4 };
- * const result = copyObject(true, obj1, obj2);
- * console.log(result); // Output: { a: 1, b: { c: 2, d: 3 }, e: 4 }
- */
-export function copyObject(deep, destination, ...sources) {
-    const visited = new Set();
-    for (const source of sources) {
-        if (source === null || typeof source !== 'object' || visited.has(source)) {
-            continue;
-        }
-        visited.add(source);
-        const keys = Reflect.ownKeys(source);
-        for (const key of keys) {
-            let descriptor;
-            try {
-                descriptor = Object.getOwnPropertyDescriptor(source, key);
-            }
-            catch (err) {
-                console.warn(`Failed to get descriptor for key "${key}": ${err}`);
-                continue;
-            }
-            const isDataDesc = Reflect.has(descriptor, 'value');
-            const keyedValue = descriptor?.value;
-            const conditionsMet = [
-                isDataDesc,
-                keyedValue,
-                typeof keyedValue === 'object',
-                !visited.has(keyedValue)
-            ].every(condition => condition);
-            if (conditionsMet) {
-                visited.add(keyedValue);
-                const prototype = Object.getPrototypeOf(keyedValue);
-                const descriptors = Object.getOwnPropertyDescriptors(keyedValue);
-                const replacement = Object.create(prototype, descriptors);
-                descriptor.value = deep
-                    ? copyObject(deep, replacement, keyedValue)
-                    : replacement;
-            }
-            try {
-                Object.defineProperty(destination, key, descriptor);
-            }
-            catch (err) {
-                console.error(`Failed to define property "${key}": ${err}`);
-            }
-        }
-    }
-    return destination;
 }
 //# sourceMappingURL=object.extensions.js.map

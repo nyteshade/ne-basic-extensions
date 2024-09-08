@@ -48,7 +48,7 @@ class Descriptor {
         }
         if (!this.isDescriptor) {
             console.error(`
-      Descriptor(object,key) FAILED:
+      Descriptor(object: ${object}, key: ${key}) FAILED:
         object:      ${object === globalThis ? '[GLOBAL]' : (typeof key === 'object' ? JSON.stringify(object) : String(object))}
         key:         ${key === globalThis ? '[GLOBAL]' : (typeof key === 'object' ? JSON.stringify(key) : String(key))}
         descriptor:  `, this.#desc);

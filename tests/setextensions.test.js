@@ -1,6 +1,8 @@
 const { Patches } = require('../dist/cjs/index.js')
 const SetPrototypeExtensions = Patches.get(Set.prototype)
 
+import { describe, beforeEach, afterEach, test, expect } from 'vitest';
+
 describe('SetPrototypeExtensions', () => {
   let testSet;
 

@@ -1,4 +1,5 @@
 const { Controls: { enableAll, disableAll } } = require('../dist/cjs/index.js')
+import { describe, beforeEach, afterEach, test, expect } from 'vitest';
 
 describe('Enabled extensions', () => {
   beforeEach(() => {

@@ -18,35 +18,136 @@ import { Extension } from '@nejs/extension'
 */
 export class Symkeys {
   /**
-   * Adds a new entry to the Symkeys with a unique symbol based on the provided
-   * name and associates it with the given data.
+   * Adds a new symbol to the Symkeys instance with the given name and
+   * associated data.
    *
-   * @param named - The base name for the symbol to be created.
-   * @param [associatedData={}] - The data to associate with the symbol.
-   * @returns The unique symbol created for the entry.
+   * This method generates a unique symbol based on the provided name,
+   * optional domain, separator, and token. It also allows embedding
+   * additional data into the symbol's name.
+   *
+   * @param {string} named - The base name for the new symbol.
+   * @param {Object} options - Additional options for the symbol.
+   * @param {*} [options.associate={}] - Data to associate with the symbol.
+   * @param {Object} [options.embed] - Optional data to embed in the symbol.
+   * @param {string} [options.useDomain] - Optional domain to include in the
+   * symbol's name.
+   * @param {string} [options.useSeparator] - Optional separator to use in
+   * the symbol's name.
+   * @param {string} [options.useToken] - Optional token to use for the
+   * symbol. If not provided, a random token is generated.
+   * @returns {Symbol} The newly created symbol.
    *
    * @example
-   * // Add an entry with associated data
-   * const symbol = Symkeys.add('myEntry', { foo: 'bar' });
-   * // Retrieve the associated data using the symbol
-   * const data = Symkeys.dataFor(symbol);
-   * console.log(data); // Output: { foo: 'bar' }
+   * // Add a symbol with associated data
+   * const mySymbol = symkeys.add('myIdentifier', {
+   *   associate: { foo: 'bar' },
+   *   embed: { baz: 'qux' },
+   *   useDomain: 'exampleDomain',
+   *   useSeparator: '-',
+   *   useToken: 'customToken',
+   * })
+   * console.log(mySymbol)
+   * // Symbol(@exampleDomain-myIdentifier {"baz":"qux"} #customToken)
    */
-  add(named, associatedData = {}) {
+  add(
+    named,
+    {
+      associate = {},
+      embed = undefined,
+      useDomain = undefined,
+      useSeparator = undefined,
+      useToken = undefined,
+    }
+  ) {
     // Generate a unique token for the symbol
-    const token = Symkeys.token;
+    const token = useToken ?? Symkeys.token
 
     // Calculate a name (optionally with domain and separator)
-    const symName = this.calculateName(named)
+    let symName = this.calculateName(named, useDomain, useSeparator)
+
+    if (embed && typeof embed === 'object') {
+      try {
+        symName += ` ${JSON.stringify(embed)}`
+      }
+      catch (error) {
+        console.warn(`Cannot create JSON from ${embed}; skipping`)
+      }
+    }
 
     // Create a symbol using the provided name and the unique token
-    const symbol = Symbol.for(`@${symName} #${token}`);
+    const symbol = Symbol.for(`@${symName} #${token}`)
 
     // Store the symbol and associated data in the Symkeys's internal map
-    this[Symkeys.kDataKey].set(symbol, associatedData);
+    this[Symkeys.kDataKey].set(symbol, associate ?? {})
 
     // Return the unique symbol for external use
-    return symbol;
+    return symbol
+  }
+
+  /**
+   * Creates or retrieves a shared symbol key with the given name and
+   * optional associated data.
+   *
+   * This method generates a shared symbol key using the provided name
+   * and optional parameters. If the symbol already exists in the
+   * Symkeys's internal map, it updates the associated data if provided.
+   * Otherwise, it creates a new symbol with the specified parameters.
+   *
+   * @param {string} named - The name to use for the shared symbol key.
+   * @param {Object} options - Optional parameters for the shared symbol key.
+   * @param {Object} [options.associate] - Data to associate with the symbol.
+   * @param {Object} [options.embed] - Data to embed in the symbol's name.
+   * @param {string} [options.useDomain] - Domain to include in the symbol's name.
+   * @param {string} [options.useSeparator] - Separator to use in the symbol's name.
+   * @returns {Symbol} The shared symbol key.
+   *
+   * @example
+   * // Create or retrieve a shared symbol key with associated data
+   * const sharedSymbol = symkeys.sharedKey('mySharedKey', {
+   *   associate: { foo: 'bar' },
+   *   embed: { baz: 'qux' },
+   *   useDomain: 'exampleDomain',
+   *   useSeparator: '-',
+   * })
+   * console.log(sharedSymbol)
+   * // Symbol(@exampleDomain-mySharedKey {"baz":"qux"} #shared)
+   */
+  sharedKey(named, { associate, embed, useDomain, useSeparator }) {
+    // Calculate the symbol name with optional domain and separator
+    const symName = this.calculateName(named, useDomain, useSeparator)
+
+    // Initialize JSON string for embedded data
+    let json = ''
+    if (embed && typeof embed === 'object') {
+      try {
+        json = ` ${JSON.stringify(embed)}`
+      } catch (ignored) {
+        // Ignore JSON stringify errors
+      }
+    }
+
+    // Create the shared symbol key
+    const symbol = Symbol.for(`@${symName}${json} #shared`)
+
+    // Check if the symbol already exists in the internal map
+    if (this[Symkeys.kDataKey].has(symbol)) {
+      // Update associated data if provided and symbol is a Symkey
+      if (associate && symbol.isSymkey) {
+        symbol.data = associate
+      }
+
+      // Return the existing symbol
+      return symbol
+    }
+
+    // Add a new symbol with the specified parameters
+    return this.add(named, {
+      associate: associate ?? {},
+      embed,
+      useDomain,
+      useSeparator,
+      useToken: 'shared'
+    })
   }
 
   /**

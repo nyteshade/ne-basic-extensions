@@ -1,6 +1,24 @@
 import { Patch } from '@nejs/extension';
 export const JSONExtensions = new Patch(JSON, {
     [Patch.kMutablyHidden]: {
+        extractAllFrom(string) {
+            const pattern = this.JSONStartPattern;
+            const notJSON = Symbol("Value is not valid JSON");
+            const decoder = part => {
+                try {
+                    return JSON.parse(part);
+                }
+                catch (_) {
+                    return notJSON;
+                }
+            };
+            const parts = [];
+            let part = undefined;
+            while ((part = pattern.exec(string))) {
+                parts.push(decoder(part?.[0]));
+            }
+            return parts.filter(isJSON => isJSON !== notJSON);
+        },
         /**
          * The `extractFrom` method attempts to extract a JSON object from a string.
          * It uses a regular expression to identify potential JSON objects in the
@@ -26,24 +44,7 @@ export const JSONExtensions = new Patch(JSON, {
          * console.log(JSON.extractFrom(str2))  // Output: {name: 'John', age: 30}
          */
         extractFrom(string) {
-            const pattern = /([\w\{\[\"]+) ?/g;
-            const decoder = part => {
-                try {
-                    return JSON.parse(part);
-                }
-                catch (_) {
-                    return undefined;
-                }
-            };
-            for (let part = pattern.exec(string); part; part = pattern.exec(string)) {
-                if (part && part?.index) {
-                    const decoded = decoder(string.substring(part.index));
-                    if (decoded) {
-                        return decoded;
-                    }
-                }
-            }
-            return undefined;
+            this.extractAllFrom(string)?.[0];
         },
         /**
          * The `mightContain` method checks if a string might contain a JSON object.

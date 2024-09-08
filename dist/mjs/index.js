@@ -22,6 +22,8 @@ import { RefMapExtensions } from './classes/refmap.js';
 import { RefSetExtensions } from './classes/refset.js';
 import { SymkeysExtension } from './classes/symkeys.js';
 import { TypeExtensions } from './classes/type.js';
+export * from './utils/copy.object.js';
+export * from './utils/toolkit.js';
 import { AsyncIteratorExtensions, AsyncIterableExtensions } from './classes/asyncIterable.js';
 const StaticPatches = [
     [Array, ArrayExtensions, Array.name],

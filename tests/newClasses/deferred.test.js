@@ -1,6 +1,8 @@
 const { Extensions } = require('../../dist/cjs/index.js')
 const Deferred = Extensions.Deferred.class
 
+import { describe, beforeEach, test, expect, vi } from 'vitest';
+
 describe('Deferred', () => {
   let deferred;
 
@@ -31,7 +33,7 @@ describe('Deferred', () => {
 
   test('should call then with the resolved value', async () => {
     const value = 'resolved value';
-    const onFulfilled = jest.fn();
+    const onFulfilled = vi.fn();
     deferred.resolve(value);
     await deferred.then(onFulfilled);
     expect(onFulfilled).toHaveBeenCalledWith(value);
@@ -39,14 +41,14 @@ describe('Deferred', () => {
 
   test('should call catch with the rejection reason', async () => {
     const reason = 'rejected reason';
-    const onRejected = jest.fn();
+    const onRejected = vi.fn();
     deferred.reject(reason);
     await deferred.catch(onRejected);
     expect(onRejected).toHaveBeenCalledWith(reason);
   });
 
   test('should call finally regardless of resolution or rejection', async () => {
-    const onFinally = jest.fn();
+    const onFinally = vi.fn();
     deferred.resolve('resolved value');
     await deferred.finally(onFinally);
     expect(onFinally).toHaveBeenCalled();

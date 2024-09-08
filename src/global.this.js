@@ -1,11 +1,19 @@
 import { Patch } from '@nejs/extension'
 import { FunctionExtensions } from './function.extensions.js'
+import * as copyObject from './utils/copy.object.js'
+import { as, has, is, si } from './utils/toolkit.js'
 
 const { isClass, isFunction } = FunctionExtensions.patches
 const CustomInspect = Symbol.for('nodejs.util.inspect.custom')
 
 export const GlobalFunctionsAndProps = new Patch(globalThis, {
   [Patch.kMutablyHidden]: {
+    /** copyObject suite exports into global */
+    ...copyObject,
+
+    /** Type toolkit exports into global */
+    as, has, is, si,
+
     /**
      * The `isThenElse` function is a utility function that behaves like a
      * ternary operator. It takes three arguments: `boolValue`, `thenValue`,

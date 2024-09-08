@@ -112,21 +112,78 @@ export class Symkeys {
      */
     constructor(domain?: string, separator?: string);
     /**
-     * Adds a new entry to the Symkeys with a unique symbol based on the provided
-     * name and associates it with the given data.
+     * Adds a new symbol to the Symkeys instance with the given name and
+     * associated data.
      *
-     * @param named - The base name for the symbol to be created.
-     * @param [associatedData={}] - The data to associate with the symbol.
-     * @returns The unique symbol created for the entry.
+     * This method generates a unique symbol based on the provided name,
+     * optional domain, separator, and token. It also allows embedding
+     * additional data into the symbol's name.
+     *
+     * @param {string} named - The base name for the new symbol.
+     * @param {Object} options - Additional options for the symbol.
+     * @param {*} [options.associate={}] - Data to associate with the symbol.
+     * @param {Object} [options.embed] - Optional data to embed in the symbol.
+     * @param {string} [options.useDomain] - Optional domain to include in the
+     * symbol's name.
+     * @param {string} [options.useSeparator] - Optional separator to use in
+     * the symbol's name.
+     * @param {string} [options.useToken] - Optional token to use for the
+     * symbol. If not provided, a random token is generated.
+     * @returns {Symbol} The newly created symbol.
      *
      * @example
-     * // Add an entry with associated data
-     * const symbol = Symkeys.add('myEntry', { foo: 'bar' });
-     * // Retrieve the associated data using the symbol
-     * const data = Symkeys.dataFor(symbol);
-     * console.log(data); // Output: { foo: 'bar' }
+     * // Add a symbol with associated data
+     * const mySymbol = symkeys.add('myIdentifier', {
+     *   associate: { foo: 'bar' },
+     *   embed: { baz: 'qux' },
+     *   useDomain: 'exampleDomain',
+     *   useSeparator: '-',
+     *   useToken: 'customToken',
+     * })
+     * console.log(mySymbol)
+     * // Symbol(@exampleDomain-myIdentifier {"baz":"qux"} #customToken)
      */
-    add(named: any, associatedData?: {} | undefined): symbol;
+    add(named: string, { associate, embed, useDomain, useSeparator, useToken, }: {
+        associate?: any;
+        embed?: Object | undefined;
+        useDomain?: string | undefined;
+        useSeparator?: string | undefined;
+        useToken?: string | undefined;
+    }): Symbol;
+    /**
+     * Creates or retrieves a shared symbol key with the given name and
+     * optional associated data.
+     *
+     * This method generates a shared symbol key using the provided name
+     * and optional parameters. If the symbol already exists in the
+     * Symkeys's internal map, it updates the associated data if provided.
+     * Otherwise, it creates a new symbol with the specified parameters.
+     *
+     * @param {string} named - The name to use for the shared symbol key.
+     * @param {Object} options - Optional parameters for the shared symbol key.
+     * @param {Object} [options.associate] - Data to associate with the symbol.
+     * @param {Object} [options.embed] - Data to embed in the symbol's name.
+     * @param {string} [options.useDomain] - Domain to include in the symbol's name.
+     * @param {string} [options.useSeparator] - Separator to use in the symbol's name.
+     * @returns {Symbol} The shared symbol key.
+     *
+     * @example
+     * // Create or retrieve a shared symbol key with associated data
+     * const sharedSymbol = symkeys.sharedKey('mySharedKey', {
+     *   associate: { foo: 'bar' },
+     *   embed: { baz: 'qux' },
+     *   useDomain: 'exampleDomain',
+     *   useSeparator: '-',
+     * })
+     * console.log(sharedSymbol)
+     * // Symbol(@exampleDomain-mySharedKey {"baz":"qux"} #shared)
+     */
+    sharedKey(named: string, { associate, embed, useDomain, useSeparator }: {
+        associate?: Object | undefined;
+        embed?: Object | undefined;
+        useDomain?: string | undefined;
+        useSeparator?: string | undefined;
+    }): Symbol;
     /**
      * Retrieves the data associated with a given symbol from the Symkeys.
      *

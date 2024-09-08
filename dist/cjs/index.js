@@ -1,4 +1,18 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GlobalFunctionsAndProps = exports.Controls = exports.InstancePatches = exports.StaticPatches = exports.Patches = exports.Extensions = exports.all = exports.Classes = void 0;
 const array_extensions_js_1 = require("./array.extensions.js");
@@ -26,6 +40,8 @@ const refmap_js_1 = require("./classes/refmap.js");
 const refset_js_1 = require("./classes/refset.js");
 const symkeys_js_1 = require("./classes/symkeys.js");
 const type_js_1 = require("./classes/type.js");
+__exportStar(require("./utils/copy.object.js"), exports);
+__exportStar(require("./utils/toolkit.js"), exports);
 const asyncIterable_js_1 = require("./classes/asyncIterable.js");
 const StaticPatches = [
     [Array, array_extensions_js_1.ArrayExtensions, Array.name],

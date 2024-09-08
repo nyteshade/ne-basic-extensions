@@ -1,3 +1,5 @@
+export * from "./utils/copy.object.js";
+export * from "./utils/toolkit.js";
 export const Classes: {};
 export namespace all {
     let patches: {};

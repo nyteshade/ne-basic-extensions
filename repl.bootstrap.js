@@ -1,7 +1,14 @@
 #!/usr/bin/env node --no-warnings --no-deprecations
 
+// Show the correct line numbers for encountered errors in src not dist
+const sourceMapSupport = await import('source-map-support');
+sourceMapSupport?.install();
+
 // Import everything for playtesting.
 (await import('./dist/mjs/index.js')).Controls.enableAll();
+
+const { inspect } = await import('util');
+
 
 const nejsExtension = await import('@nejs/extension');
 
@@ -16,7 +23,11 @@ const options = {
 
 let allowInvocation = true;
 
-Object.assign(global, { Patch: nejsExtension.Patch, Extension: nejsExtension.Extension });
+Object.assign(global, {
+  Patch: nejsExtension.Patch,
+  Extension: nejsExtension.Extension,
+  inspect,
+});
 global.replServer = new repl.REPLServer(options);
 
 function about() {

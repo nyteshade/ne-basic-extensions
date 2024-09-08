@@ -4,10 +4,10 @@ export class Type {
     static named(value: any): any;
     static class(value: any, mapped: any): any;
     static isPrimitive(value: any): boolean;
-    static get primitives(): () => Generator<"number" | "bigint" | "string" | "symbol" | "boolean" | "undefined", void, unknown>;
-    static get typeOfTypes(): () => Generator<"number" | "object" | "bigint" | "function" | "string" | "symbol" | "boolean" | "undefined", void, unknown>;
-    static mapped: Map<string | undefined, BigIntConstructor | undefined>;
-    mapped: Map<string | undefined, BigIntConstructor | undefined>;
+    static get primitives(): () => Generator<"number" | "bigint" | "undefined" | "boolean" | "string" | "symbol", void, unknown>;
+    static get typeOfTypes(): () => Generator<"function" | "object" | "number" | "bigint" | "undefined" | "boolean" | "string" | "symbol", void, unknown>;
+    static mapped: Map<string | undefined, ObjectConstructor | undefined>;
+    mapped: Map<string | undefined, ObjectConstructor | undefined>;
     of(value: any): "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function";
     class(value: any): any;
     isPrimitive(value: any): boolean;

@@ -1,6 +1,7 @@
 const { Classes } = require('../../dist/cjs/index.js')
 const { RefMap } = Classes
 
+import { describe, beforeEach, test, expect, vi } from 'vitest';
 
 describe('RefMap', () => {
   let refMap;
@@ -61,7 +62,7 @@ describe('RefMap', () => {
 
   // Test forEach method
   test('forEach should iterate over values', () => {
-    const mockCallback = jest.fn();
+    const mockCallback = vi.fn();
     const obj = {};
     refMap.set('key', obj);
     refMap.forEach(mockCallback);

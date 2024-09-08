@@ -115,19 +115,19 @@ export class ParamParser {
      * }
      */
     static get ParametersMustBeArrayError(): {
-        new (message?: string | undefined): {
+        new (message?: string): {
             name: string;
             message: string;
-            stack?: string | undefined;
+            stack?: string;
             cause?: unknown;
         };
-        new (message?: string | undefined, options?: ErrorOptions | undefined): {
+        new (message?: string, options?: ErrorOptions): {
             name: string;
             message: string;
-            stack?: string | undefined;
+            stack?: string;
             cause?: unknown;
         };
-        captureStackTrace(targetObject: object, constructorOpt?: Function | undefined): void;
+        captureStackTrace(targetObject: object, constructorOpt?: Function): void;
         prepareStackTrace?: ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
         stackTraceLimit: number;
     };
@@ -158,19 +158,19 @@ export class ParamParser {
      * }
      */
     static get ParsersArrayMustContainParsersError(): {
-        new (message?: string | undefined): {
+        new (message?: string): {
             name: string;
             message: string;
-            stack?: string | undefined;
+            stack?: string;
             cause?: unknown;
         };
-        new (message?: string | undefined, options?: ErrorOptions | undefined): {
+        new (message?: string, options?: ErrorOptions): {
             name: string;
             message: string;
-            stack?: string | undefined;
+            stack?: string;
             cause?: unknown;
         };
-        captureStackTrace(targetObject: object, constructorOpt?: Function | undefined): void;
+        captureStackTrace(targetObject: object, constructorOpt?: Function): void;
         prepareStackTrace?: ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
         stackTraceLimit: number;
     };

@@ -247,6 +247,7 @@ exports.NumberPrototypeExtensions = new extension_1.Patch(Number.prototype, {
 // Object<->Function<->Global occurs. See original source in global.this.js
 // {@see globalThis.isThenElse}
 function isThenElse(bv, tv, ev) {
+    function isFunction(value) { typeof value === 'function'; }
     if (arguments.length > 1) {
         var _then = isFunction(tv) ? tv(bv) : tv;
         if (arguments.length > 2) {

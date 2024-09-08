@@ -5,6 +5,7 @@ const extension_1 = require("@nejs/extension");
 const symkeys_js_1 = require("./classes/symkeys.js");
 const json_extensions_js_1 = require("./json.extensions.js");
 const JSONToggle = new extension_1.PatchToggle(json_extensions_js_1.JSONExtensions);
+const symkeys = new symkeys_js_1.Symkeys('nejs');
 /**
  * `SymbolExtensions` is a patch for the JavaScript built-in `Symbol` class. It
  * adds utility methods to the `Symbol` class without modifying the global namespace
@@ -14,12 +15,151 @@ const JSONToggle = new extension_1.PatchToggle(json_extensions_js_1.JSONExtensio
  * utility functions.
  */
 exports.SymbolExtensions = new extension_1.Patch(Symbol, {
-    add(named, associatedData = {}) {
-        return this.keys.add(named, associatedData);
+    /**
+     * Adds a new symbol to the Symkeys instance with the given name and
+     * associated data.
+     *
+     * This method generates a unique symbol based on the provided name,
+     * optional domain, separator, and token. It also allows embedding
+     * additional data into the symbol's name.
+     *
+     * @param {string} named - The base name for the new symbol.
+     * @param {Object} options - Additional options for the symbol.
+     * @param {*} [options.associate={}] - Data to associate with the symbol.
+     * @param {Object} [options.embed] - Optional data to embed in the symbol.
+     * @param {string} [options.useDomain] - Optional domain to include in the
+     * symbol's name.
+     * @param {string} [options.useSeparator] - Optional separator to use in
+     * the symbol's name.
+     * @param {string} [options.useToken] - Optional token to use for the
+     * symbol. If not provided, a random token is generated.
+     * @returns {Symbol} The newly created symbol.
+     *
+     * @example
+     * // Add a symbol with associated data
+     * const mySymbol = SymbolExtensions.add('myIdentifier', {
+     *   associate: { foo: 'bar' },
+     *   embed: { baz: 'qux' },
+     *   useDomain: 'exampleDomain',
+     *   useSeparator: '-',
+     *   useToken: 'customToken',
+     * })
+     * console.log(mySymbol)
+     * // Symbol(@exampleDomain-myIdentifier {"baz":"qux"} #customToken)
+     */
+    add(named, { associate = {}, embed, useToken, useDomain, useSeparator }) {
+        return this.keys.add(named, {
+            associate, embed, useToken, useDomain, useSeparator,
+        });
     },
+    /**
+     * Deletes the data associated with a given symbol from the Symkeys
+     * instance.
+     *
+     * This method allows removal of the data that has been associated with a
+     * particular symbol in the Symkeys instance. It is useful when you want
+     * to clean up or remove stored information associated with a symbol.
+     *
+     * @param {Symbol} forSymbol - The symbol whose associated data is to be
+     * deleted.
+     * @param {*} [replaceWith=undefined] - Optionally, if `replaceWith` is
+     * not `undefined`, a new value can be set after the original is deleted
+     * @returns {boolean} - Returns true if an element in the Symkeys existed
+     * and has been removed, or false if the element does not exist
+     *
+     * @example
+     * // Assuming 'mySymbol' is a symbol that has been added to the Symkeys
+     * // with associated data
+     * const isDeleted = Symbol.deleteData(mySymbol)
+     * console.log(isDeleted) // Output: true if data was deleted, false
+     *
+     * @example
+     * // Deleting data and replacing it with a new value
+     * const mySymbol = Symbol.for('mySymbol')
+     * Symbol.setData(mySymbol, { foo: 'bar' })
+     * Symbol.deleteData(mySymbol, { newFoo: 'newBar' })
+     * console.log(Symbol.keys.data(mySymbol)) // Output: { newFoo: 'newBar' }
+     */
     deleteData(forSymbol, replaceWith = undefined) {
         return this.keys.deleteData(forSymbol, replaceWith);
     },
+    /**
+     * Evaluates a key or value and generates a shared symbol key based on
+     * the provided object name and owner name.
+     *
+     * This method takes a key or value, an object name, and an object owner
+     * name as parameters. It determines the type of each parameter and
+     * constructs a token string by concatenating the owner name, object
+     * name, and key/value (if they are valid object keys).
+     *
+     * The token string is then used to create a shared symbol key using the
+     * `sharedKey` method of the current instance. The shared symbol key is
+     * returned along with the token as associated data.
+     *
+     * @param {string|Symbol} keyOrValue - The key or value to evaluate.
+     * @param {string|Symbol} objectName - The name of the object associated
+     * with the key or value.
+     * @param {string|Function|Object} objectOwnerName - The name of the
+     * owner of the object.
+     * @returns {Symbol} The shared symbol key generated based on the
+     * provided parameters.
+     *
+     * @example
+     * const symbolKey = SymbolExtensions.evalKey('myKey', 'myObject', 'myOwner')
+     * console.log(symbolKey)
+     * // Output: Symbol(@nejs.internal.refkey:myOwner.myObject.myKey)
+     *
+     * @example
+     * const symbolKey = SymbolExtensions.evalKey(
+     *   'myValue', () => {}, { [Symbol.toStringTag]: 'myOwner' }
+     * )
+     * console.log(symbolKey)
+     * // Output: Symbol(@nejs.internal.refkey:myOwner.myValue)
+     */
+    evalKey(keyOrValue, objectName, objectOwnerName) {
+        const is = {
+            string(v) { return typeof v === 'string'; },
+            func(v) { return typeof v === 'function'; },
+            object(v) { return typeof v === 'object'; },
+            objKey(v) { return ['symbol', 'string'].some(k => typeof v === k); },
+        };
+        is.key = is.objKey(keyOrValue);
+        const ownerName = ((is.string(objectOwnerName) && objectOwnerName) ||
+            (is.func(objectOwnerName) && objectOwnerName?.name) ||
+            (is.object(objectOwnerName) && objectOwnerName?.[Symbol.toStringTag]) ||
+            undefined);
+        const token = [
+            ownerName && `${ownerName}.` || '',
+            is.objKey(objectName) && `${objectName}.` || '',
+            is.objKey(keyOrValue) && `${keyOrValue}`,
+        ].join('');
+        return this.sharedKey(`internal.refkey:${token}`, { token });
+    },
+    /**
+     * Checks if the Symkeys instance has data associated with a given
+     * symbol
+     *
+     * This method checks if the Symkeys instance has any data associated
+     * with the provided symbol. It is useful when you need to verify if
+     * data exists for a particular symbol before attempting to retrieve
+     * or manipulate it
+     *
+     * @param {Symbol} forSymbol - The symbol to check for associated data
+     * @returns {boolean} Returns true if data exists for the symbol,
+     *                    false otherwise
+     *
+     * @example
+     * // Assuming 'mySymbol' is a symbol that has been added to the
+     * // Symkeys with associated data
+     * const hasData = Symbol.hasData(mySymbol)
+     * console.log(hasData) // Output: true
+     *
+     * @example
+     * // Assuming 'nonExistentSymbol' is a symbol that has not been added
+     * // to the Symkeys
+     * const hasData = Symbol.hasData(nonExistentSymbol)
+     * console.log(hasData) // Output: false
+     */
     hasData(forSymbol) {
         return this.keys.hasData(forSymbol);
     },
@@ -102,9 +242,83 @@ exports.SymbolExtensions = new extension_1.Patch(Symbol, {
      * kOriginal.data.original = Object.prototype           // ...and...
      * kOriginal.data = [Object.prototype, Array.prototype] // ...both work
      */
-    keys: new symkeys_js_1.Symkeys('nejs'),
+    get keys() { return symkeys; },
+    /**
+     * Sets the data associated with a given symbol in the Symkeys
+     * instance.
+     *
+     * This method allows you to store data associated with a specific
+     * symbol in the Symkeys instance. It is useful when you want to
+     * attach additional information or metadata to a symbol for later
+     * retrieval.
+     *
+     * @param {Symbol} forSymbol - The symbol for which to set the
+     * associated data.
+     * @param {*} value - The data to be associated with the symbol.
+     *
+     * @example
+     * // Create a symbol
+     * const mySymbol = Symbol.for('mySymbol')
+     *
+     * // Set data for the symbol
+     * Symbol.setData(mySymbol, { foo: 'bar' })
+     *
+     * // Retrieve the data associated with the symbol
+     * const data = Symbol.keys.data(mySymbol)
+     * console.log(data) // Output: { foo: 'bar' }
+     */
     setData(forSymbol, value) {
         this.keys.setData(forSymbol, value);
+    },
+    /**
+     * Creates or retrieves a shared symbol key with the given name and
+     * optional associated data.
+     *
+     * This method generates a shared symbol key using the provided name
+     * and optional parameters. If the symbol already exists in the
+     * Symkeys's internal map, it updates the associated data if provided.
+     * Otherwise, it creates a new symbol with the specified parameters.
+     *
+     * @param {string} named - The name to use for the shared symbol key.
+     * @param {Object} options - Optional parameters for the shared symbol key.
+     * @param {Object} [options.associate] - Data to associate with the symbol.
+     * @param {Object} [options.embed] - Data to embed in the symbol's name.
+     * @param {string} [options.useDomain] - Domain to include in the symbol's name.
+     * @param {string} [options.useSeparator] - Separator to use in the symbol's name.
+     * @returns {Symbol} The shared symbol key.
+     *
+     * @example
+     * // Create or retrieve a shared symbol key with associated data
+     * const sharedSymbol = Symbol.sharedKey('mySharedKey', {
+     *   associate: { foo: 'bar' },
+     *   embed: { baz: 'qux' },
+     *   useDomain: 'exampleDomain',
+     *   useSeparator: '-',
+     * })
+     * console.log(sharedSymbol)
+     * // Output: Symbol(@exampleDomain-mySharedKey {"baz":"qux"} #shared)
+     */
+    sharedKey(named, options) {
+        return this.keys.sharedKey(named, options);
+    },
+    /**
+     * A symbol used as the storage key for the single instance of a
+     * singleton.
+     *
+     * This getter returns a unique symbol created using `Symbol.for()`
+     * with the string 'singleton'. The symbol is used to store and
+     * retrieve the single instance of a singleton object.
+     *
+     * @type {symbol}
+     * @readonly
+     *
+     * @example
+     * const singletonKey = Symbol.singleton
+     * const singletonInstance = {}
+     * global[singletonKey] = singletonInstance
+     */
+    get singleton() {
+        return Symbol.for('singleton');
     },
     /**
      * Creates a new Symbol with the given name and optional data. If data
@@ -256,9 +470,95 @@ exports.SymbolPrototypeExtensions = new extension_1.Patch(Symbol.prototype, {
          * Symkeys.getData(symWithData) // returns { name: 'Jane', age: 26 }
          */
         set data(value) {
-            if (symkeys_js_1.Symkeys.isSymkey(this) && symkeys_js_1.Symkeys.hasData(this)) {
+            if (symkeys_js_1.Symkeys.isSymkey(this)) {
                 Symbol.keys.setData(this, value);
             }
+            else {
+                console.error(`The symbol ${this.description} is not a symkey`);
+            }
+        },
+        /**
+         * Retrieves the embedded JSON data from the symbol's description.
+         *
+         * This getter method checks if the symbol's description might contain
+         * JSON data. If the description contains JSON, it parses and returns
+         * the first JSON object found. If no JSON is found, it returns
+         * `undefined`.
+         *
+         * @returns {Object|undefined} - The parsed JSON object if found,
+         * otherwise `undefined`.
+         *
+         * @example
+         * const sym = Symbol.for('example {"name":"Brie"}')
+         * console.log(sym.embeddedJSON) // Output: { name: 'Brie' }
+         *
+         * @example
+         * const sym = Symbol('noJSON')
+         * console.log(sym.embeddedJSON) // Output: undefined
+         */
+        get embeddedJSON() {
+            return JSONToggle.perform((toggle, patch) => {
+                let [mightHave, index, parsed] = JSON.mightContain(this.description, true);
+                if (mightHave) {
+                    return parsed?.[0];
+                }
+                return undefined;
+            });
+        },
+        /**
+         * Parses the embedded JSON data from the symbol's description.
+         *
+         * This getter method first retrieves the embedded JSON data using the
+         * `embeddedJSON` getter. If JSON data is found, it attempts to parse
+         * the JSON string and return the resulting object. If parsing fails,
+         * an error is logged to the console.
+         *
+         * @returns {Object|undefined} - The parsed JSON object if parsing is
+         * successful, otherwise `undefined`.
+         *
+         * @example
+         * const sym = Symbol.for('example {"name":"Brie"}')
+         * console.log(sym.embeddedJSONParsed) // Output: { name: 'Brie' }
+         *
+         * @example
+         * const sym = Symbol('invalidJSON')
+         * console.log(sym.embeddedJSONParsed) // Output: undefined
+         */
+        get embeddedJSONParsed() {
+            const json = this.embeddedJSON;
+            if (json) {
+                try {
+                    return JSON.parse(json);
+                }
+                catch (error) {
+                    console.error(`Failed to parse json: "${json}"`);
+                }
+            }
+            return undefined;
+        },
+        /**
+         * Checks if the current symbol is a Symkey.
+         *
+         * This getter method determines whether the current symbol instance
+         * conforms to the Symkey pattern. A Symkey is a symbol that matches
+         * a specific pattern defined in the Symkeys class.
+         *
+         * @type {boolean}
+         * @readonly
+         *
+         * @returns {boolean} - Returns true if the symbol is a Symkey,
+         *                      otherwise false.
+         *
+         * @example
+         * const sym = Symbol('@nejs.prototype #rwiy2o905d')
+         * console.log(sym.isSymkey) // Output: true
+         *
+         * @example
+         * const sym = Symbol('regularSymbol')
+         * console.log(sym.isSymkey) // Output: false
+         */
+        get isSymkey() {
+            return symkeys_js_1.Symkeys.isSymkey(this);
         },
         /**
          * Checks if the symbol might have embedded JSON data.
@@ -279,41 +579,96 @@ exports.SymbolPrototypeExtensions = new extension_1.Patch(Symbol.prototype, {
          * console.log(sym.mightHaveEmbeddedJSON) // Output: false
          */
         get mightHaveEmbeddedJSON() {
-            return mightContain(this.description);
+            return JSONToggle.perform((toggle, patch) => {
+                return JSON.mightContain(this.description);
+            });
         },
+        /**
+         * Retrieves the reference object associated with the symbol.
+         *
+         * This getter method checks if the symbol's description matches a
+         * specific pattern using a regular expression. If a match is found,
+         * it extracts the token from the description and constructs a shared
+         * key using the token. It then retrieves the symbol associated with
+         * the shared key using the `sharedKey` method of the
+         * `SymbolExtensions.patches` object. Finally, it returns the data
+         * associated with the retrieved symbol.
+         *
+         * If no match is found or the retrieved symbol has no associated
+         * data, `undefined` is returned.
+         *
+         * @type {any}
+         * @readonly
+         *
+         * @example
+         * const sym = Symbol.for('@nejs.internal.refkey:example #shared')
+         * console.log(sym.refObject) // Output: the data associated with the
+         *                             // 'internal.refkey:example' shared key
+         *
+         * @example
+         * const sym = Symbol('no_match')
+         * console.log(sym.refObject) // Output: undefined
+         */
+        get refObject() {
+            const re = /@nejs.internal.refkey:(\S+) #shared/.exec(this.description);
+            if (re?.[1]) {
+                const [_match, token] = re;
+                const shareKey = `internal.refkey:${token}`;
+                const symbol = exports.SymbolExtensions.patches.sharedKey(shareKey);
+                return symbol?.data;
+            }
+            return undefined;
+        },
+        /**
+         * Returns a formatted string representation of the symbol's
+         * description, highlighting any embedded JSON data.
+         *
+         * This getter method checks if the symbol's description contains
+         * JSON data and formats it for better readability. It uses the
+         * `sgr` function from the `String` object to apply color formatting
+         * to the output.
+         *
+         * If the symbol's description contains JSON data longer than 30
+         * characters, it truncates the JSON data and displays an ellipsis
+         * in the middle. The JSON data is highlighted using the 'di' color
+         * code.
+         *
+         * @type {string}
+         * @readonly
+         *
+         * @example
+         * const sym = Symbol.for('mySymbol {"name":"John Doe"}')
+         * console.log(sym.sgrString)
+         * // Output: Symbol.for(mySymbol {"name":"John ...hn Doe"})
+         *
+         * @example
+         * const sym = Symbol('mySymbol')
+         * console.log(sym.sgrString)
+         * // Output: mySymbol
+         */
         get sgrString() {
-            let revert = false;
-            let detail = undefined;
             let { sgr } = String;
             if (!sgr) {
                 sgr = (string, ...args) => string;
             }
-            if (!json_extensions_js_1.JSONExtensions.applied) {
-                JSONToggle.start();
-                revert = true;
-            }
-            if ((detail = JSON.mightContain(this.description, true))) {
-                let jsonText = detail[2][0];
-                let index = detail[1];
-                if (~index && jsonText && jsonText.length > 30) {
-                    let desc = this.description;
-                    let newDescription = [
-                        sgr(`Symbol.for(${desc.slice(0, index)}`, 'green'),
-                        sgr(jsonText.slice(0, 10), 'di'),
-                        '...',
-                        sgr(jsonText.slice(-5), 'di'),
-                        sgr(`${desc.slice(index + jsonText.length + 1)})`, 'green'),
-                    ].join('');
-                    if (revert) {
-                        JSONToggle.stop();
+            const response = JSONToggle.perform((toggle, patch) => {
+                let [mightContain, index, jsonResponse] = JSON.mightContain(this.description, true);
+                let jsonText = jsonResponse?.[0];
+                if (mightContain) {
+                    if (~index && jsonText && jsonText.length > 30) {
+                        let desc = this.description;
+                        let newDescription = [
+                            sgr(`Symbol.for(${desc.slice(0, index)}`, 'green'),
+                            sgr(jsonText.slice(0, 10), 'di'),
+                            '...',
+                            sgr(jsonText.slice(-5), 'di'),
+                            sgr(`${desc.slice(index + jsonText.length + 1)})`, 'green')
+                        ].join('');
+                        return `${newDescription}`;
                     }
-                    return `${newDescription}`;
                 }
-            }
-            if (revert) {
-                JSONToggle.stop();
-            }
-            return newDescription;
+            });
+            return response ?? this.description;
         },
         /**
          * Custom inspect method for Node.js util.inspect.

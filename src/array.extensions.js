@@ -52,6 +52,10 @@ export const ArrayExtensions = new Patch(Array, {
 
 const { ifArray: pIfArray } = ArrayExtensions.patches
 
+// todo: everyOfType(type), someOfType(type)
+// todo: everyWithTag(stringTag), someWithTag(stringTag),
+// todo: everyOfInstance(Class), someOfInstance(Class)
+
 /**
  * `ArrayPrototypeExtensions` is a constant that applies a patch to the
  * Array prototype. This patch extends the Array prototype with additional
@@ -329,6 +333,168 @@ export const ArrayPrototypeExtensions = new Patch(Array.prototype, {
 
       return result
     },
+
+    /**
+     * Weaves together an array of keys and an array of values into an
+     * object, using the provided default value for missing values and
+     * the specified base descriptor for defining properties. This can
+     * be used to quickly generate empty models if a list of keys from
+     * a preset or other object.
+     *
+     * @param {Array} arrayOfKeys - An array of keys to be used as
+     * property names in the resulting object.
+     * @param {Array} [arrayOfValues] - An optional array of values to
+     * be assigned to the corresponding keys. If not provided or not an
+     * array, the `defaultValue` will be used for all properties.
+     * @param {*} [defaultValue] - The default value to be used for
+     * missing values or when `arrayOfValues` is not an array or when
+     * there are not enough values for the number of keys.
+     * @param {Object|string} [baseDescriptor] - The base property
+     * descriptor to be used for defining properties. If not provided,
+     * default descriptor values will be used. Special string values
+     * `'hidden'` and `'immutable'` can be used for predefined
+     * descriptors.
+     * @returns {Object} - The resulting object with the woven
+     * properties.
+     *
+     * @example
+     * const employee134 = { name: 'Jane Doe', yearsOfService: 3 }
+     * const employee135 = Array.weave(Object.keys(employee134))
+     * // employee135 = { name: undefined, yearsOfService: undefined }
+     *
+     * @example
+     * const keys = ['a', 'b', 'c']
+     * const values = [1, 2, 3]
+     * const obj = Array.weave(keys, values)
+     * console.log(obj) // { a: 1, b: 2, c: 3 }
+     *
+     * @example
+     * const keys = ['x', 'y', 'z']
+     * const obj = Array.weave(keys, 42, 0, 'immutable')
+     * console.log(obj) // { x: 42, y: 42, z: 42 } (immutable)
+     */
+    weave(arrayOfKeys, arrayOfValues, defaultValue, baseDescriptor) {
+      if (!Array.isArray(arrayOfKeys)) {
+        return {}
+      }
+
+      if (arrayOfValues && !Array.isArray(arrayOfValues)) {
+        const repeatedValue = arrayOfValues
+        arrayOfValues = []
+        for (const _ of arrayOfKeys) {
+          arrayOfValues.push(repeatedValue)
+        }
+      }
+
+      const descKeys = ['configurable', 'enumerable', 'writable']
+
+      let object = {}
+      let descriptor
+      let keys = arrayOfKeys
+      let values = arrayOfValues
+      let useGetter = false
+
+      // Ensure we have a descriptor
+      if (!baseDescriptor) {
+        descriptor = descKeys.reduce(
+          (acc, key) => { acc[key] = true; return acc }, {}
+        )
+      }
+      else if (baseDescriptor === 'hidden') {
+        baseDescriptor = { configurable: true, enumerable: false }
+      }
+      else if (baseDescriptor === 'immutable') {
+        useGetter = true
+        baseDescriptor = { configurable: false, enumerable: false }
+      }
+      else if (baseDescriptor && typeof baseDescriptor === 'object') {
+        descriptor = descKeys.reduce(
+          (acc, key) => {
+            acc[key] = baseDescriptor?.[key] ?? true; return acc
+          }, {}
+        )
+      }
+
+      for (const [index, key] of Object.entries(keys)) {
+        if (useGetter) {
+          Object.defineProperty(object, key, {
+            ...descriptor,
+            get() { return values?.[index] ?? defaultValue },
+          })
+        }
+        else {
+          Object.defineProperty(object, key, {
+            ...descriptor,
+            value: values?.[index] ?? defaultValue,
+          })
+        }
+      }
+
+      return object
+    },
+
+    /**
+     * @property {object} kTypeDefaults
+     * @description
+     * An object that maps JavaScript types to their default values.
+     * This is useful for initializing variables or properties with
+     * a default value based on their expected type.
+     *
+     * Note that `symbol` types are initialized with `undefined`
+     * due to the fact that their usage is by definition, unique;
+     * or at the very least deliberately reused.
+     *
+     * The default values for each type are:
+     * - `undefined`: `undefined`
+     * - `symbol`: `undefined`
+     * - `string`: `""`
+     * - `object`: `{}`
+     * - `number`: `0`
+     * - `boolean`: `true`
+     * - `bigint`: `0n`
+     * - `function`: an empty function
+     *
+     * @example
+     * const defaultString = Array.kTypeDefaults.string
+     * console.log(defaultString) // Output: ""
+     *
+     * const defaultNumber = Array.kTypeDefaults.number
+     * console.log(defaultNumber) // Output: 0
+     */
+    get [Symbol.for('@nejs.defaults.by.type')]() {
+      return {
+        undefined: undefined,
+        symbol: undefined,
+        string: "",
+        object: {},
+        number: 0,
+        boolean: true,
+        bigint: 0n,
+        function() {},
+      }
+    },
+
+    /**
+     * @property {symbol} kDefaultsByType
+     * @description
+     * A unique symbol that represents the key for accessing
+     * the default values for different types.
+     *
+     * This symbol is created using `Symbol.for()` with the key
+     * `'@nejs.defaults.by.type'`. It can be used to retrieve
+     * the default values object from other parts of the code.
+     *
+     * @example
+     * const defaultsByType = Array[Array.kDefaultsByType]
+     * console.log(defaultsByType.string) // Output: ""
+     * console.log(defaultsByType.number) // Output: 0
+     *
+     * @returns {symbol} The unique symbol for accessing the
+     * default values by type.
+     */
+    get kDefaultsByType() {
+      return Symbol.for('@nejs.defaults.by.type')
+    },
   },
 })
 
@@ -336,6 +502,8 @@ export const ArrayPrototypeExtensions = new Patch(Array.prototype, {
 // Object<->Function<->Global occurs. See original source in global.this.js
 // {@see globalThis.isThenElse}
 function isThenElse(bv, tv, ev) {
+  function isFunction(value) { typeof value === 'function' }
+
   if (arguments.length > 1) {
     var _then = isFunction(tv) ? tv(bv) : tv; if (arguments.length > 2) {
       var _else = isFunction(ev) ? tv(bv) : ev; return bv ? _then : _else

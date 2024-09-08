@@ -1,6 +1,7 @@
 const { Patches } = require('../dist/cjs/index.js')
 const StringExtensions = Patches.get(String)
 const StringPrototypeExtensions = Patches.get(String.prototype)
+import { describe, beforeAll, test, expect } from 'vitest';
 
 describe('StringExtensions', () => {
   beforeAll(() => {

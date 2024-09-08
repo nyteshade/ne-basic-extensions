@@ -1,6 +1,8 @@
 const { Patches } = require('../dist/cjs/index.js')
 const ArrayPrototypeExtensions = Patches.get(Array.prototype)
 
+import { describe, expect, it } from 'vitest';
+
 ArrayPrototypeExtensions.apply();
 
 describe('ArrayPrototypeExtensions', () => {

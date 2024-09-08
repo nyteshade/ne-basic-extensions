@@ -1,6 +1,8 @@
 const { Extensions } = require('../../dist/cjs/index.js')
 const RefSet = Extensions.RefSet.class
 
+import { describe, beforeEach, test, expect } from 'vitest';
+
 describe('RefSet', () => {
   let refSet;
 
