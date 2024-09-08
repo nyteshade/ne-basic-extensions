@@ -391,7 +391,7 @@ export function createToolkit(): {
          * // Returns false
          * is.a('string', Number)
          */
-        a(value: any, typeOrClass: any, alreadyReversed?: boolean | undefined): boolean;
+        a(value: any, typeOrClass: any): boolean;
         /**
          * Check if a value is an accessor descriptor.
          *
@@ -410,7 +410,7 @@ export function createToolkit(): {
          * // Returns false
          * is.accessorDescriptor({ value: 42, writable: true });
          */
-        accessorDescriptor(value: any): any;
+        accessorDescriptor(value: any): boolean;
         /**
          * Check if a value is an array.
          *
@@ -967,7 +967,7 @@ export namespace is {
      * // Returns false
      * is.a('string', Number)
      */
-    export function a(value: any, typeOrClass: any, alreadyReversed?: boolean | undefined): boolean;
+    export function a(value: any, typeOrClass: any): boolean;
     /**
      * Check if a value is an accessor descriptor.
      *
@@ -986,7 +986,7 @@ export namespace is {
      * // Returns false
      * is.accessorDescriptor({ value: 42, writable: true });
      */
-    export function accessorDescriptor(value: any): any;
+    export function accessorDescriptor(value: any): boolean;
     /**
      * Check if a value is an array.
      *

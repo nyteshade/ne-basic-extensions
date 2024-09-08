@@ -39,7 +39,7 @@ export const is = {
    * // Returns false
    * is.a('string', Number)
    */
-  a(value, typeOrClass, alreadyReversed = false) {
+  a(value, typeOrClass) {
     const valueType = typeof value
     const valueTag = this.object(value) && value[Symbol.toStringTag]
 
@@ -86,7 +86,7 @@ export const is = {
    * is.accessorDescriptor({ value: 42, writable: true });
    */
   accessorDescriptor(value) {
-    return (
+    return !!(
       this.descriptor(value) &&
       (value?.get || value?.set) &&
       value?.writable === undefined &&
