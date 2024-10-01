@@ -1889,9 +1889,10 @@ export namespace as {
     function boolean(value: any): boolean;
 }
 declare namespace _default {
+    export { as };
+    export { has };
     export { is };
     export { si };
-    export { has };
-    export { as };
+    export { createToolkit };
 }
 export default _default;

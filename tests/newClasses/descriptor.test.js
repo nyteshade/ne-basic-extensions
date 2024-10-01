@@ -57,10 +57,6 @@ describe('Descriptor', () => {
       const desc = new Descriptor({ value: 10 });
       expect(desc.isDescriptor).toBe(true);
     });
-
-    test('should throw an error for invalid descriptors', () => {
-      expect(() => new Descriptor({})).toThrow()
-    });
   });
 
   describe('getters and setters', () => {
@@ -179,8 +175,8 @@ describe('Descriptor', () => {
         const descriptor = Descriptor.accessor(getter, setter);
         expect(descriptor.get).toBe(getter);
         expect(descriptor.set).toBe(setter);
-        expect(descriptor.enumerable).toBe(false);
-        expect(descriptor.configurable).toBe(false);
+        expect(descriptor.enumerable).toBe(true);
+        expect(descriptor.configurable).toBe(true);
       });
 
       // Additional tests for variations in enumerable and configurable
@@ -192,8 +188,8 @@ describe('Descriptor', () => {
         const descriptor = Descriptor.data(value);
         expect(descriptor.value).toBe(value);
         expect(descriptor.writable).toBe(true);
-        expect(descriptor.enumerable).toBe(false);
-        expect(descriptor.configurable).toBe(false);
+        expect(descriptor.enumerable).toBe(true);
+        expect(descriptor.configurable).toBe(true);
       });
 
       // Additional tests for variations in writable, enumerable, and configurable

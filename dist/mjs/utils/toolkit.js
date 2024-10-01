@@ -1364,9 +1364,10 @@ export function createToolkit() {
     return { si, is, has, as };
 }
 export default {
+    as,
+    has,
     is,
     si,
-    has,
-    as,
+    createToolkit,
 };
 //# sourceMappingURL=toolkit.js.map

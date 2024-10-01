@@ -1,14 +1,5 @@
 export class Descriptor {
     /**
-     * Shorthand for Object.getOwnPropertyDescriptor()
-     *
-     * @param {object} object a non-null object instance
-     * @param {string|symbol} key a symbol or string referencing which key on the
-     * object to return a descriptor for.
-     * @returns an object descriptor for the requested field or null
-     */
-    static for(object: object, key: string | symbol, wrap?: boolean): PropertyDescriptor | Descriptor | null | undefined;
-    /**
      * The function `getData` retrieves the value of a property from an object
      * if it exists and is a data property.
      *
@@ -71,15 +62,7 @@ export class Descriptor {
      * @returns an object with properties "get", "set", "enumerable", and
      * "configurable".
      */
-    static accessor(getter: any, setter: any, { enumerable, configurable }?: {
-        enumerable: boolean;
-        configurable: boolean;
-    } | undefined): {
-        get: any;
-        set: any;
-        enumerable: boolean;
-        configurable: boolean;
-    };
+    static accessor(...args: any[]): any;
     /**
      * The function "newData" creates a new data object with customizable
      * properties.
@@ -95,14 +78,18 @@ export class Descriptor {
      * `configurable`.
      */
     static data(value: any, writable?: boolean | undefined, { enumerable, configurable }?: {
-        enumerable: boolean;
         configurable: boolean;
-    } | undefined): {
-        value: any;
         enumerable: boolean;
-        writable: boolean;
-        configurable: boolean;
-    };
+    } | undefined): any;
+    /**
+     * Shorthand for Object.getOwnPropertyDescriptor()
+     *
+     * @param {object} object a non-null object instance
+     * @param {string|symbol} key a symbol or string referencing which key on the
+     * object to return a descriptor for.
+     * @returns an object descriptor for the requested field or null
+     */
+    static for(object: object, key: string | symbol, wrap?: boolean): PropertyDescriptor | Descriptor | null | undefined;
     /**
      * The function checks if an object is a likely an object descriptor in
      * JavaScript. This is determined as an object with some of the known
@@ -110,43 +97,51 @@ export class Descriptor {
      * or set). Technically, any object could serve as a descriptor but this
      * function only returns true if known descriptor keys are found.
      *
-     * @param object - The `object` parameter is the object that we want to
-     * check if it is a descriptor.
-     * @returns a boolean value.
-     */
-    static isDescriptor(object: any): any;
-    /**
-     * The function checks if a given property or descriptor is a data property.
+     * @param {any} object - Any value we want to check for being a descriptor.
+     * @param {boolean} returnStatsInstead defaults to false, but if the value
+     * is `true` then an object with reasoning behind the decision of whether
+     * or not the
+     * @returns {IsDescriptorResponse} either a {@link boolean} value or
+     * an object conforming to {@link IsDescriptorStats} if `returnStatsInstead`
+     * is `true`
      *
-     * brie
-     *
-     * @param descriptor_orProp - The `descriptor_orProp` parameter can be
-     * either a descriptor or a property name.
-     * @param object - The `object` parameter is the object that you want to
-     * check for data properties.
-     * @returns a boolean value. It returns `true` if the `descriptor` object
-     * has any keys that match the `DATA_KEYS` array, otherwise it returns
-     * `false`.
+     * @see {@link DescriptorUtils.isDescriptor}
      */
-    static isData(object_orProp: any, property: any): boolean;
+    static isDescriptor(object: any, returnStatsInstead?: boolean): IsDescriptorResponse;
     /**
      * The function checks if a given property descriptor or property of an
      * object is an accessor.
      *
-     * @param object_orProp - The `descriptor_orProp` parameter can be either a
-     * descriptor object or a property name.
-     * @param property - The `object` parameter is the object that you want to
-     * check for accessor properties.
-     * @returns a boolean value. It returns true if the descriptor or property
-     * passed as an argument is an accessor descriptor, and false otherwise.
+     * @param {object} objectOrDescriptor - The `objectOrDescriptor` parameter
+     * can be either a descriptor object or a property name.
+     * @param {(string|number|symbol)?} property the property name you wish to
+     * check the validity as an accessor descriptor. Only expected if the
+     * `objectOrDescriptor` parameter is the object that would contain this
+     * property.
+     * @returns {@link Boolean} returning `true` if the `descriptor` object
+     * has any keys that match the {@link Descriptor.ACCESSOR_KEYS} array,
+     * otherwise it returns `false`.
      */
-    static isAccessor(object_orProp: any, property: any): boolean;
+    static isAccessor(objectOrDescriptor: object, property: (string | number | symbol) | null): any;
+    /**
+     * The function checks if a given property or descriptor is a data property.
+     *
+     * @param {object} objectOrDescriptor - The `objectOrDescriptor` parameter
+     * can be either a descriptor object or a property name.
+     * @param {(string|number|symbol)?} property the property name you wish to
+     * check the validity as an accessor descriptor. Only expected if the
+     * `objectOrDescriptor` parameter is the object that would contain this
+     * property.
+     * @returns {@link Boolean} returning `true` if the `descriptor` object
+     * has any keys that match the {@link Descriptor.DATA_KEYS} array, otherwise
+     * it returns `false`.
+     */
+    static isData(objectOrDescriptor: object, property: (string | number | symbol) | null): any;
     /**
      * A base descriptor (new for each read) that is both enumerable and
      * configurable
      *
-     * @returns The method `flexible` is returning the result of calling the
-     * `base` method with the arguments `true` and `true`.
+     * @returns `{ enumerable: true, configurable: true }`
      */
     static get flexible(): {
         enumerable: boolean;
@@ -156,8 +151,7 @@ export class Descriptor {
      * A base descriptor (new for each read) that is not enumerable but is
      * configurable
      *
-     * @returns The method `enigmatic` is returning the result of calling
-     * the `base` method with the arguments `false` and `true`.
+     * @returns `{ enumerable: false, configurable: true }`
      */
     static get enigmatic(): {
         enumerable: boolean;
@@ -165,20 +159,19 @@ export class Descriptor {
     };
     /**
      * A base descriptor (new for each read) that is neither enumerable
-     * nor configurable
+     * nor configurable.
      *
-     * @returns The code is returning the result of calling the `base` method with
-     * the arguments `false` and `false`.
+     * @returns `{ enumerable: false, configurable: false }`
      */
     static get intrinsic(): {
         enumerable: boolean;
         configurable: boolean;
     };
     /**
-     * A base descriptor (new for each read) that enumerable but not configurable
+     * A base descriptor (new for each read) that is enumerable but
+     * not configurable
      *
-     * @returns The method is returning the result of calling the `base`
-     * method with the arguments `true` and `false`.
+     * @returns `{ enumerable: true, configurable: false }`
      */
     static get transparent(): {
         enumerable: boolean;
@@ -219,7 +212,22 @@ export class Descriptor {
      * @throws {Error} Throws an error if the constructed descriptor is not
      * valid.
      */
-    constructor(object: object | Descriptor, key?: string | symbol | undefined);
+    constructor(object: object | Descriptor, key?: string | symbol | undefined, ...args: any[]);
+    /**
+     * The default private descriptor value is that of `enigmatic`
+     *
+     * @private
+     * @type {object}
+     */
+    private _desc;
+    /**
+     * An optionally associated object, usually the parent from which
+     * the descriptor was taken, or undefined if none was able to be
+     * derived.
+     *
+     * @type {object}
+     */
+    _object: object;
     /**
      * Detects whether or not this instance is an accessor object descriptor
      *
@@ -241,85 +249,6 @@ export class Descriptor {
      */
     get isDescriptor(): boolean;
     /**
-     * Sets the `configurable` value of this object. If the internal descriptor
-     * store store is invalid, the value is thrown away
-     *
-     * @param {boolean} value the value to set for the `configurable` descriptor
-     * property. If this value is not a `boolean` it will be converted to one
-     */
-    set configurable(value: boolean);
-    /**
-     * Getter around the `configurable` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {boolean} a boolean value or undefined if the internal
-     * descriptor store is invalid.
-     */
-    get configurable(): boolean;
-    /**
-     * Sets the `enumerable` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {boolean} value the value to set for the `enumerable` descriptor
-     * property. If this value is not a `boolean` it will be converted to one
-     */
-    set enumerable(value: boolean);
-    /**
-     * Getter around the `enumerable` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {boolean} a boolean value or undefined if the internal
-     * descriptor store is invalid.
-     */
-    get enumerable(): boolean;
-    /**
-     * Sets the `writable` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {boolean} value the value to set for the `writable` descriptor
-     * property. If this value is not a `boolean` it will be converted to one
-     */
-    set writable(value: boolean);
-    /**
-     * Getter around the `writable` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {boolean} a boolean value or undefined if the internal
-     * descriptor store is invalid.
-     */
-    get writable(): boolean;
-    /**
-     * Sets the `value` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {any} value the value to set for the `value` descriptor
-     * property.
-     */
-    set value(value: any);
-    /**
-     * Getter around the `value` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {any} any value stored in this descriptor
-     */
-    get value(): any;
-    /**
-     * Sets the `get` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {function} value the getter function for this descriptor
-     */
-    set get(value: Function);
-    /**
-     * Getter around the `get` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {function} a function if the getter for this descriptor is
-     * defined or `undefined` if the internal descriptor object or the getter
-     * is undefined.
-     */
-    get get(): Function;
-    /**
      * Retrieves the {@link get} function for this accessor and binds it to
      * the object from which the descriptor was derived, if that value is set.
      * Otherwise this method is identical to the {@link get} accessor.
@@ -328,22 +257,6 @@ export class Descriptor {
      * getter will be bound the associated and previously set `object`.
      */
     get boundGet(): Function;
-    /**
-     * Sets the `set` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {function} value the setter function for this descriptor
-     */
-    set set(value: Function);
-    /**
-     * Getter around the `set` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {function} a function if the setter for this descriptor is
-     * defined or `undefined` if the internal descriptor object or the setter
-     * is undefined.
-     */
-    get set(): Function;
     /**
      * Retrieves the {@link set} function for this accessor and binds it to
      * the object from which the descriptor was derived, if that value is set.
@@ -416,7 +329,6 @@ export class Descriptor {
      * @returns {string} the name of the class
      */
     get [Symbol.toStringTag](): string;
-    #private;
 }
 export const DescriptorExtensions: Extension;
 import { Extension } from '@nejs/extension';

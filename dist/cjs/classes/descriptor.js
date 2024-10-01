@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DescriptorExtensions = exports.Descriptor = void 0;
 const extension_1 = require("@nejs/extension");
+const descriptor_utils_js_1 = require("../utils/descriptor.utils.js");
 class Descriptor {
     /**
      * The default private descriptor value is that of `enigmatic`
@@ -9,7 +10,7 @@ class Descriptor {
      * @private
      * @type {object}
      */
-    #desc = undefined;
+    _desc = undefined;
     /**
      * An optionally associated object, usually the parent from which
      * the descriptor was taken, or undefined if none was able to be
@@ -17,7 +18,7 @@ class Descriptor {
      *
      * @type {object}
      */
-    #object = undefined;
+    _object = undefined;
     /**
      * Constructs a Descriptor instance which wraps and manages an object
      * property descriptor. The constructor can handle an existing descriptor
@@ -35,24 +36,31 @@ class Descriptor {
      * valid.
      */
     constructor(object, key) {
-        if ((object ?? key) === undefined) {
-            this.#desc = Descriptor.enigmatic;
+        if (arguments.length === 0) {
+            this._desc = Descriptor.enigmatic;
         }
         else if (Descriptor.isDescriptor(object)) {
-            this.#desc = object;
-            this.#object = isObject(key) ? key : undefined;
+            this._desc = object;
+            this._object = isObject(key) ? key : undefined;
         }
         else if (isObject(object) && isValidKey(key)) {
-            this.#desc = Object.getOwnPropertyDescriptor(object, key);
-            this.#object = object;
+            console.log('new Descriptor(%o, %o)', object, key);
+            this._desc = Object.getOwnPropertyDescriptor(object, key);
+            this._object = object;
         }
         if (!this.isDescriptor) {
+            const objectMsg = object === globalThis
+                ? '[GLOBAL]'
+                : (typeof key === 'object' ? JSON.stringify(object) : String(object));
+            const keyMsg = key === globalThis
+                ? '[GLOBAL]'
+                : (typeof key === 'object' ? JSON.stringify(key) : String(key));
             console.error(`
       Descriptor(object: ${object}, key: ${key}) FAILED:
-        object:      ${object === globalThis ? '[GLOBAL]' : (typeof key === 'object' ? JSON.stringify(object) : String(object))}
-        key:         ${key === globalThis ? '[GLOBAL]' : (typeof key === 'object' ? JSON.stringify(key) : String(key))}
-        descriptor:  `, this.#desc);
-            throw new Error(`Not a valid descriptor:`, this.#desc);
+        object:      ${objectMsg}
+        key:         ${keyMsg}
+        descriptor:  `, this._desc);
+            throw new Error(`Not a valid descriptor:`, this._desc);
         }
     }
     /**
@@ -62,7 +70,7 @@ class Descriptor {
      * a data descriptor
      */
     get isAccessor() {
-        return Descriptor.isAccessor(this.#desc);
+        return (0, descriptor_utils_js_1.isDescriptor)(this._desc, true).isAccessor;
     }
     /**
      * Detects whether or not this instance is an data object descriptor
@@ -71,7 +79,7 @@ class Descriptor {
      * an accessor descriptor
      */
     get isData() {
-        return Descriptor.isData(this.#desc);
+        return (0, descriptor_utils_js_1.isDescriptor)(this._desc, true).isData;
     }
     /**
      * Detects whether or not this instance is a valid object descriptor
@@ -79,97 +87,7 @@ class Descriptor {
      * @returns {boolean} true if this descriptor store is a valid descriptor
      */
     get isDescriptor() {
-        return Descriptor.isDescriptor(this.#desc);
-    }
-    /**
-     * Getter around the `configurable` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {boolean} a boolean value or undefined if the internal
-     * descriptor store is invalid.
-     */
-    get configurable() {
-        return !!this.#desc?.configurable;
-    }
-    /**
-     * Sets the `configurable` value of this object. If the internal descriptor
-     * store store is invalid, the value is thrown away
-     *
-     * @param {boolean} value the value to set for the `configurable` descriptor
-     * property. If this value is not a `boolean` it will be converted to one
-     */
-    set configurable(value) {
-        (this.#desc || {}).configurable = !!value;
-    }
-    /**
-     * Getter around the `enumerable` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {boolean} a boolean value or undefined if the internal
-     * descriptor store is invalid.
-     */
-    get enumerable() {
-        return this.#desc?.enumerable;
-    }
-    /**
-     * Sets the `enumerable` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {boolean} value the value to set for the `enumerable` descriptor
-     * property. If this value is not a `boolean` it will be converted to one
-     */
-    set enumerable(value) {
-        (this.#desc || {}).enumerable = value;
-    }
-    /**
-     * Getter around the `writable` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {boolean} a boolean value or undefined if the internal
-     * descriptor store is invalid.
-     */
-    get writable() {
-        return this.#desc?.writable;
-    }
-    /**
-     * Sets the `writable` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {boolean} value the value to set for the `writable` descriptor
-     * property. If this value is not a `boolean` it will be converted to one
-     */
-    set writable(value) {
-        (this.#desc || {}).writable = value;
-    }
-    /**
-     * Getter around the `value` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {any} any value stored in this descriptor
-     */
-    get value() {
-        return this.#desc?.value;
-    }
-    /**
-     * Sets the `value` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {any} value the value to set for the `value` descriptor
-     * property.
-     */
-    set value(value) {
-        (this.#desc || {}).value = value;
-    }
-    /**
-     * Getter around the `get` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {function} a function if the getter for this descriptor is
-     * defined or `undefined` if the internal descriptor object or the getter
-     * is undefined.
-     */
-    get get() {
-        return this.#desc?.get;
+        return (0, descriptor_utils_js_1.isDescriptor)(this._desc);
     }
     /**
      * Retrieves the {@link get} function for this accessor and binds it to
@@ -180,27 +98,7 @@ class Descriptor {
      * getter will be bound the associated and previously set `object`.
      */
     get boundGet() {
-        return (isObject(this.#object) ? this.get?.bind(this.#object) : this.get);
-    }
-    /**
-     * Sets the `get` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {function} value the getter function for this descriptor
-     */
-    set get(value) {
-        (this.#desc || {}).get = value;
-    }
-    /**
-     * Getter around the `set` object descriptor property of
-     * this instance of Descriptor.
-     *
-     * @returns {function} a function if the setter for this descriptor is
-     * defined or `undefined` if the internal descriptor object or the setter
-     * is undefined.
-     */
-    get set() {
-        return (this.#desc || {}).set;
+        return (isObject(this._object) ? this.get?.bind(this._object) : this.get);
     }
     /**
      * Retrieves the {@link set} function for this accessor and binds it to
@@ -211,16 +109,7 @@ class Descriptor {
      * setter will be bound the associated and previously set `object`.
      */
     get boundSet() {
-        return (isObject(this.#object) ? this.set?.bind(this.#object) : this.set);
-    }
-    /**
-     * Sets the `set` value of this object. If the internal descriptor
-     * store is invalid, the value is thrown away
-     *
-     * @param {function} value the setter function for this descriptor
-     */
-    set set(value) {
-        (this.#desc || {}).set = value;
+        return (isObject(this._object) ? this.set?.bind(this._object) : this.set);
     }
     /**
      * The function checks the descriptor's associated object has been set on this
@@ -229,7 +118,7 @@ class Descriptor {
      * @returns {boolean} `true` if the `object` property has been set,
      * `false` otherwise
      */
-    get hasObject() { return isObject(this.#object); }
+    get hasObject() { return isObject(this._object); }
     /**
      * Returns the descriptor's associated `object` value. This is usually the
      * parent object from which the descriptor was derived. If the value is preset
@@ -238,7 +127,7 @@ class Descriptor {
      * @returns {object} the associated object for this descriptor or undefined
      * if it has not yet been set.
      */
-    get object() { return this.#object; }
+    get object() { return this._object; }
     /**
      * Sets the descriptor's associated `object` value. This is usually the
      * parent object from which the descriptor was derived.
@@ -246,45 +135,7 @@ class Descriptor {
      * @param {object} value sets the object for which this descriptor is to
      * be associated with.
      */
-    set object(value) { this.#object = Object(value); }
-    /**
-     * The function returns a string representation of a descriptor object with
-     * additional information about its type when used in the NodeJS repl.
-     *
-     * @param {number} depth - The `depth` parameter is used to specify the
-     * maximum depth to which nested objects and arrays will be formatted. If
-     * the depth is exceeded, the output will be truncated with ellipses.
-     * @param {object} options - The `options` parameter is an object that
-     * contains various configuration options for the `inspect` function.
-     * These options can be used to customize the output of the inspection.
-     * @param {function} inspect - The `inspect` parameter is a function that
-     * is used to convert an object into a string representation. It is
-     * typically used for debugging purposes or when displaying an object's
-     * properties.
-     * @returns a string that represents a descriptor. The string includes the
-     * type of the descriptor (either "Accessor" or "Data") and the result of
-     * inspecting the descriptor object using the provided options and depth.
-     */
-    [Symbol.for('nodejs.util.inspect.custom')](depth, options, inspect) {
-        const type = this.isAccessor ? ' (Accessor)' : this.isData ? ' (Data)' : '';
-        return `Descriptor${type} ${inspect(this.#desc, { ...options, depth })}`;
-    }
-    /**
-     * Shorthand for Object.getOwnPropertyDescriptor()
-     *
-     * @param {object} object a non-null object instance
-     * @param {string|symbol} key a symbol or string referencing which key on the
-     * object to return a descriptor for.
-     * @returns an object descriptor for the requested field or null
-     */
-    static for(object, key, wrap = false) {
-        if (!isObject(object) || !isValidKey(key) || !Reflect.has(object, key)) {
-            return null;
-        }
-        return (wrap
-            ? new Descriptor(Object.getOwnPropertyDescriptor(object, key))
-            : Object.getOwnPropertyDescriptor(object, key));
-    }
+    set object(value) { this._object = Object(value); }
     /**
      * Take the descriptor defined by this objects values and apply them to
      * the specified object using the specified key.
@@ -313,7 +164,7 @@ class Descriptor {
      * a descriptor.
      */
     toObject(bindAccessors = false) {
-        let descriptor = { ...this.#desc };
+        let descriptor = { ...this._desc };
         if (bindAccessors && this.isAccessor) {
             if (this.hasObject) {
                 descriptor = {
@@ -333,6 +184,28 @@ class Descriptor {
         return descriptor;
     }
     /**
+     * The function returns a string representation of a descriptor object with
+     * additional information about its type when used in the NodeJS repl.
+     *
+     * @param {number} depth - The `depth` parameter is used to specify the
+     * maximum depth to which nested objects and arrays will be formatted. If
+     * the depth is exceeded, the output will be truncated with ellipses.
+     * @param {object} options - The `options` parameter is an object that
+     * contains various configuration options for the `inspect` function.
+     * These options can be used to customize the output of the inspection.
+     * @param {function} inspect - The `inspect` parameter is a function that
+     * is used to convert an object into a string representation. It is
+     * typically used for debugging purposes or when displaying an object's
+     * properties.
+     * @returns a string that represents a descriptor. The string includes the
+     * type of the descriptor (either "Accessor" or "Data") and the result of
+     * inspecting the descriptor object using the provided options and depth.
+     */
+    [Symbol.for('nodejs.util.inspect.custom')](depth, options, inspect) {
+        const type = this.isAccessor ? ' (Accessor)' : this.isData ? ' (Data)' : '';
+        return `Descriptor${type} ${inspect(this._desc, { ...options, depth })}`;
+    }
+    /**
      * Converts this descriptor object into a base representation
      *
      * @param {string} hint one of `string`, `number` or default;
@@ -343,16 +216,20 @@ class Descriptor {
         switch (hint) {
             case 'string':
                 if (this.isAccessor) {
-                    const hasGetter = Reflect.has(this.#desc, 'get') ? `getter` : '';
-                    const hasSetter = Reflect.has(this.#desc, 'set') ? `setter` : '';
-                    const separator = hasGetter && hasSetter ? ', ' : '';
-                    return `Accessor (${hasGetter}${separator}${hasSetter})`;
+                    const props = [];
+                    if (Reflect.has(this._desc, 'get'))
+                        props.push('getter');
+                    if (Reflect.has(this._desc, 'set'))
+                        props.push('setter');
+                    return `Accessor (${props.join(', ')})`;
                 }
                 else if (this.isData) {
-                    const hasGetter = Reflect.has(this.#desc, 'value') ? `value` : '';
-                    const hasSetter = Reflect.has(this.#desc, 'writable') ? `writable` : '';
-                    const separator = hasGetter && hasSetter ? ', ' : '';
-                    return `Data (${hasGetter}${separator}${hasSetter})`;
+                    const props = [];
+                    if (Reflect.has(this._desc, 'value'))
+                        props.push('value');
+                    if (Reflect.has(this._desc, 'writable'))
+                        props.push('writable');
+                    return `Data (${props.join(', ')})`;
                 }
                 break;
             case 'number':
@@ -453,13 +330,8 @@ class Descriptor {
      * @returns an object with properties "get", "set", "enumerable", and
      * "configurable".
      */
-    static accessor(getter, setter, { enumerable, configurable } = Descriptor.base()) {
-        return {
-            get: getter,
-            set: setter,
-            enumerable,
-            configurable
-        };
+    static accessor() {
+        return (0, descriptor_utils_js_1.accessor)(...arguments);
     }
     /**
      * The function "newData" creates a new data object with customizable
@@ -475,13 +347,24 @@ class Descriptor {
      * @returns an object with properties `value`, `enumerable`, `writable`, and
      * `configurable`.
      */
-    static data(value, writable = true, { enumerable, configurable } = Descriptor.base()) {
-        return {
-            value,
-            enumerable,
-            writable,
-            configurable
-        };
+    static data(value, writable = true, { enumerable, configurable } = { configurable: true, enumerable: true }) {
+        return (0, descriptor_utils_js_1.data)(value, writable, enumerable, configurable);
+    }
+    /**
+     * Shorthand for Object.getOwnPropertyDescriptor()
+     *
+     * @param {object} object a non-null object instance
+     * @param {string|symbol} key a symbol or string referencing which key on the
+     * object to return a descriptor for.
+     * @returns an object descriptor for the requested field or null
+     */
+    static for(object, key, wrap = false) {
+        if (!isObject(object) || !isValidKey(key) || !Reflect.has(object, key)) {
+            return null;
+        }
+        return (wrap
+            ? new Descriptor(Object.getOwnPropertyDescriptor(object, key))
+            : Object.getOwnPropertyDescriptor(object, key));
     }
     /**
      * The function checks if an object is a likely an object descriptor in
@@ -490,107 +373,101 @@ class Descriptor {
      * or set). Technically, any object could serve as a descriptor but this
      * function only returns true if known descriptor keys are found.
      *
-     * @param object - The `object` parameter is the object that we want to
-     * check if it is a descriptor.
-     * @returns a boolean value.
-     */
-    static isDescriptor(object) {
-        const knownKeys = [
-            ...Descriptor.SHARED_KEYS,
-            ...Descriptor.ACCESSOR_KEYS,
-            ...Descriptor.DATA_KEYS,
-        ];
-        return hasSome(object, knownKeys);
-    }
-    /**
-     * The function checks if a given property or descriptor is a data property.
+     * @param {any} object - Any value we want to check for being a descriptor.
+     * @param {boolean} returnStatsInstead defaults to false, but if the value
+     * is `true` then an object with reasoning behind the decision of whether
+     * or not the
+     * @returns {IsDescriptorResponse} either a {@link boolean} value or
+     * an object conforming to {@link IsDescriptorStats} if `returnStatsInstead`
+     * is `true`
      *
-     * brie
-     *
-     * @param descriptor_orProp - The `descriptor_orProp` parameter can be
-     * either a descriptor or a property name.
-     * @param object - The `object` parameter is the object that you want to
-     * check for data properties.
-     * @returns a boolean value. It returns `true` if the `descriptor` object
-     * has any keys that match the `DATA_KEYS` array, otherwise it returns
-     * `false`.
+     * @see {@link DescriptorUtils.isDescriptor}
      */
-    static isData(object_orProp, property) {
-        const needsDescriptor = (((typeof object_orProp === 'object') || object_orProp instanceof Object) &&
-            property instanceof String);
-        const descriptor = (needsDescriptor
-            ? Descriptor.for(object_orProp, property)
-            : object_orProp);
-        const { DATA_KEYS } = this;
-        let validData = false;
-        if (hasSome(descriptor, DATA_KEYS)) {
-            validData = true;
-        }
-        return validData;
+    static isDescriptor(object, returnStatsInstead = false) {
+        return (0, descriptor_utils_js_1.isDescriptor)(object, returnStatsInstead);
     }
     /**
      * The function checks if a given property descriptor or property of an
      * object is an accessor.
      *
-     * @param object_orProp - The `descriptor_orProp` parameter can be either a
-     * descriptor object or a property name.
-     * @param property - The `object` parameter is the object that you want to
-     * check for accessor properties.
-     * @returns a boolean value. It returns true if the descriptor or property
-     * passed as an argument is an accessor descriptor, and false otherwise.
+     * @param {object} objectOrDescriptor - The `objectOrDescriptor` parameter
+     * can be either a descriptor object or a property name.
+     * @param {(string|number|symbol)?} property the property name you wish to
+     * check the validity as an accessor descriptor. Only expected if the
+     * `objectOrDescriptor` parameter is the object that would contain this
+     * property.
+     * @returns {@link Boolean} returning `true` if the `descriptor` object
+     * has any keys that match the {@link Descriptor.ACCESSOR_KEYS} array,
+     * otherwise it returns `false`.
      */
-    static isAccessor(object_orProp, property) {
-        const needsDescriptor = ((object_orProp && property) &&
-            ((typeof object_orProp === 'object') || object_orProp instanceof Object) &&
-            (property instanceof String || (typeof property === 'symbol')));
-        const descriptor = (needsDescriptor
-            ? Descriptor.for(object_orProp, property)
-            : object_orProp);
-        const { ACCESSOR_KEYS } = this;
-        let validAccessor = false;
-        if (hasSome(descriptor, ACCESSOR_KEYS)) {
-            validAccessor = true;
-        }
-        return validAccessor;
+    static isAccessor(objectOrDescriptor, property) {
+        const needsDescriptor = objectOrDescriptor &&
+            property &&
+            isObject(objectOrDescriptor) &&
+            isValidKey(property);
+        const descriptor = needsDescriptor
+            ? Descriptor.for(objectOrDescriptor, property)
+            : objectOrDescriptor;
+        return (0, descriptor_utils_js_1.isDescriptor)(descriptor, true).isAccessor;
+    }
+    /**
+     * The function checks if a given property or descriptor is a data property.
+     *
+     * @param {object} objectOrDescriptor - The `objectOrDescriptor` parameter
+     * can be either a descriptor object or a property name.
+     * @param {(string|number|symbol)?} property the property name you wish to
+     * check the validity as an accessor descriptor. Only expected if the
+     * `objectOrDescriptor` parameter is the object that would contain this
+     * property.
+     * @returns {@link Boolean} returning `true` if the `descriptor` object
+     * has any keys that match the {@link Descriptor.DATA_KEYS} array, otherwise
+     * it returns `false`.
+     */
+    static isData(objectOrDescriptor, property) {
+        const needsDescriptor = objectOrDescriptor &&
+            property &&
+            isObject(objectOrDescriptor) &&
+            isValidKey(property);
+        const descriptor = needsDescriptor
+            ? Descriptor.for(objectOrDescriptor, property)
+            : objectOrDescriptor;
+        return (0, descriptor_utils_js_1.isDescriptor)(descriptor, true).isData;
     }
     /**
      * A base descriptor (new for each read) that is both enumerable and
      * configurable
      *
-     * @returns The method `flexible` is returning the result of calling the
-     * `base` method with the arguments `true` and `true`.
+     * @returns `{ enumerable: true, configurable: true }`
      */
     static get flexible() {
-        return this.base(true, true);
+        return { enumerable: true, configurable: true };
     }
     /**
      * A base descriptor (new for each read) that is not enumerable but is
      * configurable
      *
-     * @returns The method `enigmatic` is returning the result of calling
-     * the `base` method with the arguments `false` and `true`.
+     * @returns `{ enumerable: false, configurable: true }`
      */
     static get enigmatic() {
-        return this.base(false, true);
+        return { enumerable: false, configurable: true };
     }
     /**
      * A base descriptor (new for each read) that is neither enumerable
-     * nor configurable
+     * nor configurable.
      *
-     * @returns The code is returning the result of calling the `base` method with
-     * the arguments `false` and `false`.
+     * @returns `{ enumerable: false, configurable: false }`
      */
     static get intrinsic() {
-        return this.base(false, false);
+        return { enumerable: false, configurable: false };
     }
     /**
-     * A base descriptor (new for each read) that enumerable but not configurable
+     * A base descriptor (new for each read) that is enumerable but
+     * not configurable
      *
-     * @returns The method is returning the result of calling the `base`
-     * method with the arguments `true` and `false`.
+     * @returns `{ enumerable: true, configurable: false }`
      */
     static get transparent() {
-        return this.base(true, false);
+        return { enumerable: true, configurable: false };
     }
     /**
      * The function returns an array of shared descriptor keys.
@@ -598,7 +475,7 @@ class Descriptor {
      * @returns An array containing the strings 'configurable' and 'enumerable'.
      */
     static get SHARED_KEYS() {
-        return ['configurable', 'enumerable'];
+        return descriptor_utils_js_1.kSharedDescriptorKeys;
     }
     /**
      * The function returns an array of accessor descriptor keys.
@@ -606,7 +483,7 @@ class Descriptor {
      * @returns An array containing the strings 'get' and 'set' is being returned.
      */
     static get ACCESSOR_KEYS() {
-        return ['get', 'set'];
+        return descriptor_utils_js_1.kAccessorDescriptorKeys;
     }
     /**
      * The function returns an array of data descriptor keys.
@@ -615,16 +492,46 @@ class Descriptor {
      * returned.
      */
     static get DATA_KEYS() {
-        return ['value', 'writable'];
+        return descriptor_utils_js_1.kDataDescriptorKeys;
+    }
+    static {
+        for (const key of descriptor_utils_js_1.kDescriptorKeys) {
+            Object.defineProperties(Descriptor.prototype, {
+                [key]: (0, descriptor_utils_js_1.accessor)(function getMaker(storage) {
+                    return function get() {
+                        return this._desc[key];
+                    };
+                }, function setMaker(storage) {
+                    return function set(value) {
+                        this._desc[key] = value;
+                    };
+                })
+            });
+        }
     }
 }
 exports.Descriptor = Descriptor;
 exports.DescriptorExtensions = new extension_1.Extension(Descriptor);
-function isObject(o) { return o && typeof o === 'object'; }
-function isValidKey(o) { return ['string', 'symbol'].some(t => typeof o === t); }
-function hasSome(object, ...keys) {
+function typeOrType(type, Class, notNullish = true) {
+    return (value) => ((!notNullish || (notNullish && value !== null && value !== undefined)) &&
+        (typeof value === type || (value && value instanceof Class)));
+}
+function isObject(o) { return typeOrType('object', Object)(o); }
+function isString(o) { return typeOrType('string', String)(o); }
+function isNumber(o) { return typeOrType('number', Number)(o); }
+function isSymbol(o) { return typeOrType('symbol', Symbol)(o); }
+function isFunction(o) { return typeOrType('function', Function)(o); }
+function isValidKey(o) { return isString(o) || isNumber(o) || isSymbol(o); }
+function hasAll(object, ...keys) { return hasQuantity('every', object, keys); }
+function hasSome(object, ...keys) { return hasQuantity('some', object, keys); }
+function hasQuantity(quantityFn, object, keys) {
+    return isObject(object) && (keys.flat(Infinity)
+        .map(key => Reflect.has(object, key))[quantityFn](has => has));
+}
+function hasOne(object, ...keys) {
     return isObject(object) && (keys.flat(Infinity)
         .map(key => Reflect.has(object, key))
-        .some(has => has));
+        .filter(has => has)
+        .length === 1);
 }
 //# sourceMappingURL=descriptor.js.map

@@ -42,6 +42,7 @@ const symkeys_js_1 = require("./classes/symkeys.js");
 const type_js_1 = require("./classes/type.js");
 __exportStar(require("./utils/copy.object.js"), exports);
 __exportStar(require("./utils/toolkit.js"), exports);
+__exportStar(require("./utils/descriptor.utils.js"), exports);
 const asyncIterable_js_1 = require("./classes/asyncIterable.js");
 const StaticPatches = [
     [Array, array_extensions_js_1.ArrayExtensions, Array.name],

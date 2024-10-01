@@ -705,7 +705,7 @@ export const SymbolPrototypeExtensions = new Patch(Symbol.prototype, {
                 revert = true;
             }
             if ((detail = JSON.mightContain(this.description, true))) {
-                let jsonText = detail[2][0];
+                let jsonText = detail[2]?.[0];
                 let index = detail[1];
                 if (~index && jsonText && jsonText.length > 30) {
                     let desc = this.description;

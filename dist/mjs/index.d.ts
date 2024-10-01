@@ -1,5 +1,6 @@
 export * from "./utils/copy.object.js";
 export * from "./utils/toolkit.js";
+export * from "./utils/descriptor.utils.js";
 export const Classes: {};
 export namespace all {
     let patches: {};

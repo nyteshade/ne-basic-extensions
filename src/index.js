@@ -30,6 +30,7 @@ import { TypeExtensions } from './classes/type.js'
 
 export * from './utils/copy.object.js'
 export * from './utils/toolkit.js'
+export * from './utils/descriptor.utils.js'
 
 import {
   AsyncIteratorExtensions,

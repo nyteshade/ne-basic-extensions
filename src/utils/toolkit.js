@@ -1464,8 +1464,10 @@ export function createToolkit() {
 }
 
 export default {
+  as,
+  has,
   is,
   si,
-  has,
-  as,
+
+  createToolkit,
 }

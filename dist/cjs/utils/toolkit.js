@@ -1369,9 +1369,10 @@ function createToolkit() {
     return { si: exports.si, is: exports.is, has: exports.has, as: exports.as };
 }
 exports.default = {
+    as: exports.as,
+    has: exports.has,
     is: exports.is,
     si: exports.si,
-    has: exports.has,
-    as: exports.as,
+    createToolkit,
 };
 //# sourceMappingURL=toolkit.js.map
