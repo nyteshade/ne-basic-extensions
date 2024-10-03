@@ -249,6 +249,8 @@ export const DescriptorUtils = {
       key = key ?? 'value'
       bind = bind ?? false
 
+      const nullish = (value) => value === null || value === undefined
+      const nonFn = (value) => !nullish(value) && typeof value !== 'function'
       const yesFn = (value) => typeof value === 'function'
       const zeroFn = (value) => (yesFn(value) && value.length === 0)
       const oneFn = (value) => (yesFn(value) && value.length === 1)
@@ -273,7 +275,8 @@ export const DescriptorUtils = {
         set = false
       }
 
-      if (isTrue(set) || isFalse(set)) {
+      if ((count === 1 && nonFn(get)) || (isTrue(set) || isFalse(set))) {
+        let skipSet = isFalse(set)
         storage = { [key]: get }
         const _ = liaison(storage, key)
 
@@ -288,12 +291,11 @@ export const DescriptorUtils = {
         get = addRefs(_get, storage)
         set = addRefs(_set, storage)
 
-        return {
-          get,
-          set: isFalse(set) ? undefined : set,
-          configurable,
-          enumerable
+        if (skipSet) {
+          set = undefined
         }
+
+        return {get, set, configurable, enumerable}
       }
 
       if ((zeroFn(get) && !set) || (zeroFn(get) && oneFn(set))) {
@@ -689,8 +691,6 @@ export default {
 // ---- non-exported helper functions ----
 
 function isObject(o) { return o && typeof o === 'object' }
-function isValidKey(o) { return ['string','symbol'].some(t => typeof o === t) }
-function hasAll(object, ...keys) { return hasQuantity('every', object, keys) }
 function hasSome(object, ...keys) { return hasQuantity('some', object, keys) }
 function hasQuantity(quantityFn, object, keys) {
   return isObject(object) && (keys.flat(Infinity)

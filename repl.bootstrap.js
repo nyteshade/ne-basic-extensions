@@ -1,14 +1,10 @@
-#!/usr/bin/env node --no-warnings --no-deprecations
-
-// Show the correct line numbers for encountered errors in src not dist
-const sourceMapSupport = await import('source-map-support');
-sourceMapSupport?.install();
+#!/usr/bin/env node --no-warnings --no-deprecations --enable-source-maps
 
 // Import everything for playtesting.
 (await import('./dist/mjs/index.js')).Controls.enableAll();
 
+const { accessor, data, isDescriptor } = await import('./dist/mjs/utils/index.js')
 const { inspect } = await import('util');
-
 
 const nejsExtension = await import('@nejs/extension');
 
@@ -39,7 +35,7 @@ function about() {
 
 const clear = () => {
   if (allowInvocation) {
-    process.stdout.write('\x1b[0;0H\x1b[J');
+    process.stdout.write('\x1b[2;0f\x1b[2J');
     return about();
   }
 }
