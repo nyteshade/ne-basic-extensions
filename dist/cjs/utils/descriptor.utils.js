@@ -386,22 +386,22 @@ exports.DescriptorUtils = {
                     enumerable: true
                 };
             }
-            let writable = isObject(optionsOrWritable)
-                ? !!optionsOrWritable // further defined below
-                : true;
+            let writable = optionsOrWritable === undefined
+                ? true
+                : !!optionsOrWritable;
             let options = typeof optionsOrWritable === 'boolean'
                 ? {}
-                : optionsOrWritable;
-            configurable = configurable ?? true;
-            enumerable = enumerable ?? true;
+                : Object(optionsOrWritable);
+            configurable = configurable === undefined ? true : !!configurable;
+            enumerable = enumerable === undefined ? true : !!enumerable;
             if (isObject(value) && hasSome(value, 'value')) {
                 options = value;
                 ({ value } = value);
             }
-            if (isObject(optionsOrWritable)) {
+            if (options) {
                 ({ writable, configurable, enumerable } = {
-                    ...{ writable: true, configurable: true, enumerable: true, },
-                    ...optionsOrWritable
+                    ...{ writable, configurable, enumerable },
+                    ...options
                 });
             }
             return { value, writable, configurable, enumerable };
@@ -410,7 +410,7 @@ exports.DescriptorUtils = {
             value: ['value', 'writable', 'configurable', 'enumerable'],
             writable: false,
             configurable: true,
-            enumerable: true
+            enumerable: false
         });
         return data;
     },

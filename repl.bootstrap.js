@@ -23,6 +23,7 @@ Object.assign(global, {
   Patch: nejsExtension.Patch,
   Extension: nejsExtension.Extension,
   inspect,
+  accessor, data, isDescriptor,
 });
 global.replServer = new repl.REPLServer(options);
 
