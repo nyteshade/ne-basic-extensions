@@ -276,9 +276,14 @@ export const DescriptorUtils = {
       }
 
       if ((count === 1 && nonFn(get)) || (isTrue(set) || isFalse(set))) {
-        let skipSet = isFalse(set)
-        storage = { [key]: get }
+        const skipSet = isFalse(set)
+
+        if (!storage || !(storage instanceof Map) || !isObject(storage)) {
+          storage = {}
+        }
+
         const _ = liaison(storage, key)
+        _.set(get)
 
         let _get = function() { return _.get() }
         let _set = function(value) { _.set(value) }
