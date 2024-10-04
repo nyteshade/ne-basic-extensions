@@ -237,8 +237,8 @@ export const DescriptorUtils = {
             const isTrue = (value) => value === true;
             const isFalse = (value) => value === false;
             const addRefs = (fn, value) => Object.defineProperties(fn, {
-                storage: { value, configurable: true, enumerable: true },
-                key: { value: key, configurable: true, enumerable: true },
+                storage: { value, configurable: true, enumerable: false },
+                key: { value: key, configurable: true, enumerable: false },
             });
             if (count === 0 || (!get && !set)) {
                 storage = { [key]: initial };
@@ -293,7 +293,7 @@ export const DescriptorUtils = {
         Object.defineProperty(accessor, 'keys', {
             get() { return ['get', 'set', 'configurable', 'enumerable']; },
             configurable: true,
-            enumerable: true,
+            enumerable: false,
         });
         return accessor;
     },
