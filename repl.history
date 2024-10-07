@@ -1,3 +1,24 @@
+Colors.blue.rgb
+Colors.red.rgb
+Colors = Enum('Colors', ['red', 'blue', 'green'], { get rgb() { switch (this.real) { case 'red': return 'rgb(255,0,0)'; case 'green': return 'rgb(0, 255, 0)'; case 'blue': return 'rgb(0,0,255)'; } } })
+Colors.red.rgb
+Colors = Enum('Colors', ['red', 'blue', 'green'], { get rgb() { switch (this.real) { case 'red': return 'rgb(255,0,0)'; case 'green': return 'rgb(0, 255, 0)'; case 'blue': return 'rgb(0,0,255)'; } } })
+Colors.red
+Colors.red.rgb
+Colors = Enum('Colors', ['red', 'blue', 'green'], { get rgb() { switch (this.real) { case 'red': return 'rgb(255,0,0)'; case 'green': return 'rgb(0, 255, 0)'; case 'blue': return 'rgb(0,0,255)'; } } })
+props = { get rgb() { switch (this.real) { case 'red': return 'rgb(255,0,0)'; case 'green': return 'rgb(0, 255, 0)'; case 'blue': return 'rgb(0,0,255)'; } } }
+isDescriptor(undefined, true)
+isDescriptor(false, true)
+isDescriptor(null, true)
+isDescriptor(false)
+isDescriptor(null, true)
+Object.defineProperty({}, 'name', accessor('Brie', false))
+accessor.keys
+{accessor} = await import('./dist/cjs/utils/index.js')
+await import('./dist/cjs/utils/index.js')
+await import('./dist/utils/index.js')
+await import('./utils')
+await import('./utils')(
 Gender.Female.value
 Gender.Female.real
 Gender.Female
@@ -6,10 +27,4 @@ Gender.Male.compare(null)
 Gender.Male.compare(TransWoman)
 TransMan.compare(TransWoman)
 TransMan = Gender.Transgender('Trans Man')
-TransWoman = Gender.Transgender('Trans Woman')
-Gender = Enum('Gender', ['Male', 'Female', ['Transgender'], 'NonBinary'])
-data({value:57, name: 'Brielle'}, {configurable: false, enumerable: false })
-data({ value: 57, name: 'Brielle' })
-)
-data({ value: 57, name: 'Brielle' }
-state
+TransWoman = Gender.Transgender('Trans Woman')Gender', ['Male', 'Female', ['Transgender'], 'NonBinary']), name: 'Brielle'}, {configurable: false, enumerable: false })

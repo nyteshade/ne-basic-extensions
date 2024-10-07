@@ -157,7 +157,7 @@ export function Enum(name, values, properties) {
                 properties = new Map();
         }
         else if (typeof properties === 'object') {
-            properties = new Map(Object.entries(properties));
+            properties = new Map(Object.entries(Object.getOwnPropertyDescriptors(properties)));
         }
         if (properties instanceof Map) {
             const applyPropertiesOf = (object, baseDescriptor) => {
@@ -166,13 +166,16 @@ export function Enum(name, values, properties) {
                     enumerable: baseDescriptor?.enumerable ?? true,
                     writable: baseDescriptor?.writable ?? true,
                 };
-                for (const [key, subvalue] of Object.entries(object)) {
-                    if ((stats = isDescriptor(subvalue)).isValid) {
-                        if (stats.isAccessor || stats.isData)
-                            props[key] = subvalue;
+                const descriptors = Object.getOwnPropertyDescriptors(object);
+                for (const [key, subvalue] of Object.entries(descriptors)) {
+                    const stats = isDescriptor(subvalue, true);
+                    const baseStats = isDescriptor(baseDescriptor, true);
+                    if (stats.isAccessor && baseStats.isValid) {
+                        props[key] = { ...subvalue, ...accessor.keys.from(baseDescriptor) };
                     }
-                    else
-                        props[key] = data(subvalue, property, false, true, false);
+                    else if (stats.isData && baseStats.isValid) {
+                        props[key] = { ...subvalue, ...data.keys.from(baseDescriptor) };
+                    }
                 }
             };
             let stats = {};
@@ -184,7 +187,7 @@ export function Enum(name, values, properties) {
                         continue;
                     }
                 }
-                props[property] = data(value);
+                props[property] = value;
             }
         }
     }

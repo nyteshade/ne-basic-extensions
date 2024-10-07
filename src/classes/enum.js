@@ -184,19 +184,20 @@ export function Enum(name, values, properties) {
  // of the enumeration. Each custom property is appended to `kCustomPropKeys`
  const props = {}
  if (properties) {
-   if (Array.isArray(properties)) {
-     const entries = properties.filter(e => Array.isArray(e) && e.length === 2)
+    if (Array.isArray(properties)) {
+      const entries = properties.filter(e => Array.isArray(e) && e.length === 2)
 
-     if (entries.length)
-       properties = new Map(entries)
-     else
-       properties = new Map()
-   }
-   else if (typeof properties === 'object') {
-     properties = new Map(Object.entries(properties))
-   }
+      if (entries.length)
+        properties = new Map(entries)
+      else
+        properties = new Map()
+    }
+    else if (typeof properties === 'object') {
+      properties = new Map(
+        Object.entries(Object.getOwnPropertyDescriptors(properties)))
+    }
 
-   if (properties instanceof Map) {
+    if (properties instanceof Map) {
      const applyPropertiesOf = (object, baseDescriptor) => {
        const property = {
          configurable: baseDescriptor?.configurable ?? true,
@@ -204,13 +205,17 @@ export function Enum(name, values, properties) {
          writable: baseDescriptor?.writable ?? true,
        }
 
-       for (const [key, subvalue] of Object.entries(object)) {
-         if ((stats = isDescriptor(subvalue)).isValid) {
-           if (stats.isAccessor || stats.isData)
-             props[key] = subvalue
-         }
-         else
-           props[key] = data(subvalue, property, false, true, false)
+       const descriptors = Object.getOwnPropertyDescriptors(object)
+       for (const [key, subvalue] of Object.entries(descriptors)) {
+          const stats = isDescriptor(subvalue, true)
+          const baseStats = isDescriptor(baseDescriptor, true)
+
+          if (stats.isAccessor && baseStats.isValid) {
+            props[key] = { ...subvalue, ...accessor.keys.from(baseDescriptor) }
+          }
+          else if (stats.isData && baseStats.isValid) {
+            props[key] = { ...subvalue, ...data.keys.from(baseDescriptor) }
+          }
        }
      }
 
@@ -226,9 +231,9 @@ export function Enum(name, values, properties) {
          }
        }
 
-       props[property] = data(value)
+       props[property] = value
      }
-   }
+    }
  }
 
  for (const value of values) {

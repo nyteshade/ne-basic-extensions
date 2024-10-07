@@ -335,7 +335,32 @@ export const DescriptorUtils = {
     }
 
     Object.defineProperty(accessor, 'keys', {
-      get() { return ['get', 'set', 'configurable', 'enumerable'] },
+      get() { return Object.defineProperties(
+        ['get', 'set', 'configurable', 'enumerable'],
+        {
+          from: {
+            value: function extractKeysFrom(object) {
+              const response = {
+                get: undefined,
+                set: undefined,
+                configurable: undefined,
+                enumerable: undefined,
+              }
+
+              if (!object || !(object instanceof Object))
+                return response
+
+              for (const key of DescriptorUtils.accessor.keys) {
+                if (Reflect.has(object, key))
+                  response[key] = object[key]
+              }
+            },
+            writable: false,
+            configurable: false,
+            enumerable: false
+          }
+        }
+      ) },
       configurable: true,
       enumerable: false,
     })
@@ -468,7 +493,32 @@ export const DescriptorUtils = {
     }
 
     Object.defineProperty(data, 'keys', {
-      value: ['value', 'writable', 'configurable', 'enumerable'],
+      value: Object.defineProperties(
+        ['value', 'writable', 'configurable', 'enumerable'],
+        {
+          from: {
+            value: function extractKeysFrom(object) {
+              const response = {
+                value: undefined,
+                writable: undefined,
+                configurable: undefined,
+                enumerable: undefined,
+              }
+
+              if (!object || !(object instanceof Object))
+                return response
+
+              for (const key of DescriptorUtils.data.keys) {
+                if (Reflect.has(object, key))
+                  response[key] = object[key]
+              }
+            },
+            writable: false,
+            configurable: false,
+            enumerable: false,
+          }
+        }
+      ),
       writable: false,
       configurable: true,
       enumerable: false
@@ -502,9 +552,6 @@ export const DescriptorUtils = {
    * stats block.
    */
   isDescriptor(value, returnStats = false, strict = true) {
-    if (!value || typeof value !== 'object' || !(value instanceof Object))
-      return false
-
     const areBools = (...props) => props.flat().every(
       prop => boolTypes.includes(typeof value[prop])
     );
@@ -531,6 +578,9 @@ export const DescriptorUtils = {
       isData: false,
       isValid: false,
     }
+
+    if (!value || typeof value !== 'object' || !(value instanceof Object))
+      return returnStats ? stats : false;
 
     let score = 0
 
