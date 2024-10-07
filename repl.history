@@ -1,3 +1,13 @@
+Gender.Female.value
+Gender.Female.real
+Gender.Female
+Gender.NonBinary
+Gender.Male.compare(null)
+Gender.Male.compare(TransWoman)
+TransMan.compare(TransWoman)
+TransMan = Gender.Transgender('Trans Man')
+TransWoman = Gender.Transgender('Trans Woman')
+Gender = Enum('Gender', ['Male', 'Female', ['Transgender'], 'NonBinary'])
 data({value:57, name: 'Brielle'}, {configurable: false, enumerable: false })
 data({ value: 57, name: 'Brielle' })
 )

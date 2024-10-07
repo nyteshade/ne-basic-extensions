@@ -13,6 +13,7 @@ import { StringExtensions, StringPrototypeExtensions } from './string.extensions
 import { SymbolExtensions, SymbolPrototypeExtensions } from './symbol.extensions.js';
 import { DeferredExtension } from './classes/deferred.js';
 import { DescriptorExtensions, Descriptor } from './classes/descriptor.js';
+import { EnumExtension, Enum } from './classes/enum.js';
 import { IntrospectorExtensions } from './classes/introspector.js';
 import { IteratorExtensions, IterableExtensions } from './classes/iterable.js';
 import { ParamParserExtensions } from './classes/param.parser.js';
@@ -60,6 +61,7 @@ const Extensions = {
     [AsyncIteratorExtensions.key]: AsyncIteratorExtensions,
     [DeferredExtension.key]: DeferredExtension,
     [DescriptorExtensions.key]: DescriptorExtensions,
+    [EnumExtension.key]: EnumExtension,
     [IntrospectorExtensions.key]: IntrospectorExtensions,
     [IterableExtensions.key]: IterableExtensions,
     [IteratorExtensions.key]: IteratorExtensions,

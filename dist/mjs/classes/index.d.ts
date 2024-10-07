@@ -1,6 +1,7 @@
 export * from "./asyncIterable.js";
 export * from "./deferred.js";
 export * from "./descriptor.js";
+export * from "./enum.js";
 export * from "./introspector.js";
 export * from "./iterable.js";
 export * from "./param.parser.js";

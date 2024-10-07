@@ -22,6 +22,8 @@ const deferred_js_1 = require("./deferred.js");
 __exportStar(require("./deferred.js"), exports);
 const descriptor_js_1 = require("./descriptor.js");
 __exportStar(require("./descriptor.js"), exports);
+const enum_js_1 = require("./enum.js");
+__exportStar(require("./enum.js"), exports);
 const introspector_js_1 = require("./introspector.js");
 __exportStar(require("./introspector.js"), exports);
 const iterable_js_1 = require("./iterable.js");
@@ -45,6 +47,7 @@ exports.NewClassesExtension = new extension_1.Patch(globalThis, {
     AsyncIterator: asyncIterable_js_1.AsyncIterator,
     Deferred: deferred_js_1.Deferred,
     Descriptor: descriptor_js_1.Descriptor,
+    Enum: enum_js_1.Enum,
     Introspector: introspector_js_1.Introspector,
     Iterable: iterable_js_1.Iterable,
     Iterator: iterable_js_1.Iterator,
