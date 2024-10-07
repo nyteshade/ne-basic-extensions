@@ -418,12 +418,22 @@ export const DescriptorUtils = {
    */
   get data() {
     function data(value, optionsOrWritable, configurable, enumerable) {
-      if (arguments.length === 0) {
+      const count = arguments.length
+      let valueIsDescriptor = false
+
+      if (count === 0) {
         return {
           value: undefined,
           writable: true,
           configurable: true,
           enumerable: true
+        }
+      }
+
+      if (count === 1) {
+        const stats = DescriptorUtils.isDescriptor(value, true)
+        if (stats.isValid && stats.isData) {
+          valueIsDescriptor = true
         }
       }
 
@@ -438,9 +448,13 @@ export const DescriptorUtils = {
       configurable = configurable === undefined ? true : !!configurable
       enumerable = enumerable === undefined ? true : !!enumerable
 
-      if (isObject(value) && hasSome(value, 'value')) {
-        options = value;
-        ({ value } = value);
+      if (valueIsDescriptor) {
+        options = {
+          writable: value?.writable ?? true,
+          configurable: value?.configurable ?? true,
+          enumerable: value?.enumerable ?? true,
+        };
+        value = value?.value
       }
 
       if (options) {

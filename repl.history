@@ -1,0 +1,5 @@
+data({value:57, name: 'Brielle'}, {configurable: false, enumerable: false })
+data({ value: 57, name: 'Brielle' })
+)
+data({ value: 57, name: 'Brielle' }
+state
