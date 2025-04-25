@@ -16,6 +16,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./copy.object.js"), exports);
 const copy_object_js_1 = require("./copy.object.js");
+__exportStar(require("./stdout.js"), exports);
+const stdout_js_1 = require("./stdout.js");
 __exportStar(require("./toolkit.js"), exports);
 const toolkit_js_1 = require("./toolkit.js");
 __exportStar(require("./descriptor.utils.js"), exports);
@@ -28,6 +30,8 @@ exports.default = {
     ImmutablyVisibleHandler: copy_object_js_1.ImmutablyVisibleHandler,
     MutablyHiddenHandler: copy_object_js_1.MutablyHiddenHandler,
     MutablyVisibleHandler: copy_object_js_1.MutablyVisibleHandler,
+    StdoutGlobalPatches: stdout_js_1.StdoutGlobalPatches,
+    StringConsole: stdout_js_1.StringConsole,
     VisibilityKeys: copy_object_js_1.VisibilityKeys,
     VisibilityScopeHandler: copy_object_js_1.VisibilityScopeHandler,
     as: toolkit_js_1.as,
@@ -35,12 +39,17 @@ exports.default = {
     is: toolkit_js_1.is,
     si: toolkit_js_1.si,
     accessor: descriptor_utils_js_1.accessor,
+    captureStdout: stdout_js_1.captureStdout,
     copyObject: copy_object_js_1.copyObject,
     createToolkit: toolkit_js_1.createToolkit,
     customCopyObject: copy_object_js_1.customCopyObject,
     data: descriptor_utils_js_1.data,
+    describe: descriptor_utils_js_1.describe,
+    describeMany: descriptor_utils_js_1.describeMany,
+    extract: descriptor_utils_js_1.extract,
     isDescriptor: descriptor_utils_js_1.isDescriptor,
     makeTransducer: copy_object_js_1.makeTransducer,
+    redescribe: descriptor_utils_js_1.redescribe,
     transduceFrom: copy_object_js_1.transduceFrom,
     transduceFromCOHandler: copy_object_js_1.transduceFromCOHandler,
     tryIgnore: copy_object_js_1.tryIgnore,

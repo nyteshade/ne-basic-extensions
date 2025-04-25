@@ -11,6 +11,51 @@ export namespace DescriptorUtils {
     const data: Function & {
         keys: string[];
     };
+    function describe(object: any, key: any, value: any, detectDescriptorValues?: boolean): any;
+    function describeMany(object: any, keyValues: any, detectDescriptorValues?: boolean): never[] | undefined;
+    function extract(fromObject: any, keysToExtract: any, defaultIfMissing?: undefined, extractDescriptors?: boolean): {};
+    /**
+     * Determines if a given value is an accessor descriptor.
+     *
+     * An accessor descriptor is a property descriptor that defines
+     * getter and/or setter functions for a property. This function
+     * checks the validity of the descriptor and whether it qualifies
+     * as an accessor.
+     *
+     * @param {Object} value - The descriptor object to evaluate.
+     * @param {boolean} [strict=true] - If true, performs a strict
+     *   validation of the descriptor.
+     * @returns {boolean} Returns true if the descriptor is valid and
+     *   is an accessor descriptor, otherwise false.
+     *
+     * @example
+     * // Example usage:
+     * const descriptor = { get: () => 42, set: (val) => {} }
+     * const result = DescriptorUtils.isAccessor(descriptor)
+     * console.log(result) // Outputs: true
+     */
+    function isAccessor(value: Object, strict?: boolean): boolean;
+    /**
+     * Checks if a given value is a data descriptor.
+     *
+     * A data descriptor is a property descriptor that defines a value
+     * and optionally a writable attribute for a property. This function
+     * evaluates the descriptor's validity and whether it qualifies as
+     * a data descriptor.
+     *
+     * @param {Object} value - The descriptor object to evaluate.
+     * @param {boolean} [strict=true] - If true, performs a strict
+     *   validation of the descriptor.
+     * @returns {boolean} Returns true if the descriptor is valid and
+     *   is a data descriptor, otherwise false.
+     *
+     * @example
+     * // Example usage:
+     * const descriptor = { value: 42, writable: true }
+     * const result = DescriptorUtils.isData(descriptor)
+     * console.log(result) // Outputs: true
+     */
+    function isData(value: Object, strict?: boolean): boolean;
     /**
      * A function that, given a value that might be a `PropertyDescriptor`,
      * calculates a deterministic probability that the supplied value is
@@ -36,6 +81,34 @@ export namespace DescriptorUtils {
      * stats block.
      */
     function isDescriptor(value: unknown, returnStats?: boolean | null, strict?: boolean | null): IsDescriptorResponse;
+    /**
+     * Redefines a property on an object with new descriptors and options.
+     * This function allows renaming, aliasing, and redefining property
+     * descriptors such as configurable, enumerable, writable, get, and set.
+     *
+     * @param {Object} object - The target object whose property is to be
+     * redefined.
+     * @param {string|symbol} key - The key of the property to redefine.
+     * @param {Object} as - An object containing new property descriptors.
+     * @param {Object} [options] - Optional settings for renaming and aliasing.
+     * @param {string|symbol} [options.rename] - New key name for the property.
+     * @param {Array<string|symbol>} [options.alsoAs] - Additional aliases for
+     * the property.
+     * @param {Object} [options.moveTo] optionally move the descriptor from this
+     * object to another.
+     * @returns {any} the result of `object[key]` in its final state
+     *
+     * @example
+     * const obj = { a: 1 }
+     * redescribe(obj, 'a', { writable: false }, { rename: 'b', alsoAs: ['c'] })
+     * console.log(obj.b) // Outputs: 1
+     * console.log(obj.c) // Outputs: 1
+     */
+    function redescribe(object: Object, key: string | symbol, as: Object, options?: {
+        rename?: string | symbol | undefined;
+        alsoAs?: (string | symbol)[] | undefined;
+        moveTo?: Object | undefined;
+    }): any;
     const kAccessorDescriptorKeys: string[];
     const kDataDescriptorKeys: string[];
     const kSharedDescriptorKeys: string[];
@@ -45,7 +118,13 @@ declare namespace _default {
     export { DescriptorUtils };
     export { accessor };
     export { data };
+    export { describe };
+    export { describeMany };
+    export { extract };
+    export { isAccessor };
+    export { isData };
     export { isDescriptor };
+    export { redescribe };
     export { kAccessorDescriptorKeys };
     export { kDataDescriptorKeys };
     export { kDescriptorKeys };
@@ -115,6 +194,51 @@ export const accessor: Function & {
 export const data: Function & {
     keys: string[];
 };
+export function describe(object: any, key: any, value: any, detectDescriptorValues?: boolean): any;
+export function describeMany(object: any, keyValues: any, detectDescriptorValues?: boolean): never[] | undefined;
+export function extract(fromObject: any, keysToExtract: any, defaultIfMissing?: undefined, extractDescriptors?: boolean): {};
+/**
+ * Determines if a given value is an accessor descriptor.
+ *
+ * An accessor descriptor is a property descriptor that defines
+ * getter and/or setter functions for a property. This function
+ * checks the validity of the descriptor and whether it qualifies
+ * as an accessor.
+ *
+ * @param {Object} value - The descriptor object to evaluate.
+ * @param {boolean} [strict=true] - If true, performs a strict
+ *   validation of the descriptor.
+ * @returns {boolean} Returns true if the descriptor is valid and
+ *   is an accessor descriptor, otherwise false.
+ *
+ * @example
+ * // Example usage:
+ * const descriptor = { get: () => 42, set: (val) => {} }
+ * const result = DescriptorUtils.isAccessor(descriptor)
+ * console.log(result) // Outputs: true
+ */
+export function isAccessor(value: Object, strict?: boolean): boolean;
+/**
+ * Checks if a given value is a data descriptor.
+ *
+ * A data descriptor is a property descriptor that defines a value
+ * and optionally a writable attribute for a property. This function
+ * evaluates the descriptor's validity and whether it qualifies as
+ * a data descriptor.
+ *
+ * @param {Object} value - The descriptor object to evaluate.
+ * @param {boolean} [strict=true] - If true, performs a strict
+ *   validation of the descriptor.
+ * @returns {boolean} Returns true if the descriptor is valid and
+ *   is a data descriptor, otherwise false.
+ *
+ * @example
+ * // Example usage:
+ * const descriptor = { value: 42, writable: true }
+ * const result = DescriptorUtils.isData(descriptor)
+ * console.log(result) // Outputs: true
+ */
+export function isData(value: Object, strict?: boolean): boolean;
 /**
  * A function that, given a value that might be a `PropertyDescriptor`,
  * calculates a deterministic probability that the supplied value is
@@ -140,6 +264,34 @@ export const data: Function & {
  * stats block.
  */
 export function isDescriptor(value: unknown, returnStats?: boolean | null, strict?: boolean | null): IsDescriptorResponse;
+/**
+ * Redefines a property on an object with new descriptors and options.
+ * This function allows renaming, aliasing, and redefining property
+ * descriptors such as configurable, enumerable, writable, get, and set.
+ *
+ * @param {Object} object - The target object whose property is to be
+ * redefined.
+ * @param {string|symbol} key - The key of the property to redefine.
+ * @param {Object} as - An object containing new property descriptors.
+ * @param {Object} [options] - Optional settings for renaming and aliasing.
+ * @param {string|symbol} [options.rename] - New key name for the property.
+ * @param {Array<string|symbol>} [options.alsoAs] - Additional aliases for
+ * the property.
+ * @param {Object} [options.moveTo] optionally move the descriptor from this
+ * object to another.
+ * @returns {any} the result of `object[key]` in its final state
+ *
+ * @example
+ * const obj = { a: 1 }
+ * redescribe(obj, 'a', { writable: false }, { rename: 'b', alsoAs: ['c'] })
+ * console.log(obj.b) // Outputs: 1
+ * console.log(obj.c) // Outputs: 1
+ */
+export function redescribe(object: Object, key: string | symbol, as: Object, options?: {
+    rename?: string | symbol | undefined;
+    alsoAs?: (string | symbol)[] | undefined;
+    moveTo?: Object | undefined;
+}): any;
 export const kAccessorDescriptorKeys: string[];
 export const kDataDescriptorKeys: string[];
 export const kDescriptorKeys: string[];

@@ -108,7 +108,7 @@ export class RefSet extends Set<any> {
      *
      * @returns {Iterator} An iterator for the values.
      */
-    values(): Iterator<any, any, undefined>;
+    values(): Iterator<any, any, any>;
     /**
      * Returns an iterator for the keys of the RefSet. In RefSet, keys and
      * values are identical, so this method behaves the same as `values()`. It
@@ -118,7 +118,7 @@ export class RefSet extends Set<any> {
      *
      * @returns {Iterator} An iterator for the keys.
      */
-    keys(): Iterator<any, any, undefined>;
+    keys(): Iterator<any, any, any>;
     /**
      * Checks if the RefSet contains a value that is equal to the specified
      * value. This method is used primarily in objectified RefSets to determine

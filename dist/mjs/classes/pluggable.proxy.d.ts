@@ -1,4 +1,5 @@
 export class ProxyHandlerResponse {
+    [x: symbol]: string;
     constructor(success?: boolean, value?: undefined, context?: undefined);
 }
 export class ProxyHandler {
@@ -84,7 +85,7 @@ export class ProxyHandler {
      *
      * @throws {TypeError} If ProxyHandler.type is undefined.
      */
-    static get typeNames(): string[];
+    static get typeNames(): Array<string>;
     /**
      * A static getter method that returns an object containing keyed proxy
      * trap types and their associated expected arguments list by name. A

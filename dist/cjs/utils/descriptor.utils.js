@@ -1,7 +1,7 @@
 "use strict";
 /** @typedef {string|symbol|number} PropertyKey */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.kSharedDescriptorKeys = exports.kDescriptorKeys = exports.kDataDescriptorKeys = exports.kAccessorDescriptorKeys = exports.isDescriptor = exports.data = exports.accessor = exports.DescriptorUtils = void 0;
+exports.kSharedDescriptorKeys = exports.kDescriptorKeys = exports.kDataDescriptorKeys = exports.kAccessorDescriptorKeys = exports.redescribe = exports.isDescriptor = exports.isData = exports.isAccessor = exports.extract = exports.describeMany = exports.describe = exports.data = exports.accessor = exports.DescriptorUtils = void 0;
 /**
  * The `IsDescriptorStats` block contains all the information used to make
  * a determination as to whether a given value is a an instance of the type
@@ -424,7 +424,7 @@ exports.DescriptorUtils = {
                 : Object(optionsOrWritable);
             configurable = configurable === undefined ? true : !!configurable;
             enumerable = enumerable === undefined ? true : !!enumerable;
-            if (valueIsDescriptor) {
+            if (valueIsDescriptor && !(options?.allowDescriptorValue)) {
                 options = {
                     writable: value?.writable ?? true,
                     configurable: value?.configurable ?? true,
@@ -467,6 +467,133 @@ exports.DescriptorUtils = {
             enumerable: false
         });
         return data;
+    },
+    describe(object, key, value, detectDescriptorValues = true) {
+        const { isAccessor, isData, data } = exports.DescriptorUtils;
+        if (!(object && object instanceof Object))
+            return undefined;
+        if (!(['string', 'number', 'symbol'].includes(typeof key)))
+            return undefined;
+        if (detectDescriptorValues && isAccessor(value) || isData(value)) {
+            return Object.defineProperty(object, key, value);
+        }
+        else {
+            return Object.defineProperty(object, key, data(value));
+        }
+    },
+    describeMany(object, keyValues, detectDescriptorValues = true) {
+        const { isAccessor, isData, isDescriptor, data, describe } = exports.DescriptorUtils;
+        const isKey = k => ['string', 'number', 'symbol'].includes(typeof k);
+        let map = undefined;
+        if (Array.isArray(keyValues)) {
+            map = new Map(keyValues.filter(keyValue => {
+                return typeof keyValue === 'function' && keyValue.length === 2;
+            }));
+        }
+        else if (keyValues instanceof Map) {
+            map = keyValues;
+        }
+        else if (keyValues instanceof Object) {
+            const descriptors = Object.getOwnPropertyDescriptors(keyValues);
+            map = new Object.entries(descriptors);
+        }
+        else {
+            return [];
+        }
+        for (const [key, value] of map) {
+            if (detectDescriptorValues) {
+                if (isDescriptor(key)) {
+                }
+            }
+        }
+        const accessorBase = { enumerable: true, configurable: true };
+        const dataBase = { writable: true, ...accessorBase };
+        const extractBase = descriptor => {
+            if (isAccessor(descriptor)) {
+                const { configurable, enumerable } = descriptor;
+                return { configurable, enumerable };
+            }
+            else if (isData(descriptor)) {
+                const { writable, configurable, enumerable } = descriptor;
+                return { writable, configurable, enumerable };
+            }
+            return undefined;
+        };
+        // convert all map entries to
+        // [baseDescriptor, {key: value, key: value, ...}]
+        // unless detectDescriptorValues == false in which case
+        // [dataBase, { key: value, key: value, etc... }]
+        //   ... dropping all non-isKey(key) values
+        for (const [key, value] of map.entries()) {
+            const descriptor = (detectDescriptorValues && isDescriptor(value)
+                ? value
+                : data(value, dataBase));
+        }
+    },
+    extract(fromObject, keysToExtract, defaultIfMissing = undefined, extractDescriptors = false) {
+        const { data } = exports.DescriptorUtils;
+        const output = {};
+        if (!fromObject || typeof fromObject !== 'object')
+            return output;
+        if (!Array.isArray(keysToExtract))
+            keysToExtract = [keysToExtract];
+        for (const key of keysToExtract) {
+            let descriptor = Object.getOwnPropertyDescriptor(fromObject, key);
+            if (!descriptor)
+                descriptor = data(defaultIfMissing);
+            if (extractDescriptors)
+                descriptor.value = data(descriptor, { allowDescriptorValue: true });
+            Object.defineProperty(output, key, descriptor);
+        }
+        return output;
+    },
+    /**
+     * Determines if a given value is an accessor descriptor.
+     *
+     * An accessor descriptor is a property descriptor that defines
+     * getter and/or setter functions for a property. This function
+     * checks the validity of the descriptor and whether it qualifies
+     * as an accessor.
+     *
+     * @param {Object} value - The descriptor object to evaluate.
+     * @param {boolean} [strict=true] - If true, performs a strict
+     *   validation of the descriptor.
+     * @returns {boolean} Returns true if the descriptor is valid and
+     *   is an accessor descriptor, otherwise false.
+     *
+     * @example
+     * // Example usage:
+     * const descriptor = { get: () => 42, set: (val) => {} }
+     * const result = DescriptorUtils.isAccessor(descriptor)
+     * console.log(result) // Outputs: true
+     */
+    isAccessor(value, strict = true) {
+        const stats = exports.DescriptorUtils.isDescriptor(value, true, strict);
+        return stats.isValid && stats.isAccessor;
+    },
+    /**
+     * Checks if a given value is a data descriptor.
+     *
+     * A data descriptor is a property descriptor that defines a value
+     * and optionally a writable attribute for a property. This function
+     * evaluates the descriptor's validity and whether it qualifies as
+     * a data descriptor.
+     *
+     * @param {Object} value - The descriptor object to evaluate.
+     * @param {boolean} [strict=true] - If true, performs a strict
+     *   validation of the descriptor.
+     * @returns {boolean} Returns true if the descriptor is valid and
+     *   is a data descriptor, otherwise false.
+     *
+     * @example
+     * // Example usage:
+     * const descriptor = { value: 42, writable: true }
+     * const result = DescriptorUtils.isData(descriptor)
+     * console.log(result) // Outputs: true
+     */
+    isData(value, strict = true) {
+        const stats = exports.DescriptorUtils.isDescriptor(value, true, strict);
+        return stats.isValid && stats.isData;
     },
     /**
      * A function that, given a value that might be a `PropertyDescriptor`,
@@ -511,6 +638,7 @@ exports.DescriptorUtils = {
             isAccessor: false,
             isData: false,
             isValid: false,
+            isBase: false,
         };
         if (!value || typeof value !== 'object' || !(value instanceof Object))
             return returnStats ? stats : false;
@@ -538,6 +666,8 @@ exports.DescriptorUtils = {
                 stats.isAccessor = true;
             if (score > 0 && stats.hasDataKeys)
                 stats.isData = true;
+            if (stats.isValid && !(['get', 'set', 'value'].some(hasKeyFn)))
+                stats.isBase = true;
             if (stats.isValid && stats.isData && Reflect.has(value, 'value'))
                 score++;
             else if (stats.isValid && stats.isAccessor) {
@@ -555,6 +685,89 @@ exports.DescriptorUtils = {
         return score >= 0.0
             ? true
             : false;
+    },
+    /**
+     * Redefines a property on an object with new descriptors and options.
+     * This function allows renaming, aliasing, and redefining property
+     * descriptors such as configurable, enumerable, writable, get, and set.
+     *
+     * @param {Object} object - The target object whose property is to be
+     * redefined.
+     * @param {string|symbol} key - The key of the property to redefine.
+     * @param {Object} as - An object containing new property descriptors.
+     * @param {Object} [options] - Optional settings for renaming and aliasing.
+     * @param {string|symbol} [options.rename] - New key name for the property.
+     * @param {Array<string|symbol>} [options.alsoAs] - Additional aliases for
+     * the property.
+     * @param {Object} [options.moveTo] optionally move the descriptor from this
+     * object to another.
+     * @returns {any} the result of `object[key]` in its final state
+     *
+     * @example
+     * const obj = { a: 1 }
+     * redescribe(obj, 'a', { writable: false }, { rename: 'b', alsoAs: ['c'] })
+     * console.log(obj.b) // Outputs: 1
+     * console.log(obj.c) // Outputs: 1
+     */
+    redescribe(object, key, as, options) {
+        const { isAccessor, isData } = exports.DescriptorUtils;
+        const ifThen = (condition, fn, ...args) => condition && fn(...args);
+        const isBool = value => typeof value === 'boolean' || value instanceof Boolean;
+        const isFunction = value => typeof value === 'function';
+        const isObject = value => value && value instanceof Object;
+        const isDefined = (value, key) => isObject(value) && Reflect.has(value, key);
+        const isObjectKey = v => ['string', 'number', 'symbol'].includes(typeof v);
+        const define = (key, values) => Object.defineProperty(object, key, values);
+        const assign = (object, ...values) => Object.assign(object, ...values);
+        const isAnObject = isObject(object);
+        let asIsObject = isObject(as);
+        const descriptor = isAnObject && Object.getOwnPropertyDescriptor(object, key);
+        const aliases = [];
+        if (descriptor && !asIsObject) {
+            asIsObject = true;
+            as = {};
+        }
+        if (isObject(options)) {
+            if (isDefined(options, 'rename')) {
+                const successfulDelete = delete object[key];
+                if (successfulDelete)
+                    key = options.rename;
+            }
+            if (isDefined(options, 'alsoAs')) {
+                if (Array.isArray(options.alsoAs)) {
+                    for (const value of options.alsoAs.filter(v => isObjectKey(v)))
+                        aliases.push(value);
+                }
+                else if (isObjectKey(options.alsoAs)) {
+                    aliases.push(options.alsoAs);
+                }
+            }
+            if (isDefined(options, 'moveTo')) {
+                ifThen(isObject(options.moveTo), () => (object = options.moveTo));
+            }
+        }
+        if (isAnObject && asIsObject) {
+            let { configurable, enumerable, writable, get, set, value } = as;
+            if (isAccessor(descriptor)) {
+                ifThen(isFunction(get), () => assign(descriptor, { get }));
+                ifThen(isFunction(set), () => assign(descriptor, { set }));
+            }
+            ifThen(isBool(writable) && isData(descriptor), () => {
+                assign(descriptor, {
+                    writable,
+                    value: isDefined(as, 'value')
+                        ? value
+                        : descriptor.value,
+                });
+            });
+            ifThen(isBool(configurable), () => assign(descriptor, { configurable }));
+            ifThen(isBool(enumerable), () => assign(descriptor, { enumerable }));
+            define(key, descriptor);
+            for (const alias of aliases) {
+                define(alias, descriptor);
+            }
+            return object[key];
+        }
     },
     /**
      * Retrieves the keys associated with accessor descriptors.
@@ -633,10 +846,16 @@ exports.DescriptorUtils = {
     }
 };
 // Destructure the functions individually...
-const { accessor, data, isDescriptor } = exports.DescriptorUtils;
+const { accessor, data, describe, describeMany, extract, isDescriptor, isAccessor, isData, redescribe, } = exports.DescriptorUtils;
 exports.accessor = accessor;
 exports.data = data;
+exports.describe = describe;
+exports.describeMany = describeMany;
+exports.extract = extract;
 exports.isDescriptor = isDescriptor;
+exports.isAccessor = isAccessor;
+exports.isData = isData;
+exports.redescribe = redescribe;
 // ...also destructure the constants individually....
 const { kAccessorDescriptorKeys, kDataDescriptorKeys, kDescriptorKeys, kSharedDescriptorKeys } = exports.DescriptorUtils;
 exports.kAccessorDescriptorKeys = kAccessorDescriptorKeys;
@@ -648,7 +867,13 @@ exports.default = {
     DescriptorUtils: exports.DescriptorUtils,
     accessor,
     data,
+    describe,
+    describeMany,
+    extract,
+    isAccessor,
+    isData,
     isDescriptor,
+    redescribe,
     kAccessorDescriptorKeys,
     kDataDescriptorKeys,
     kDescriptorKeys,
@@ -660,11 +885,5 @@ function hasSome(object, ...keys) { return hasQuantity('some', object, keys); }
 function hasQuantity(quantityFn, object, keys) {
     return isObject(object) && (keys.flat(Infinity)
         .map(key => Reflect.has(object, key))[quantityFn](has => has));
-}
-function hasOne(object, ...keys) {
-    return isObject(object) && (keys.flat(Infinity)
-        .map(key => Reflect.has(object, key))
-        .filter(has => has)
-        .length === 1);
 }
 //# sourceMappingURL=descriptor.utils.js.map

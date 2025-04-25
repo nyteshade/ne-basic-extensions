@@ -78,7 +78,7 @@ export class Iterator {
      * fetch keys from the object. Defaults to Object.getOwnPropertyNames.
      * @returns {Iterator} An Iterator instance containing the object's keys.
      */
-    static keys(object: Object, mapEach?: Function | undefined, keyFetcher?: Function | undefined): Iterator;
+    static keys(object: Object, mapEach?: Function, keyFetcher?: Function): Iterator;
     /**
      * Creates an Iterator for the entries of the given object.
      *
@@ -92,7 +92,7 @@ export class Iterator {
      * fetch keys from the object. Defaults to Object.getOwnPropertyNames.
      * @returns {Iterator} An Iterator instance containing the object's entries.
      */
-    static entries(object: Object, mapEach?: Function | undefined, keyFetcher?: Function | undefined): Iterator;
+    static entries(object: Object, mapEach?: Function, keyFetcher?: Function): Iterator;
     /**
      * Creates an Iterator for the property descriptors of the given object.
      *
@@ -108,7 +108,7 @@ export class Iterator {
      * @returns {Iterator} An Iterator instance containing entries of [key,
      * descriptor] pairs.
      */
-    static descriptors(object: Object, mapEach?: Function | undefined, keyFetcher?: Function | undefined): Iterator;
+    static descriptors(object: Object, mapEach?: Function, keyFetcher?: Function): Iterator;
     /**
      * Creates a new `Iterator` object instance.
      *

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EnumExtension = void 0;
 exports.Enum = Enum;
+exports.makeBaseEnum = makeBaseEnum;
 const extension_1 = require("@nejs/extension");
 const index_js_1 = require("../utils/index.js");
 /**
@@ -15,58 +16,41 @@ const index_js_1 = require("../utils/index.js");
  * @returns {Object} The constructed enumeration object.
  *
  * @example
-* const colors = Enum('Colors', ['red', 'green', 'blue'])
-* console.log(colors.red) // EnumValue object for 'red'
-*
-* @description
-* The `Enum` function constructs an enumeration object with a given name,
-* values, and optional properties. It supports primitive types, arrays,
-* and objects as values. The function uses a combination of `Object.create`
-* and `Proxy` to define and manage the properties of the enumeration.
-*
-* The enumeration object includes:
-* - A `toString` method that returns the enumeration name.
-* - A `Symbol.toStringTag` for identifying the object as an 'Enum'.
-* - A `Symbol.for('Enum.name')` for storing the enumeration name.
-*
-* For array values, it creates a maker function that returns an
-* `EnumValue` object with properties like `real`, `value`, `type`,
-* `name`, and `compare`.
-*/
+ * const colors = Enum('Colors', ['red', 'green', 'blue'])
+ * console.log(colors.red) // EnumValue object for 'red'
+ *
+ * @description
+ * The `Enum` function constructs an enumeration object with a given name,
+ * values, and optional properties. It supports primitive types, arrays,
+ * and objects as values. The function uses a combination of `Object.create`
+ * and `Proxy` to define and manage the properties of the enumeration.
+ *
+ * The enumeration object includes:
+ * - A `toString` method that returns the enumeration name.
+ * - A `Symbol.toStringTag` for identifying the object as an 'Enum'.
+ * - A `Symbol.for('Enum.name')` for storing the enumeration name.
+ *
+ * For array values, it creates a maker function that returns an
+ * `EnumValue` object with properties like `real`, `value`, `type`,
+ * `name`, and `compare`.
+ */
 function Enum(name, values, properties) {
-    const enumeration = Object.create({}, {
-        [Symbol.toStringTag]: (0, index_js_1.accessor)('Enum', false, true, false),
-        [Symbol.for('Enum.name')]: (0, index_js_1.accessor)(name, false, true, false),
-        [Symbol.for('Enum.valueKeys')]: (0, index_js_1.data)([], false, true, false),
-        [Symbol.for('nodejs.util.inspect.custom')]: (0, index_js_1.data)(function (depth, options, inspect) {
-            const valueKeys = this[Symbol.for('Enum.valueKeys')] ?? [];
-            let valueText = valueKeys
-                .map(key => `\x1b[1;2m${key}\x1b[22m`)
-                .join(', ');
-            if (valueText.length)
-                valueText = ` { ${valueText} }`;
-            return `\x1b[1menum \x1b[22m${name}${valueText}`;
-        }, false, true, false),
-        toString: (0, index_js_1.data)(function () {
-            return `Enum(${name})`;
-        }, false, true, false)
-    });
+    const enumeration = makeBaseEnum(name);
     if (!Array.isArray(values)) {
         values = [values];
     }
-    const asString = o => index_js_1.as.string(o, { description: true, stringTag: true });
     /**
-     * A new base `EnumValue` type object. It contains enough custom symbols and
-     * identifiers to allow things like a `compare(to)` function to also work on
-     * each of the elements. Thing of this as the shared base functionality for
-     * each `Enum` element.
-     *
-     * @param {any} enumValue the value around which an `EnumValue` type is
-     * created.
-     * @returns an object defined by {@link Symbol.toStringTag} as well as some
-     * custom {@link Symbol} keys. The `node.js` custom inspect symbol is also
-     * defined for better REPL representation.
-     */
+    * A new base `EnumValue` type object. It contains enough custom symbols and
+    * identifiers to allow things like a `compare(to)` function to also work on
+    * each of the elements. Thing of this as the shared base functionality for
+    * each `Enum` element.
+    *
+    * @param {any} enumValue the value around which an `EnumValue` type is
+    * created.
+    * @returns an object defined by {@link Symbol.toStringTag} as well as some
+    * custom {@link Symbol} keys. The `node.js` custom inspect symbol is also
+    * defined for better REPL representation.
+    */
     const makeEnumValue = (property, enumValue) => ({
         toString: (0, index_js_1.data)(() => enumValue, false, true, false),
         [Symbol.for('Enum.name')]: (0, index_js_1.data)(name, false, true, false),
@@ -118,14 +102,14 @@ function Enum(name, values, properties) {
         }, false, true, false),
     });
     /**
-     * Given a value, determine how to represent it as both a key and a response
-     * or underlying original value. The method for this is dependent on the type
-     * of the value itself.
-     *
-     * @param {any} value the value to be converted
-     * @returns {[string, any]} an array where the first value is the transformed
-     * value as a key and the second element is the originally supplied value.
-     */
+    * Given a value, determine how to represent it as both a key and a response
+    * or underlying original value. The method for this is dependent on the type
+    * of the value itself.
+    *
+    * @param {any} value the value to be converted
+    * @returns {[string, any]} an array where the first value is the transformed
+    * value as a key and the second element is the originally supplied value.
+    */
     const fromPrimitive = (value) => {
         let valueType = typeof value;
         switch (valueType) {
@@ -199,7 +183,6 @@ function Enum(name, values, properties) {
         const valueType = Array.isArray(value) ? 'array' : typeof value;
         let property = undefined;
         let response = undefined;
-        let makeNew = undefined;
         let wasArray = false;
         let elements = value;
         switch (valueType) {
@@ -277,4 +260,146 @@ function Enum(name, values, properties) {
     return enumeration;
 }
 exports.EnumExtension = new extension_1.Extension(Enum);
+/**
+ * Converts a given value to a string representation with additional
+ * options for description and string tag.
+ *
+ * @param {any} value - The value to be converted to a string. This can
+ *   be of any type, including objects, arrays, numbers, etc.
+ * @returns {string} A string representation of the input value, enhanced
+ *   with a description and string tag if applicable.
+ *
+ * @example
+ * // Convert a number to a string with additional options
+ * const result = asString(123)
+ * console.log(result) // Outputs: "123" with description and string tag
+ *
+ * @example
+ * // Convert an object to a string with additional options
+ * const obj = { key: 'value' }
+ * const result = asString(obj)
+ * console.log(result) // Outputs: "[object Object]" with description and
+ *                     // string tag
+ */
+function asString(value) {
+    return index_js_1.as.string(value, { description: true, stringTag: true });
+}
+/**
+ * Creates a base enumeration object with predefined properties and
+ * symbols. This function is used to initialize an enumeration with
+ * specific characteristics, such as a name and various symbolic
+ * properties that enhance its functionality and identification.
+ *
+ * @param {string} name - The name of the enumeration. This name is
+ *   used to identify the enumeration and is stored as a symbol on
+ *   the object.
+ * @returns {Object} A new enumeration object with specific properties
+ *   and symbols set for enhanced functionality and identification.
+ *
+ * @example
+ * // Create a base enum with the name 'Color'
+ * const colorEnum = makeBaseEnum('Color')
+ * console.log(colorEnum[Symbol.for('Enum.name')]) // Outputs: 'Color'
+ */
+function makeBaseEnum(name) {
+    return Object.create({}, {
+        /**
+         * Defines the `toStringTag` symbol on each enumeration to allow for
+         * type identification and to be consistent in naming conventions.
+         *
+         * @type {string}
+         */
+        [Symbol.toStringTag]: (0, index_js_1.accessor)('Enum', false, true, false),
+        /**
+         * In addition to the `toStringTag` symbol which defines this enumeration
+         * as an Enum type, the name of the enum is also codified in as a symbol
+         * on the object. It can be found using `Symbol.for('Enum.name')`.
+         *
+         * @type {string|symbol|number}
+         */
+        [Symbol.for('Enum.name')]: (0, index_js_1.accessor)(name, false, true, false),
+        /**
+         * Knowing which keys of the enum are part of the keys themselves is also
+         * crucial for enumerations. These can always be found on each Enum type
+         * as `Symbol.for('Enum.valueKeys')` as an array, but can also be found
+         * as the `.keys` property if there is no enum value of that name.
+         */
+        [Symbol.for('Enum.valueKeys')]: (0, index_js_1.data)([], false, true, false),
+        /**
+         * For users of the node.js REPL, this symbol represents enum types in a
+         * more readily readable format. See the docs for node's `util.inspect()`
+         * function for more details.
+         *
+         * @type {(number, object, Function) => string}
+         */
+        [Symbol.for('nodejs.util.inspect.custom')]: (0, index_js_1.data)(function (depth, options, inspect) {
+            const valueKeys = this[Symbol.for('Enum.valueKeys')] ?? [];
+            let valueText = valueKeys
+                .map(key => `\x1b[1;2m${key}\x1b[22m`)
+                .join(', ');
+            if (valueText.length)
+                valueText = ` { ${valueText} }`;
+            return `\x1b[1menum \x1b[22m${name}${valueText}`;
+        }, false, true, false),
+        /**
+         * This function checks the supplied `possibleEnumValue` to see if it
+         * is an enum value type from this enum.
+         *
+         * @param {any} possibleEnumValue the value to evaluate
+         * @returns {boolean} returns `true` if the value is an enum value type
+         * from this `Enum`, irrespective of any associated value. Returns `false`
+         * otherwise.
+         */
+        isValueOf: (0, index_js_1.data)(function isValueOf(possibleEnumValue) {
+            if (!possibleEnumValue || typeof possibleEnumValue !== 'object')
+                return false;
+            const enumValueType = possibleEnumValue?.type;
+            const enumValueName = possibleEnumValue?.name;
+            const thisEnumName = this[Symbol.for('Enum.name')];
+            const thisEnumKeys = this[Symbol.for('Enum.valueKeys')];
+            return (enumValueType === thisEnumName &&
+                thisEnumKeys.includes(enumValueName));
+        }, false, true, false),
+        /**
+         * A simple overload of the `toString()` method to represent the enum
+         * more identifiably when called. The result will be the word enum with
+         * the name of the enum in parenthesis. So a Gender enum might be seen
+         * as `Enum(Gender)` as a result to calling this function.
+         *
+         * @returns {string} a {@link String} representation of this object.
+         */
+        toString: (0, index_js_1.data)(function toString() {
+            return `Enum(${name})`;
+        }, false, true, false)
+    });
+    const applySyntacticSugar = () => {
+        createSymlinks(Symbol.for('Enum.valueKeys'), 'keys');
+        createSymlinks(Symbol.for('Enum.name'), 'name');
+    };
+    return [base, applySyntacticSugar];
+}
+/**
+ * Creates a symlink for a property from an existing key to a new key on
+ * the specified object. This function checks if the new key already
+ * exists on the object and, if not, it creates a new property with the
+ * same descriptor as the old key.
+ *
+ * Since this method creates the new link through the use of property
+ * descriptors, computed getters and setters also are mapped properly.
+ *
+ * @param {Object} on - The target object on which the symlink is to be
+ * created.
+ * @param {string|symbol} oldKey - The existing key whose property
+ * descriptor will be used for the new key.
+ * @param {string|symbol} newKey - The new key under which the property
+ * will be accessible.
+ *
+ * @example
+ * const obj = { a: 1 }
+ * createSymlink(obj, 'a', 'b')
+ * console.log(obj.b) // Outputs: 1
+ */
+function createSymlinks(on, oldKey, ...newKeys) {
+    (0, index_js_1.redescribe)(on, oldKey, {}, { alsoAs: newKeys });
+}
 //# sourceMappingURL=enum.js.map

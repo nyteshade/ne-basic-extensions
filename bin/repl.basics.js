@@ -203,6 +203,14 @@ export function createRepl(options) {
     replServer.displayPrompt()
   })
 
+  replServer.generateStateString = function() {
+    return printStateString(
+      options?.exports ?? replServer.context,
+      state,
+      true,
+    )
+  }
+
   return replServer
 }
 
@@ -337,6 +345,11 @@ function overridableGlobal(
  * modification. Skipped properties during enumeration are tracked but not
  * processed further.
  *
+ * @param {object} forObject the object to generate state for. This object
+ * defaults to `globalThis`
+ * @param {object} _state a private system shared state variable used to
+ * determine whether or not to allow invocation of getters that are aware
+ * of the state variable.
  * @returns {Object} An object representing the current REPL state, with
  * properties for classes, functions, properties, symbols, and descriptors
  * (further divided into accessors and data descriptors). Each category is an
@@ -407,6 +420,13 @@ function generateState(forObject = globalThis, _state) {
  *
  * @param {Object} [forObject=globalThis] - The object to generate the
  * state from. Defaults to the global object.
+ * @param {object} _state a private system shared state variable used to
+ * determine whether or not to allow invocation of getters that are aware
+ * of the state variable.
+ * @param {boolean} [skipPrint=false] the function prints the state to
+ * the console by default. If this value is `true`, the calls to console's
+ * `.log()` will not be invoked.
+ * @returns {string} the same string that is normally printed
  *
  * @example
  * // Prints the state of the global object
@@ -417,8 +437,13 @@ function generateState(forObject = globalThis, _state) {
  * const myObject = { a: 1, b: function() {}, c: class {} }
  * printStateString(myObject, false)
  */
-function printStateString(forObject = globalThis, _state) {
+export function printStateString(
+  forObject = globalThis,
+  _state,
+  skipPrint = false
+) {
   const state = generateState(forObject, _state);
+  const buffer = []
   const b = (s) => `\x1b[1m${s}\x1b[22m`;
   const i = (s) => `\x1b[3m${s}\x1b[23m`;
   const j = ', ';
@@ -434,18 +459,23 @@ function printStateString(forObject = globalThis, _state) {
     .map(k => String(k));
 
   if (state.classes.length)
-    console.log(`${b('Classes')}\n${wrapContent(state.classes, i, j)}`);
+    buffer.push(`${b('Classes')}\n${wrapContent(state.classes, i, j)}`);
 
   if (state.functions.length)
-    console.log(`${b('Functions')}\n${wrapContent(state.functions, i, j)}`);
+    buffer.push(`${b('Functions')}\n${wrapContent(state.functions, i, j)}`);
 
   if (state.properties.length)
-    console.log(`${b('Properties')}\n${wrapContent(state.properties, i, j)}`);
+    buffer.push(`${b('Properties')}\n${wrapContent(state.properties, i, j)}`);
 
   if (state.descriptors.accessors.length)
-    console.log(`${b('Accessors')}\n${wrapContent(state.descriptors.accessors, i, j)}`);
+    buffer.push(`${b('Accessors')}\n${wrapContent(state.descriptors.accessors, i, j)}`);
 
-  console.log('')
+  buffer.push('')
+
+  if (!skipPrint)
+    console.log(buffer.join('\n'))
+
+  return buffer.join('\n')
 }
 
 /**

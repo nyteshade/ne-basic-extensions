@@ -343,7 +343,7 @@ export class Symkeys {
      * const name = Symkeys.calculateName('feature', 'symkeys.public', '/');
      * console.log(name); // Output: 'symkeys.public/feature'
      */
-    calculateName(providedName: string, useDomain?: string | undefined, useSeparator?: string | undefined): string;
+    calculateName(providedName: string, useDomain?: string, useSeparator?: string): string;
 }
 export const SymkeysExtension: Extension;
 import { Extension } from '@nejs/extension';

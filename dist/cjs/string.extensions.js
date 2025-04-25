@@ -646,6 +646,44 @@ exports.StringPrototypeExtensions = new extension_1.Patch(String.prototype, {
                 };
             }
         },
+        /**
+         * Prints the string representation of the current object using a specified
+         * function and context.
+         *
+         * This method converts the current object to a string and then prints it
+         * using the provided function. By default, it uses `console.log` to print
+         * to the console. The function is called with a specified `thisArg` to
+         * set the context in which the function is executed.
+         *
+         * @param {Function} [fn=console.log] - The function used to print the
+         *   string. Defaults to `console.log`.
+         * @param {Object} [thisArg=console] - The value of `this` provided for
+         *   the call to `fn`. Defaults to the global `console` object.
+         *
+         * @returns {string} The string representation of the current object.
+         *
+         * @example
+         * // assuming extensions are applied
+         * const str = 'Hello, World!'
+         * str.print() // Logs: 'Hello, World!' to the console
+         *
+         * @example
+         * // assuming extensions are applied
+         * const str = 'Hello, World!'
+         * const customLogger = {
+         *   time: new Date(),
+         *   log: (msg) => {
+         *     console.info('[%s]: %s', this.time..toLocaleDateString(), msg)
+         *   }
+         * }
+         * str.print(customLogger.log, customLogger)
+         * // prints "[10/16/2024] Hello, World!"
+         */
+        print(fn = console.log, thisArg = console) {
+            const string = this.toString();
+            fn.call(thisArg, string);
+            return string;
+        },
     },
 });
 // NOTE to self; this is repeated here otherwise a circular reference from

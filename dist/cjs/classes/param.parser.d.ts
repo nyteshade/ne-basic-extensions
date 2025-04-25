@@ -64,7 +64,7 @@ export class ParamParser {
      *   console.error('Parsing failed.');
      * }
      */
-    static safeTryParsers(parameters: any[], parsers: Function[], throwOnFail?: boolean | undefined): {
+    static safeTryParsers(parameters: any[], parsers: Function[], throwOnFail?: boolean): {
         success: boolean;
         data: any;
     };
@@ -127,9 +127,6 @@ export class ParamParser {
             stack?: string;
             cause?: unknown;
         };
-        captureStackTrace(targetObject: object, constructorOpt?: Function): void;
-        prepareStackTrace?: ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
-        stackTraceLimit: number;
     };
     /**
      * A custom error class indicating that the parsers array does not
@@ -170,9 +167,6 @@ export class ParamParser {
             stack?: string;
             cause?: unknown;
         };
-        captureStackTrace(targetObject: object, constructorOpt?: Function): void;
-        prepareStackTrace?: ((err: Error, stackTraces: NodeJS.CallSite[]) => any) | undefined;
-        stackTraceLimit: number;
     };
     /**
      * Constructs an instance of ParamParser. It takes in parameters, an optional

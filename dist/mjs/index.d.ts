@@ -1,3 +1,4 @@
+export * from "./utils/stdout.js";
 export * from "./utils/copy.object.js";
 export * from "./utils/toolkit.js";
 export * from "./utils/descriptor.utils.js";
@@ -9,15 +10,16 @@ export namespace all {
 }
 export default results;
 declare namespace results {
-    export { Extensions };
-    export { Patches };
-    export { GlobalFunctionsAndProps };
-    export { StaticPatches };
-    export { InstancePatches };
-    export { Controls };
-    export { Extensions as extensions };
-    export { Patches as patches };
     export { all };
+    export { Controls };
+    export { Extensions };
+    export { Extensions as extensions };
+    export { GlobalFunctionsAndProps };
+    export { InstancePatches };
+    export { Patches };
+    export { Patches as patches };
+    export { StaticPatches };
+    export { StdoutGlobalPatches };
 }
 export const Extensions: {};
 export const Patches: Map<any, any>;
@@ -25,4 +27,5 @@ export const StaticPatches: ((string | import("@nejs/extension").Patch | ArrayCo
 export const InstancePatches: ((string | import("@nejs/extension").Patch | BigInt)[] | (string | Number | import("@nejs/extension").Patch)[] | (string | Object)[])[];
 export const Controls: {};
 import { GlobalFunctionsAndProps } from './global.this.js';
+import { StdoutGlobalPatches } from './utils/stdout.js';
 export { GlobalFunctionsAndProps };

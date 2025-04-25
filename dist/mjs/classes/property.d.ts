@@ -51,12 +51,8 @@ export class Property {
         configurable?: boolean | undefined;
         enumerable?: boolean | undefined;
         storage?: Object | undefined;
-    } | undefined): Property;
-    static data(name: any, value: any, { writable, configurable, enumerable }?: {
-        writable: any;
-        configurable: any;
-        enumerable: any;
     }): Property;
+    static data(name: any, value: any, { writable, configurable, enumerable }?: {}): Property;
     static from(object: any, name: any): Property;
     static get is(): {
         object(value: any): any;
@@ -77,10 +73,7 @@ export class Property {
         readonly accessor: boolean;
         readonly data: boolean;
     };
-    toString(colors?: boolean, { key, descriptor }?: {
-        key: any;
-        descriptor: any;
-    }): string;
+    toString(colors?: boolean, { key, descriptor }?: {}): string;
 }
 export const PropertyExtensions: Extension;
 import { Extension } from '@nejs/extension';

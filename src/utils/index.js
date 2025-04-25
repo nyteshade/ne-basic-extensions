@@ -20,6 +20,15 @@ import {
   kVisibilityKeys,
 } from './copy.object.js'
 
+export * from './stdout.js'
+import {
+  StringConsole,
+  StringConsoleExtension,
+  StdoutGlobalPatches,
+
+  captureStdout,
+} from './stdout.js'
+
 export * from './toolkit.js'
 import {
   as,
@@ -34,7 +43,11 @@ export * from './descriptor.utils.js'
 import {
   accessor,
   data,
+  describe,
+  describeMany,
+  extract,
   isDescriptor,
+  redescribe,
   kAccessorDescriptorKeys,
   kDataDescriptorKeys,
   kDescriptorKeys
@@ -48,6 +61,8 @@ export default {
   ImmutablyVisibleHandler,
   MutablyHiddenHandler,
   MutablyVisibleHandler,
+  StdoutGlobalPatches,
+  StringConsole,
   VisibilityKeys,
   VisibilityScopeHandler,
 
@@ -57,12 +72,17 @@ export default {
   si,
 
   accessor,
+  captureStdout,
   copyObject,
   createToolkit,
   customCopyObject,
   data,
+  describe,
+  describeMany,
+  extract,
   isDescriptor,
   makeTransducer,
+  redescribe,
   transduceFrom,
   transduceFromCOHandler,
   tryIgnore,

@@ -212,7 +212,7 @@ export class Descriptor {
      * @throws {Error} Throws an error if the constructed descriptor is not
      * valid.
      */
-    constructor(object: object | Descriptor, key?: string | symbol | undefined, ...args: any[]);
+    constructor(object: object | Descriptor, key?: string | symbol, ...args: any[]);
     /**
      * The default private descriptor value is that of `enigmatic`
      *

@@ -197,7 +197,7 @@ export class COPropertyHandler {
      * //   flow: 'nochange'
      * // }
      */
-    static makeResponse(descriptor: Object, flow?: string | undefined): COPropertyHandler.Response;
+    static makeResponse(descriptor: Object, flow?: string): COPropertyHandler.Response;
     /**
      * Checks if a value is a valid COPropertyHandler response object.
      * @param {*} value - The value to check.
@@ -245,7 +245,7 @@ export class COPropertyHandler {
      * @param {function} [handler] - The function to handle the property
      * descriptor.
      */
-    constructor(property?: string | undefined, handler?: Function | undefined);
+    constructor(property?: string, handler?: Function);
     /**
      * The name of the property this handler is responsible for.
      * @type {string|undefined}

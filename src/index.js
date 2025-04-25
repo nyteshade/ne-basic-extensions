@@ -29,6 +29,15 @@ import { RefSetExtensions } from './classes/refset.js'
 import { SymkeysExtension } from './classes/symkeys.js'
 import { TypeExtensions } from './classes/type.js'
 
+export * from './utils/stdout.js'
+import {
+  StringConsole,
+  StdoutGlobalPatches,
+  StringConsoleExtension,
+
+  captureStdout,
+} from './utils/stdout.js'
+
 export * from './utils/copy.object.js'
 export * from './utils/toolkit.js'
 export * from './utils/descriptor.utils.js'
@@ -68,6 +77,9 @@ const InstancePatches = [
 const Patches = new Map([
   ...StaticPatches,
   ...InstancePatches,
+
+  [globalThis, GlobalFunctionsAndProps, 'globalThis'], // Missing .name property
+  [globalThis, StdoutGlobalPatches, 'globalThis'],     // Missing .name property
 ])
 
 const Extensions = {
@@ -85,6 +97,7 @@ const Extensions = {
   [PropertyExtensions.key]: PropertyExtensions,
   [RefMapExtensions.key]: RefMapExtensions,
   [RefSetExtensions.key]: RefSetExtensions,
+  [StringConsoleExtension.key]: StringConsoleExtension,
   [SymkeysExtension.key]: SymkeysExtension,
   [TypeExtensions.key]: TypeExtensions,
 }
@@ -121,7 +134,6 @@ Object.assign(Controls, {
 
   enableExtensions() {
     Object.values(Extensions).forEach((extension) => { extension.apply() })
-    GlobalFunctionsAndProps.apply()
   },
 
   disableAll() {
@@ -147,7 +159,6 @@ Object.assign(Controls, {
 
   disableExtensions() {
     Object.values(Extensions).forEach((extension) => { extension.revert() })
-    GlobalFunctionsAndProps.revert()
   },
 })
 
@@ -193,7 +204,9 @@ export const all = (() => {
     .reduce(entriesReducer, dest.classes)
   )
 
-  for (const [key, entry] of GlobalFunctionsAndProps) {
+  const globals = [...GlobalFunctionsAndProps].concat([...StdoutGlobalPatches])
+
+  for (const [key, entry] of globals) {
     const descriptor = new Descriptor(entry.descriptor, entry.owner)
     Object.defineProperty(dest.global, key, descriptor.toObject(true))
   }
@@ -203,15 +216,16 @@ export const all = (() => {
 
 const results = {
   ...Controls,
-  Extensions,
-  Patches,
-  GlobalFunctionsAndProps,
-  StaticPatches,
-  InstancePatches,
-  Controls,
-  extensions: Extensions,
-  patches: Patches,
   all,
+  Controls,
+  Extensions,
+  extensions: Extensions,
+  GlobalFunctionsAndProps,
+  InstancePatches,
+  Patches,
+  patches: Patches,
+  StaticPatches,
+  StdoutGlobalPatches,
 }
 
 export default results

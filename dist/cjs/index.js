@@ -41,6 +41,8 @@ const refmap_js_1 = require("./classes/refmap.js");
 const refset_js_1 = require("./classes/refset.js");
 const symkeys_js_1 = require("./classes/symkeys.js");
 const type_js_1 = require("./classes/type.js");
+__exportStar(require("./utils/stdout.js"), exports);
+const stdout_js_1 = require("./utils/stdout.js");
 __exportStar(require("./utils/copy.object.js"), exports);
 __exportStar(require("./utils/toolkit.js"), exports);
 __exportStar(require("./utils/descriptor.utils.js"), exports);
@@ -75,6 +77,8 @@ exports.InstancePatches = InstancePatches;
 const Patches = new Map([
     ...StaticPatches,
     ...InstancePatches,
+    [globalThis, global_this_js_1.GlobalFunctionsAndProps, 'globalThis'], // Missing .name property
+    [globalThis, stdout_js_1.StdoutGlobalPatches, 'globalThis'], // Missing .name property
 ]);
 exports.Patches = Patches;
 const Extensions = {
@@ -92,6 +96,7 @@ const Extensions = {
     [property_js_1.PropertyExtensions.key]: property_js_1.PropertyExtensions,
     [refmap_js_1.RefMapExtensions.key]: refmap_js_1.RefMapExtensions,
     [refset_js_1.RefSetExtensions.key]: refset_js_1.RefSetExtensions,
+    [stdout_js_1.StringConsoleExtension.key]: stdout_js_1.StringConsoleExtension,
     [symkeys_js_1.SymkeysExtension.key]: symkeys_js_1.SymkeysExtension,
     [type_js_1.TypeExtensions.key]: type_js_1.TypeExtensions,
 };
@@ -123,7 +128,6 @@ Object.assign(Controls, {
     },
     enableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.apply(); });
-        global_this_js_1.GlobalFunctionsAndProps.apply();
     },
     disableAll() {
         Controls.disablePatches();
@@ -144,7 +148,6 @@ Object.assign(Controls, {
     },
     disableExtensions() {
         Object.values(Extensions).forEach((extension) => { extension.revert(); });
-        global_this_js_1.GlobalFunctionsAndProps.revert();
     },
 });
 exports.all = (() => {
@@ -178,7 +181,8 @@ exports.all = (() => {
     (Object.values(Extensions)
         .flatMap(extension => [...extension])
         .reduce(entriesReducer, dest.classes));
-    for (const [key, entry] of global_this_js_1.GlobalFunctionsAndProps) {
+    const globals = [...global_this_js_1.GlobalFunctionsAndProps].concat([...stdout_js_1.StdoutGlobalPatches]);
+    for (const [key, entry] of globals) {
         const descriptor = new descriptor_js_1.Descriptor(entry.descriptor, entry.owner);
         Object.defineProperty(dest.global, key, descriptor.toObject(true));
     }
@@ -186,15 +190,16 @@ exports.all = (() => {
 })();
 const results = {
     ...Controls,
-    Extensions,
-    Patches,
-    GlobalFunctionsAndProps: global_this_js_1.GlobalFunctionsAndProps,
-    StaticPatches,
-    InstancePatches,
-    Controls,
-    extensions: Extensions,
-    patches: Patches,
     all: exports.all,
+    Controls,
+    Extensions,
+    extensions: Extensions,
+    GlobalFunctionsAndProps: global_this_js_1.GlobalFunctionsAndProps,
+    InstancePatches,
+    Patches,
+    patches: Patches,
+    StaticPatches,
+    StdoutGlobalPatches: stdout_js_1.StdoutGlobalPatches,
 };
 exports.default = results;
 function toFilterFn(filter = ([owner, extension]) => true) {

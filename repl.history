@@ -1,30 +1,30 @@
-Colors.blue.rgb
-Colors.red.rgb
-Colors = Enum('Colors', ['red', 'blue', 'green'], { get rgb() { switch (this.real) { case 'red': return 'rgb(255,0,0)'; case 'green': return 'rgb(0, 255, 0)'; case 'blue': return 'rgb(0,0,255)'; } } })
-Colors.red.rgb
-Colors = Enum('Colors', ['red', 'blue', 'green'], { get rgb() { switch (this.real) { case 'red': return 'rgb(255,0,0)'; case 'green': return 'rgb(0, 255, 0)'; case 'blue': return 'rgb(0,0,255)'; } } })
-Colors.red
-Colors.red.rgb
-Colors = Enum('Colors', ['red', 'blue', 'green'], { get rgb() { switch (this.real) { case 'red': return 'rgb(255,0,0)'; case 'green': return 'rgb(0, 255, 0)'; case 'blue': return 'rgb(0,0,255)'; } } })
-props = { get rgb() { switch (this.real) { case 'red': return 'rgb(255,0,0)'; case 'green': return 'rgb(0, 255, 0)'; case 'blue': return 'rgb(0,0,255)'; } } }
-isDescriptor(undefined, true)
-isDescriptor(false, true)
-isDescriptor(null, true)
-isDescriptor(false)
-isDescriptor(null, true)
-Object.defineProperty({}, 'name', accessor('Brie', false))
-accessor.keys
-{accessor} = await import('./dist/cjs/utils/index.js')
-await import('./dist/cjs/utils/index.js')
-await import('./dist/utils/index.js')
-await import('./utils')
-await import('./utils')(
-Gender.Female.value
-Gender.Female.real
-Gender.Female
-Gender.NonBinary
-Gender.Male.compare(null)
-Gender.Male.compare(TransWoman)
-TransMan.compare(TransWoman)
-TransMan = Gender.Transgender('Trans Man')
-TransWoman = Gender.Transgender('Trans Woman')Gender', ['Male', 'Female', ['Transgender'], 'NonBinary']), name: 'Brielle'}, {configurable: false, enumerable: false })
+/exit
+Object.setPrototypeOf(m, pop)
+pop[Symbol.toStringTag] = 'Map'
+pop[Symbol.toStringTag] = 'Map
+Object.setPrototypeOf(m, p)
+m2 = new Map()
+m.name
+Object.setPrototypeOf(m, pop)
+pop = new Proxy(p, { get(t,p,r) { if (t.has.call(m, p)) { return t.get.call(m, p) } return Reflect.get(t,p,r) }, has(t,p) { if (t.has.call(m, p)) { return true } return Reflect.has(t,p) } })
+p.has.call(m, 'name')
+p.has('name')
+Object.setPrototypeOf(m, pop)
+pop = new Proxy(p, { get(t,p,r) { if (m.has(p)) { return m.get(p) } return Reflect.get(t,p,r) }, has(t,p) { if (m.has(p)) { return true } return Reflect.has(t,p) } })
+Object.setPrototypeOf(m, pop)
+pop = new Proxy(p, { get(t,p,r) { if (t.has(p)) { return t.get(p) } return Reflect.get(t,p,r) }, has(t,p) { if (t.has(p)) { return true } return Reflect.has(t,p) } })
+np = Object.create(p)
+p = Object.getPrototypeOf(m)
+m.get('name')
+m = new Map([['name', 'Brielle']])
+ObjectPatches.patchesOwner
+ObjectPatches.patchsOwner
+ObjectPatches.patchCount
+[...ObjectPatches.patchEntries]
+ObjectPatches = Patches.get(Object)
+Patches.get(Object)
+[...Patches.keys()]
+Object.keys(Patches)
+Patches.keys()
+var { Extensions, Patches } = (await import ('./dist/cjs/index.js'))
+(await import ('./dist/cjs/index.js')).Patchest import ('./dist/cjs/index.js')).Extensionsex.js').Extensions.js').Patchesx.js').patchesndex.js')mport ('.')og','This is being logged'], ['error', 'But something terrible happened'])p('Fun', ['log','This is being logged'], ['error', 'But something terrible happened']).print()ics','underline']).print()int() { console.log(this) }brave new world', ['italics','underline']))['italics','underline'])
