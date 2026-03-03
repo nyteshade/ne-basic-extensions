@@ -258,6 +258,24 @@ export const NumberPrototypeExtensions = new Patch(Number.prototype, {
     ifNumber(thenValue, elseValue) {
       return pIfNumber(this, thenValue, elseValue)
     },
+
+    /**
+     * Provides a way when dealing with numbers to determine if
+     * a given number is within a range of values. By default, if
+     * no parameters are supplied, it always returns true since
+     * the default range is -Infinity to +Infinity. Additionally,
+     * by default, the number will always be less than the supplied
+     * max unless inclusive is set to true.
+     *
+     * @param min the lower range value, defaults to -Infinity
+     * @param max the upper range value, defaults to +Infinity
+     * @param inclusive defaults to false, set to true if you
+     * want the max value to less than and equals to
+     * @returns {boolean} true if within the range, false otherwise
+     */
+    within(min = -Infinity, max = Infinity, inclusive = false) {
+      return this >= min && (inclusive ? this <= max : this < max)
+    }
   }
 })
 

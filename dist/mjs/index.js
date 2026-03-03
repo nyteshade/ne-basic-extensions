@@ -4,6 +4,7 @@ import { FunctionExtensions, FunctionPrototypeExtensions } from './function.exte
 import { GlobalFunctionsAndProps } from './global.this.js';
 import { JSONExtensions } from './json.extensions.js';
 import { MapExtensions, MapPrototypeExtensions } from './map.extensions.js';
+import { MathExtensions } from './math.extension.js';
 import { NumberExtensions, NumberPrototypeExtensions } from './number.extension.js';
 import { ObjectExtensions, ObjectPrototypeExtensions } from './object.extensions.js';
 import { ReflectExtensions } from './reflect.extensions.js';
@@ -35,6 +36,7 @@ const StaticPatches = [
     [Function, FunctionExtensions, Function.name],
     [JSON, JSONExtensions, 'JSON'], // Missing a .name property
     [Map, MapExtensions, Map.name],
+    [Math, MathExtensions, 'Math'],
     [Number, NumberExtensions, Number.name],
     [Object, ObjectExtensions, Object.name],
     [Reflect, ReflectExtensions, 'Reflect'], // Missing a .name property

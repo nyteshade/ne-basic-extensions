@@ -22,6 +22,7 @@ const global_this_js_1 = require("./global.this.js");
 Object.defineProperty(exports, "GlobalFunctionsAndProps", { enumerable: true, get: function () { return global_this_js_1.GlobalFunctionsAndProps; } });
 const json_extensions_js_1 = require("./json.extensions.js");
 const map_extensions_js_1 = require("./map.extensions.js");
+const math_extension_js_1 = require("./math.extension.js");
 const number_extension_js_1 = require("./number.extension.js");
 const object_extensions_js_1 = require("./object.extensions.js");
 const reflect_extensions_js_1 = require("./reflect.extensions.js");
@@ -53,6 +54,7 @@ const StaticPatches = [
     [Function, function_extensions_js_1.FunctionExtensions, Function.name],
     [JSON, json_extensions_js_1.JSONExtensions, 'JSON'], // Missing a .name property
     [Map, map_extensions_js_1.MapExtensions, Map.name],
+    [Math, math_extension_js_1.MathExtensions, 'Math'],
     [Number, number_extension_js_1.NumberExtensions, Number.name],
     [Object, object_extensions_js_1.ObjectExtensions, Object.name],
     [Reflect, reflect_extensions_js_1.ReflectExtensions, 'Reflect'], // Missing a .name property
