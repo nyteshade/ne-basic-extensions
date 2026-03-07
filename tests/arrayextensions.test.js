@@ -1,7 +1,7 @@
-const { Patches } = require('../dist/cjs/index.js')
-const ArrayPrototypeExtensions = Patches.get(Array.prototype)
-
 import { describe, expect, it } from 'vitest';
+import { Patches } from '../src/index.js'
+
+const ArrayPrototypeExtensions = Patches.get(Array.prototype)
 
 ArrayPrototypeExtensions.apply();
 

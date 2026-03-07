@@ -11,7 +11,7 @@ import {
   kDataDescriptorKeys,
   kDescriptorKeys,
   kSharedDescriptorKeys
-} from '../../dist/cjs/utils/index.js';
+} from '../../src/utils/index.js';
 
 describe('DescriptorUtils', () => {
   describe('accessor', () => {

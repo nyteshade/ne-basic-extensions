@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { is, si, has, as } from '../../dist/cjs/index.js'
+import { is, si, has, as } from '../../src/index.js'
 
 describe('is utility functions', () => {
   it('should correctly identify types via is.a', () => {
