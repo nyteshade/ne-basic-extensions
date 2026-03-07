@@ -1,7 +1,7 @@
-const { Classes } = require('../../dist/cjs/index.js')
-const { RefMap } = Classes
-
 import { describe, beforeEach, test, expect, vi } from 'vitest';
+import { Classes } from '../../src/index.js'
+
+const { RefMap } = Classes
 
 describe('RefMap', () => {
   let refMap;

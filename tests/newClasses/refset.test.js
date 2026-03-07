@@ -1,7 +1,7 @@
-const { Extensions } = require('../../dist/cjs/index.js')
-const RefSet = Extensions.RefSet.class
-
 import { describe, beforeEach, test, expect } from 'vitest';
+import { Extensions } from '../../src/index.js'
+
+const RefSet = Extensions.RefSet.class
 
 describe('RefSet', () => {
   let refSet;

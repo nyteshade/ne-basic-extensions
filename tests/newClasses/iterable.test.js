@@ -1,7 +1,7 @@
-const { Extensions } = require('../../dist/cjs/index.js')
-const Iterable = Extensions.Iterable.class
-
 import { describe, test, expect } from 'vitest';
+import { Extensions } from '../../src/index.js'
+
+const Iterable = Extensions.Iterable.class
 
 describe('Iterable', () => {
   test('should create an iterable from an array', () => {

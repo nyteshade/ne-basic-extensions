@@ -1,7 +1,7 @@
-const { Extensions } = require('../../dist/cjs/index.js')
-const Descriptor = Extensions.Descriptor.class
-
 import { describe, beforeEach, test, expect } from 'vitest';
+import { Extensions } from '../../src/index.js'
+
+const Descriptor = Extensions.Descriptor.class
 
 describe('Descriptor', () => {
   describe('constructor', () => {

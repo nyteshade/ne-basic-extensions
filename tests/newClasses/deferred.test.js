@@ -1,7 +1,7 @@
-const { Extensions } = require('../../dist/cjs/index.js')
-const Deferred = Extensions.Deferred.class
-
 import { describe, beforeEach, test, expect, vi } from 'vitest';
+import { Extensions } from '../../src/index.js'
+
+const Deferred = Extensions.Deferred.class
 
 describe('Deferred', () => {
   let deferred;
