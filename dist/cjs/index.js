@@ -33,6 +33,7 @@ const symbol_extensions_js_1 = require("./symbol.extensions.js");
 const deferred_js_1 = require("./classes/deferred.js");
 const descriptor_js_1 = require("./classes/descriptor.js");
 const enum_js_1 = require("./classes/enum.js");
+const enumeration_js_1 = require("./classes/enumeration.js");
 const introspector_js_1 = require("./classes/introspector.js");
 const iterable_js_1 = require("./classes/iterable.js");
 const param_parser_js_1 = require("./classes/param.parser.js");
@@ -89,6 +90,7 @@ const Extensions = {
     [deferred_js_1.DeferredExtension.key]: deferred_js_1.DeferredExtension,
     [descriptor_js_1.DescriptorExtensions.key]: descriptor_js_1.DescriptorExtensions,
     [enum_js_1.EnumExtension.key]: enum_js_1.EnumExtension,
+    [enumeration_js_1.EnumerationExtension.key]: enumeration_js_1.EnumerationExtension,
     [introspector_js_1.IntrospectorExtensions.key]: introspector_js_1.IntrospectorExtensions,
     [iterable_js_1.IterableExtensions.key]: iterable_js_1.IterableExtensions,
     [iterable_js_1.IteratorExtensions.key]: iterable_js_1.IteratorExtensions,

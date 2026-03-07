@@ -21,8 +21,6 @@ export const is = {
      *
      * @param {*} value - The value to check.
      * @param {*} typeOrClass - The type or class to compare against.
-     * @param {boolean} [alreadyReversed=false] - Internal flag to prevent
-     *   infinite recursion. Not intended for external use.
      * @returns {boolean} True if the value matches the type or class,
      *   false otherwise.
      *
@@ -70,10 +68,10 @@ export const is = {
      *
      * @example
      * // Returns true
-     * is.accessorDescriptor({ get: () => 42, set: () => {} });
+     * is.accessorDescriptor({ get: () => 42, set: () => {} })
      *
      * // Returns false
-     * is.accessorDescriptor({ value: 42, writable: true });
+     * is.accessorDescriptor({ value: 42, writable: true })
      */
     accessorDescriptor(value) {
         return !!(this.descriptor(value) &&
@@ -88,8 +86,8 @@ export const is = {
      * @returns True if the value is an array, false otherwise.
      *
      * @example
-     * is.array([1, 2, 3]); // true
-     * is.array('string'); // false
+     * is.array([1, 2, 3]) // true
+     * is.array('string') // false
      */
     array(value) {
         return Array.isArray(value);
@@ -101,8 +99,8 @@ export const is = {
      * @returns True if the value is a bigint, false otherwise.
      *
      * @example
-     * is.bigint(123n); // true
-     * is.bigint(123); // false
+     * is.bigint(123n) // true
+     * is.bigint(123) // false
      */
     bigint(value) {
         return typeof value === "bigint" || value instanceof globalThis?.BigInt;
@@ -116,10 +114,10 @@ export const is = {
      * @returns {boolean} True if the value is a boolean, false otherwise.
      *
      * @example
-     * is.boolean(true); // true
-     * is.boolean(false); // true
-     * is.boolean(1); // false
-     * is.boolean("true"); // false
+     * is.boolean(true) // true
+     * is.boolean(false) // true
+     * is.boolean(1) // false
+     * is.boolean("true") // false
      */
     boolean(value) {
         return [true, false].some(bool => bool === value);
@@ -135,29 +133,29 @@ export const is = {
      * `get`, or `set` function, use `is.callableDescriptor` instead.
      *
      * @example
-     * is.callable(function() {}); // true
+     * is.callable(function() {}) // true
      */
     callable(object) {
         return this.function(object);
     },
     /**
-     * Check if an object is callable. It looks to see if the object
-     * represents a descriptor that is callable by checking object
-     * properties named `value`, `get`, and `set`. If any three variations
+     * Check if an object is a callable descriptor. It looks to see if the
+     * object represents a descriptor that is callable by checking object
+     * properties named `value`, `get`, and `set`. If any of the three
      * yields a function type, true is returned.
      *
      * @param object The object to check.
-     * @returns True if the object is callable, false otherwise.
+     * @returns True if the object is a callable descriptor, false otherwise.
      *
      * @example
-     * is.callable({ get: function() {} }); // true
-     * is.callable(123); // false
+     * is.callableDescriptor({ get: function() {} }) // true
+     * is.callableDescriptor(123) // false
      *
      * // Note the differences between these
-     * const object = { get name() { return "Brie"; } };
-     * const descriptor = Object.getOwnPropertyDescriptor(object, 'name');
-     * is.callable(object); // false
-     * is.callable(descriptor); // true
+     * const object = { get name() { return "Brie"; } }
+     * const descriptor = Object.getOwnPropertyDescriptor(object, 'name')
+     * is.callableDescriptor(object) // false
+     * is.callableDescriptor(descriptor) // true
      */
     callableDescriptor(object) {
         const { value, get, set } = this.shiny(object) ? object : {};
@@ -169,21 +167,21 @@ export const is = {
      * A data descriptor is an object that describes the configuration of a
      * property on an object, specifically focusing on the 'value' and
      * 'writable' attributes. The descriptor is invalid if it contains
-     * thew accessor descriptors `get` or `set`.
+     * the accessor descriptors `get` or `set`.
      *
      * @param value The value to check.
      * @returns True if the value is a data descriptor, false otherwise.
      *
      * @example
      * // Returns true
-     * is.dataDescriptor({ value: 42, writable: true });
+     * is.dataDescriptor({ value: 42, writable: true })
      *
      * // Returns false
-     * is.dataDescriptor({ get: () => 42, set: () => {} });
+     * is.dataDescriptor({ get: () => 42, set: () => {} })
      */
     dataDescriptor(value) {
-        return (this.descriptor(value) &&
-            (value?.value || value?.writable) &&
+        return !!(this.descriptor(value) &&
+            (value?.value !== undefined || value?.writable !== undefined) &&
             value?.get === undefined &&
             value?.set === undefined);
     },
@@ -198,9 +196,9 @@ export const is = {
      * @returns True if the value is a property descriptor, false otherwise.
      *
      * @example
-     * is.descriptor({ configurable: true, enumerable: false }); // true
-     * is.descriptor({ get: () => {}, set: () => {} }); // true
-     * is.descriptor({}); // false
+     * is.descriptor({ configurable: true, enumerable: false }) // true
+     * is.descriptor({ get: () => {}, set: () => {} }) // true
+     * is.descriptor({}) // false
      */
     descriptor(value) {
         if (!is.object(value)) {
@@ -221,9 +219,9 @@ export const is = {
      * @returns {boolean} True if the value is strictly false, false otherwise.
      *
      * @example
-     * is.false(false); // true
-     * is.false(true); // false
-     * is.false(0); // false
+     * is.false(false) // true
+     * is.false(true) // false
+     * is.false(0) // false
      */
     false(value) {
         return value === false;
@@ -239,10 +237,10 @@ export const is = {
      * @returns {boolean} True if the value is falsy, false otherwise.
      *
      * @example
-     * is.falsy(0); // true
-     * is.falsy(""); // true
-     * is.falsy(1); // false
-     * is.falsy("hello"); // false
+     * is.falsy(0) // true
+     * is.falsy("") // true
+     * is.falsy(1) // false
+     * is.falsy("hello") // false
      */
     falsy(value) {
         return !!!value;
@@ -256,10 +254,10 @@ export const is = {
      * @returns {boolean} True if the value is falsy, false otherwise.
      *
      * @example
-     * is.falsey(0); // true
-     * is.falsey(""); // true
-     * is.falsey(1); // false
-     * is.falsey("hello"); // false
+     * is.falsey(0) // true
+     * is.falsey("") // true
+     * is.falsey(1) // false
+     * is.falsey("hello") // false
      */
     falsey(value) {
         return this.falsy(value);
@@ -271,8 +269,8 @@ export const is = {
      * @returns True if the value is a function, false otherwise.
      *
      * @example
-     * is.function(function() {}); // true
-     * is.function(123); // false
+     * is.function(function() {}) // true
+     * is.function(123) // false
      */
     function(value) {
         return typeof value === "function" || value instanceof Function;
@@ -289,9 +287,9 @@ export const is = {
      * @returns True if the value is iterable, false otherwise.
      *
      * @example
-     * is.iterable([1, 2, 3]); // true
-     * is.iterable('string'); // true
-     * is.iterable(123); // false
+     * is.iterable([1, 2, 3]) // true
+     * is.iterable('string') // true
+     * is.iterable(123) // false
      */
     iterable(value) {
         const object = Object(value);
@@ -304,9 +302,9 @@ export const is = {
      * @returns True if the value is null or undefined, false otherwise.
      *
      * @example
-     * is.nullish(null); // true
-     * is.nullish(undefined); // true
-     * is.nullish('value'); // false
+     * is.nullish(null) // true
+     * is.nullish(undefined) // true
+     * is.nullish('value') // false
      */
     nullish(value) {
         return value === null || value === undefined;
@@ -318,8 +316,8 @@ export const is = {
      * @returns True if the value is a number, false otherwise.
      *
      * @example
-     * is.number(123); // true
-     * is.number('123'); // false
+     * is.number(123) // true
+     * is.number('123') // false
      */
     number(value) {
         return typeof value === "number" || value instanceof Number;
@@ -331,11 +329,56 @@ export const is = {
      * @returns True if the value is an object, false otherwise.
      *
      * @example
-     * is.object({}); // true
-     * is.object(null); // false
+     * is.object({}) // true
+     * is.object(null) // false
      */
     object(value) {
         return !!(value && typeof value === "object");
+    },
+    /**
+     * The {@link Object#entries} function returns the properties of a given
+     * value as an array of arrays where each element of the inner arrays is
+     * a valid object key (so one of {@link String}, {@link Number}, or
+     * {@link Symbol}) and the second element is the value of the pair which
+     * can be any type.
+     *
+     * This function vets this criteria and would return true for each entry
+     * in the returned outer array of a call to {@link Object#entries}.
+     *
+     * @param {any} value the value to test
+     * @returns {boolean} true if the value is a valid object entry in the
+     * form of `[key, value]`.
+     */
+    objectEntry(value) {
+        if (!(
+        // Must be an array
+        Array.isArray(value) &&
+            // Must have only two elements
+            value.length == 2 &&
+            // Must have its first element be string|number|symbol
+            (this.string(value[0]) || this.number(value[0]) || this.symbol(value[0])))) {
+            return false;
+        }
+        return true;
+    },
+    /**
+     * Check if a value is a valid object key. Valid object keys are strings,
+     * numbers, or symbols — the same types accepted as property keys in
+     * JavaScript objects.
+     *
+     * @param {*} value - The value to check.
+     * @returns {boolean} True if the value is a string, number, or symbol,
+     * false otherwise.
+     *
+     * @example
+     * is.objectKey('name') // true
+     * is.objectKey(0) // true
+     * is.objectKey(Symbol('id')) // true
+     * is.objectKey({}) // false
+     * is.objectKey(null) // false
+     */
+    objectKey(value) {
+        return this.string(value) || this.number(value) || this.symbol(value);
     },
     /**
      * Check if a value is a primitive type.
@@ -348,25 +391,25 @@ export const is = {
      *
      * @example
      * // Returns true
-     * is.primitive('hello');
+     * is.primitive('hello')
      *
      * // Returns true
-     * is.primitive(123);
+     * is.primitive(123)
      *
      * // Returns true
-     * is.primitive(true);
+     * is.primitive(true)
      *
      * // Returns true
-     * is.primitive(123n);
+     * is.primitive(123n)
      *
      * // Returns true
-     * is.primitive(Symbol('symbol'));
+     * is.primitive(Symbol('symbol'))
      *
      * // Returns false
-     * is.primitive({});
+     * is.primitive({})
      *
      * // Returns false
-     * is.primitive([]);
+     * is.primitive([])
      */
     primitive(value) {
         if (this.nullish(value))
@@ -384,9 +427,9 @@ export const is = {
      * @returns True if the value is an object or a function, false otherwise.
      *
      * @example
-     * is.shiny({}); // true
-     * is.shiny(function() {}); // true
-     * is.shiny(123); // false
+     * is.shiny({}) // true
+     * is.shiny(function() {}) // true
+     * is.shiny(123) // false
      */
     shiny(value) {
         return !!(this.object(value) || this.function(value));
@@ -398,8 +441,8 @@ export const is = {
      * @returns True if the value is a string, false otherwise.
      *
      * @example
-     * is.string('hello'); // true
-     * is.string(123); // false
+     * is.string('hello') // true
+     * is.string(123) // false
      */
     string(value) {
         return typeof value === "string" || value instanceof String;
@@ -414,8 +457,8 @@ export const is = {
      * @returns True if the value is a symbol, false otherwise.
      *
      * @example
-     * is.symbol(Symbol('foo')); // Returns true
-     * is.symbol('foo'); // Returns false
+     * is.symbol(Symbol('foo')) // Returns true
+     * is.symbol('foo') // Returns false
      */
     symbol(value) {
         return typeof value === "symbol" || value instanceof Symbol;
@@ -429,9 +472,9 @@ export const is = {
      * @returns {boolean} True if the value is strictly true, false otherwise.
      *
      * @example
-     * is.true(true); // true
-     * is.true(false); // false
-     * is.true(1); // false
+     * is.true(true) // true
+     * is.true(false) // false
+     * is.true(1) // false
      */
     true(value) {
         return value === true;
@@ -447,10 +490,10 @@ export const is = {
      * @returns {boolean} True if the value is truthy, false otherwise.
      *
      * @example
-     * is.truthy(1); // true
-     * is.truthy("hello"); // true
-     * is.truthy(0); // false
-     * is.truthy(""); // false
+     * is.truthy(1) // true
+     * is.truthy("hello") // true
+     * is.truthy(0) // false
+     * is.truthy("") // false
      */
     truthy(value) {
         return !!value;
@@ -458,469 +501,578 @@ export const is = {
 };
 export const si = {
     /**
-     * Checks if a value matches a specified type or class.
-     *
-     * This function determines if the provided value matches the specified
-     * type or class. It supports both primitive types and class constructors.
+     * Inline if-then-else based on whether value matches a specified type or
+     * class. Delegates the condition check to {@link is#a}.
      *
      * @param {*} value - The value to check.
      * @param {*} typeOrClass - The type or class to compare against.
-     * @param {boolean} [alreadyReversed=false] - Internal flag to prevent
-     *   infinite recursion. Not intended for external use.
-     * @returns {boolean} True if the value matches the type or class,
-     *   false otherwise.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value matches typeOrClass.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value does not match typeOrClass.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * // Returns true
-     * is.a(42, 'number')
-     *
-     * @example
-     * // Returns true
-     * is.a(new Date(), Date)
-     *
-     * @example
-     * // Returns false
-     * is.a('string', Number)
+     * si.a(42, 'number', 'yes', 'no') // 'yes'
+     * si.a('str', Number, 'yes', 'no') // 'no'
+     * si.a(42, 'number', () => 'computed', 'no') // 'computed'
      */
     a(value, typeOrClass, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.a(value, typeOrClass) ? thenValue : elseValue;
+        return ifThenElse(is.a(value, typeOrClass), thenValue, elseValue);
     },
     /**
-     * Check if a value is an accessor descriptor.
+     * Inline if-then-else based on whether value is an accessor descriptor.
+     * Delegates the condition check to {@link is#accessorDescriptor}.
      *
-     * An accessor descriptor is an object that describes the configuration of a
-     * property on an object, specifically focusing on the 'get' and 'set'
-     * attributes. Computed accessor descriptors are invalid if they also have
-     * a `value` and/or `writable` property.
-     *
-     * @param value The value to check.
-     * @returns True if the value is an accessor descriptor, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is an accessor descriptor.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not an accessor descriptor.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * // Returns true
-     * is.accessorDescriptor({ get: () => 42, set: () => {} });
-     *
-     * // Returns false
-     * is.accessorDescriptor({ value: 42, writable: true });
+     * si.accessorDescriptor({ get: () => 42 }, 'yes', 'no') // 'yes'
+     * si.accessorDescriptor({ value: 42 }, 'yes', 'no') // 'no'
+     * si.accessorDescriptor({ get: () => 42 }, () => 'computed', 'no') // 'computed'
      */
     accessorDescriptor(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.accessorDescriptor(value) ? thenVal : elseVal;
+        return ifThenElse(is.accessorDescriptor(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is an array.
+     * Inline if-then-else based on whether value is an array.
+     * Delegates the condition check to {@link is#array}.
      *
-     * @param value The value to check.
-     * @returns True if the value is an array, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is an array.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not an array.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.array([1, 2, 3]); // true
-     * is.array('string'); // false
+     * si.array([1, 2, 3], 'yes', 'no') // 'yes'
+     * si.array('string', 'yes', 'no') // 'no'
+     * si.array([1, 2, 3], () => 'computed', 'no') // 'computed'
      */
     array(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.array(value) ? thenVal : elseVal;
+        return ifThenElse(is.array(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is a bigint.
+     * Inline if-then-else based on whether value is a bigint.
+     * Delegates the condition check to {@link is#bigint}.
      *
-     * @param value The value to check.
-     * @returns True if the value is a bigint, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a bigint.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a bigint.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.bigint(123n); // true
-     * is.bigint(123); // false
+     * si.bigint(123n, 'yes', 'no') // 'yes'
+     * si.bigint(123, 'yes', 'no') // 'no'
+     * si.bigint(123n, () => 'computed', 'no') // 'computed'
      */
     bigint(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.bigint(value) ? thenVal : elseVal;
+        return ifThenElse(is.bigint(value), thenValue, elseValue);
     },
     /**
-     * Checks if a value is strictly a boolean (true or false).
-     *
-     * This method verifies if the provided value is either `true` or `false`.
+     * Inline if-then-else based on whether value is a boolean.
+     * Delegates the condition check to {@link is#boolean}.
      *
      * @param {*} value - The value to check.
-     * @returns {boolean} True if the value is a boolean, false otherwise.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a boolean.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a boolean.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.boolean(true); // true
-     * is.boolean(false); // true
-     * is.boolean(1); // false
-     * is.boolean("true"); // false
+     * si.boolean(true, 'yes', 'no') // 'yes'
+     * si.boolean(1, 'yes', 'no') // 'no'
+     * si.boolean(false, () => 'computed', 'no') // 'computed'
      */
     boolean(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.boolean(value) ? thenVal : elseVal;
+        return ifThenElse(is.boolean(value), thenValue, elseValue);
     },
     /**
-     * Check if an object is callable. This function is more or less a
-     * synonym or alias for `is.function()`.
+     * Inline if-then-else based on whether object is callable.
+     * Delegates the condition check to {@link is#callable}.
      *
-     * @param object The object to check.
-     * @returns True if the object is callable, false otherwise.
-     *
-     * @note if you wish to know if a descriptor has a callable `value`,
-     * `get`, or `set` function, use `is.callableDescriptor` instead.
+     * @param {*} object - The object to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if object is callable.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if object is not callable.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.callable(function() {}); // true
+     * si.callable(function() {}, 'yes', 'no') // 'yes'
+     * si.callable(123, 'yes', 'no') // 'no'
+     * si.callable(function() {}, () => 'computed', 'no') // 'computed'
      */
     callable(object, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.callable(object) ? thenVal : elseVal;
+        return ifThenElse(is.callable(object), thenValue, elseValue);
     },
     /**
-     * Check if an object is callable. It looks to see if the object
-     * represents a descriptor that is callable by checking object
-     * properties named `value`, `get`, and `set`. If any three variations
-     * yields a function type, true is returned.
+     * Inline if-then-else based on whether object is a callable descriptor.
+     * Delegates the condition check to {@link is#callableDescriptor}.
      *
-     * @param object The object to check.
-     * @returns True if the object is callable, false otherwise.
+     * @param {*} object - The object to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if object is a callable descriptor.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if object is not a callable descriptor.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.callable({ get: function() {} }); // true
-     * is.callable(123); // false
-     *
-     * // Note the differences between these
-     * const object = { get name() { return "Brie"; } };
-     * const descriptor = Object.getOwnPropertyDescriptor(object, 'name');
-     * is.callable(object); // false
-     * is.callable(descriptor); // true
+     * si.callableDescriptor({ get: function() {} }, 'yes', 'no') // 'yes'
+     * si.callableDescriptor(123, 'yes', 'no') // 'no'
+     * si.callableDescriptor({ get: function() {} }, () => 'computed', 'no') // 'computed'
      */
     callableDescriptor(object, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.callableDescriptor(object) ? thenVal : elseVal;
+        return ifThenElse(is.callableDescriptor(object), thenValue, elseValue);
     },
     /**
-     * Check if a value is a data property descriptor.
+     * Inline if-then-else based on whether value is a data property descriptor.
+     * Delegates the condition check to {@link is#dataDescriptor}.
      *
-     * A data descriptor is an object that describes the configuration of a
-     * property on an object, specifically focusing on the 'value' and
-     * 'writable' attributes. The descriptor is invalid if it contains
-     * thew accessor descriptors `get` or `set`.
-     *
-     * @param value The value to check.
-     * @returns True if the value is a data descriptor, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a data descriptor.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a data descriptor.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * // Returns true
-     * is.dataDescriptor({ value: 42, writable: true });
-     *
-     * // Returns false
-     * is.dataDescriptor({ get: () => 42, set: () => {} });
+     * si.dataDescriptor({ value: 42, writable: true }, 'yes', 'no') // 'yes'
+     * si.dataDescriptor({ get: () => 42 }, 'yes', 'no') // 'no'
+     * si.dataDescriptor({ value: 42 }, () => 'computed', 'no') // 'computed'
      */
     dataDescriptor(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.dataDescriptor(value) ? thenVal : elseVal;
+        return ifThenElse(is.dataDescriptor(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is a property descriptor.
+     * Inline if-then-else based on whether value is a property descriptor.
+     * Delegates the condition check to {@link is#descriptor}.
      *
-     * A property descriptor is an object that describes the configuration of a
-     * property on an object. This function checks if the provided value is an
-     * object and contains any of the standard property descriptor keys.
-     *
-     * @param value The value to check.
-     * @returns True if the value is a property descriptor, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a property descriptor.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a property descriptor.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.descriptor({ configurable: true, enumerable: false }); // true
-     * is.descriptor({ get: () => {}, set: () => {} }); // true
-     * is.descriptor({}); // false
+     * si.descriptor({ configurable: true }, 'yes', 'no') // 'yes'
+     * si.descriptor({}, 'yes', 'no') // 'no'
+     * si.descriptor({ get: () => {} }, () => 'computed', 'no') // 'computed'
      */
     descriptor(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.descriptor(value) ? thenVal : elseVal;
+        return ifThenElse(is.descriptor(value), thenValue, elseValue);
     },
     /**
-     * Checks if a value is strictly false.
-     *
-     * This method verifies if the provided value is strictly `false`.
+     * Inline if-then-else based on whether value is strictly false.
+     * Delegates the condition check to {@link is#false}.
      *
      * @param {*} value - The value to check.
-     * @returns {boolean} True if the value is strictly false, false otherwise.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is strictly false.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not strictly false.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.false(false); // true
-     * is.false(true); // false
-     * is.false(0); // false
+     * si.false(false, 'yes', 'no') // 'yes'
+     * si.false(0, 'yes', 'no') // 'no'
+     * si.false(false, () => 'computed', 'no') // 'computed'
      */
     false(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.false(value) ? thenVal : elseVal;
+        return ifThenElse(is.false(value), thenValue, elseValue);
     },
     /**
-     * Checks if a value is falsy.
-     *
-     * This method converts the provided value to a boolean and returns
-     * `true` if the value is falsy (i.e., false, 0, "", null, undefined,
-     * or NaN).
+     * Inline if-then-else based on whether value is falsy.
+     * Delegates the condition check to {@link is#falsy}.
      *
      * @param {*} value - The value to check.
-     * @returns {boolean} True if the value is falsy, false otherwise.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is falsy.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not falsy.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.falsy(0); // true
-     * is.falsy(""); // true
-     * is.falsy(1); // false
-     * is.falsy("hello"); // false
+     * si.falsy(0, 'yes', 'no') // 'yes'
+     * si.falsy(1, 'yes', 'no') // 'no'
+     * si.falsy('', () => 'computed', 'no') // 'computed'
      */
     falsy(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.falsy(value) ? thenVal : elseVal;
+        return ifThenElse(is.falsy(value), thenValue, elseValue);
     },
     /**
-     * Alias for the `falsy` method.
-     *
-     * This method is an alias for `is.falsy` and performs the same check.
+     * Alias for {@link si#falsy}. Inline if-then-else based on whether value
+     * is falsy. Delegates the condition check to {@link is#falsey}.
      *
      * @param {*} value - The value to check.
-     * @returns {boolean} True if the value is falsy, false otherwise.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is falsy.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not falsy.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.falsey(0); // true
-     * is.falsey(""); // true
-     * is.falsey(1); // false
-     * is.falsey("hello"); // false
+     * si.falsey(0, 'yes', 'no') // 'yes'
+     * si.falsey(1, 'yes', 'no') // 'no'
+     * si.falsey('', () => 'computed', 'no') // 'computed'
      */
     falsey(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.falsey(value) ? thenVal : elseVal;
+        return ifThenElse(is.falsey(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is a function.
+     * Inline if-then-else based on whether value is a function.
+     * Delegates the condition check to {@link is#function}.
      *
-     * @param value The value to check.
-     * @returns True if the value is a function, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a function.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a function.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.function(function() {}); // true
-     * is.function(123); // false
+     * si.function(function() {}, 'yes', 'no') // 'yes'
+     * si.function(123, 'yes', 'no') // 'no'
+     * si.function(function() {}, () => 'computed', 'no') // 'computed'
      */
     function(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.function(value) ? thenVal : elseVal;
+        return ifThenElse(is.function(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is iterable. Depending on the environment, JavaScript
-     * will permit `'string'[Symbol.iterator]()` whereas in some places, you
-     * will need to wrap string in an object first. Since other JSVM provided
-     * environments may or may not be leniant with this, we play it safe by
-     * implicitly object converting values before checking for the symbol. If
-     * a value is already an object, it will simply be passed through.
+     * Inline if-then-else based on whether value is iterable.
+     * Delegates the condition check to {@link is#iterable}.
      *
-     * @param value The value to check.
-     * @returns True if the value is iterable, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is iterable.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not iterable.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.iterable([1, 2, 3]); // true
-     * is.iterable('string'); // true
-     * is.iterable(123); // false
+     * si.iterable([1, 2, 3], 'yes', 'no') // 'yes'
+     * si.iterable(123, 'yes', 'no') // 'no'
+     * si.iterable('string', () => 'computed', 'no') // 'computed'
      */
     iterable(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.iterable(value) ? thenVal : elseVal;
+        return ifThenElse(is.iterable(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is null or undefined.
+     * Inline if-then-else based on whether value is null or undefined.
+     * Delegates the condition check to {@link is#nullish}.
      *
-     * @param value The value to check.
-     * @returns True if the value is null or undefined, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is nullish.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not nullish.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.nullish(null); // true
-     * is.nullish(undefined); // true
-     * is.nullish('value'); // false
+     * si.nullish(null, 'yes', 'no') // 'yes'
+     * si.nullish('value', 'yes', 'no') // 'no'
+     * si.nullish(undefined, () => 'computed', 'no') // 'computed'
      */
     nullish(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.nullish(value) ? thenVal : elseVal;
+        return ifThenElse(is.nullish(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is a number.
+     * Inline if-then-else based on whether value is a number.
+     * Delegates the condition check to {@link is#number}.
      *
-     * @param value The value to check.
-     * @returns True if the value is a number, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a number.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a number.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.number(123); // true
-     * is.number('123'); // false
+     * si.number(123, 'yes', 'no') // 'yes'
+     * si.number('123', 'yes', 'no') // 'no'
+     * si.number(123, () => 'computed', 'no') // 'computed'
      */
     number(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.number(value) ? thenVal : elseVal;
+        return ifThenElse(is.number(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is an object.
+     * Inline if-then-else based on whether value is an object.
+     * Delegates the condition check to {@link is#object}.
      *
-     * @param value The value to check.
-     * @returns True if the value is an object, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is an object.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not an object.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.object({}); // true
-     * is.object(null); // false
+     * si.object({}, 'yes', 'no') // 'yes'
+     * si.object(null, 'yes', 'no') // 'no'
+     * si.object({}, () => 'computed', 'no') // 'computed'
      */
     object(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.object(value) ? thenVal : elseVal;
+        return ifThenElse(is.object(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is a primitive type.
+     * Inline if-then-else based on whether value is a valid object entry.
+     * Delegates the condition check to {@link is#objectEntry}.
      *
-     * This function determines if the provided value is one of the JavaScript
-     * primitive types: string, number, boolean, bigint, or symbol.
-     *
-     * @param value The value to check.
-     * @returns True if the value is a primitive type, false otherwise.
+     * @param {any} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a valid object entry.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a valid object entry.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * // Returns true
-     * is.primitive('hello');
+     * si.objectEntry(['key', 42], 'yes', 'no') // 'yes'
+     * si.objectEntry([1, 2, 3], 'yes', 'no') // 'no'
+     * si.objectEntry(['key', 42], () => 'computed', 'no') // 'computed'
+     */
+    objectEntry(value, thenValue, elseValue) {
+        return ifThenElse(is.objectEntry(value), thenValue, elseValue);
+    },
+    /**
+     * Inline if-then-else based on whether value is a valid object key.
+     * Delegates the condition check to {@link is#objectKey}.
      *
-     * // Returns true
-     * is.primitive(123);
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a valid object key.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a valid object key.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
-     * // Returns true
-     * is.primitive(true);
+     * @example
+     * si.objectKey('name', 'yes', 'no') // 'yes'
+     * si.objectKey({}, 'yes', 'no') // 'no'
+     * si.objectKey(Symbol('id'), () => 'computed', 'no') // 'computed'
+     */
+    objectKey(value, thenValue, elseValue) {
+        return ifThenElse(is.objectKey(value), thenValue, elseValue);
+    },
+    /**
+     * Inline if-then-else based on whether value is a primitive type.
+     * Delegates the condition check to {@link is#primitive}.
      *
-     * // Returns true
-     * is.primitive(123n);
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a primitive.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a primitive.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
-     * // Returns true
-     * is.primitive(Symbol('symbol'));
-     *
-     * // Returns false
-     * is.primitive({});
-     *
-     * // Returns false
-     * is.primitive([]);
+     * @example
+     * si.primitive('hello', 'yes', 'no') // 'yes'
+     * si.primitive({}, 'yes', 'no') // 'no'
+     * si.primitive(123, () => 'computed', 'no') // 'computed'
      */
     primitive(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.primitive(value) ? thenVal : elseVal;
+        return ifThenElse(is.primitive(value), thenValue, elseValue);
     },
     /**
-     * The use of `typeof` is not a safe guarantor when it comes to Reflect
-     * supported values. Any non-null value that returns a `typeof` either
-     * `object` or `function` should suffice. Note that arrays return 'object'
-     * when run through `typeof`. Shiny is clearly a reference to something
-     * reflective and is much shorter to type. Also, Mal says shiny. :)
+     * Inline if-then-else based on whether value is shiny (object or function).
+     * Delegates the condition check to {@link is#shiny}.
      *
-     * @param value The value to check.
-     * @returns True if the value is an object or a function, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is shiny.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not shiny.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.shiny({}); // true
-     * is.shiny(function() {}); // true
-     * is.shiny(123); // false
+     * si.shiny({}, 'yes', 'no') // 'yes'
+     * si.shiny(123, 'yes', 'no') // 'no'
+     * si.shiny(function() {}, () => 'computed', 'no') // 'computed'
      */
     shiny(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.shiny(value) ? thenVal : elseVal;
+        return ifThenElse(is.shiny(value), thenValue, elseValue);
     },
     /**
-     * Check if a value is a string.
+     * Inline if-then-else based on whether value is a string.
+     * Delegates the condition check to {@link is#string}.
      *
-     * @param value The value to check.
-     * @returns True if the value is a string, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a string.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a string.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.string('hello'); // true
-     * is.string(123); // false
+     * si.string('hello', 'yes', 'no') // 'yes'
+     * si.string(123, 'yes', 'no') // 'no'
+     * si.string('hello', () => 'computed', 'no') // 'computed'
      */
     string(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.string(value) ? thenVal : elseVal;
+        return ifThenElse(is.string(value), thenValue, elseValue);
     },
     /**
-     * Checks if a value is a symbol.
+     * Inline if-then-else based on whether value is a symbol.
+     * Delegates the condition check to {@link is#symbol}.
      *
-     * This function determines whether the provided value is of type
-     * 'symbol' or an instance of the Symbol object.
-     *
-     * @param value - The value to check.
-     * @returns True if the value is a symbol, false otherwise.
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is a symbol.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not a symbol.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.symbol(Symbol('foo')); // Returns true
-     * is.symbol('foo'); // Returns false
+     * si.symbol(Symbol('foo'), 'yes', 'no') // 'yes'
+     * si.symbol('foo', 'yes', 'no') // 'no'
+     * si.symbol(Symbol('foo'), () => 'computed', 'no') // 'computed'
      */
     symbol(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.symbol(value) ? thenVal : elseVal;
-    },
-    then(condition, thenValue, elseValue) {
-        const condVal = is.function(condition) ? condition() : condition;
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return condVal ? thenVal : elseVal;
+        return ifThenElse(is.symbol(value), thenValue, elseValue);
     },
     /**
-     * Checks if a value is strictly true.
+     * Inline if-then-else using an arbitrary condition. If condition is a
+     * function, it is called and its result is used as the condition; otherwise
+     * the condition value is evaluated directly.
      *
-     * This method verifies if the provided value is strictly `true`.
-     *
-     * @param {*} value - The value to check.
-     * @returns {boolean} True if the value is strictly true, false otherwise.
+     * @param {function|*} condition - The condition to evaluate. If a function,
+     *   it is called and its return value is used as the condition.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if the condition is truthy.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if the condition is falsy.
+     * @returns {*} The result of thenValue if the condition is truthy,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.true(true); // true
-     * is.true(false); // false
-     * is.true(1); // false
+     * si.then(true, 'yes', 'no') // 'yes'
+     * si.then(false, 'yes', 'no') // 'no'
+     * si.then(() => true, 'yes', 'no') // 'yes'
+     * si.then(() => false, () => 'computed', 'no') // 'no'
+     */
+    then(condition, thenValue, elseValue) {
+        return ifThenElse(is.function(condition) ? condition() : condition, thenValue, elseValue);
+    },
+    /**
+     * Inline if-then-else based on whether value is strictly true.
+     * Delegates the condition check to {@link is#true}.
+     *
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is strictly true.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not strictly true.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
+     *
+     * @example
+     * si.true(true, 'yes', 'no') // 'yes'
+     * si.true(1, 'yes', 'no') // 'no'
+     * si.true(true, () => 'computed', 'no') // 'computed'
      */
     true(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.true(value) ? thenVal : elseVal;
+        return ifThenElse(is.true(value), thenValue, elseValue);
     },
     /**
-     * Checks if a value is truthy.
-     *
-     * This method converts the provided value to a boolean and returns
-     * `true` if the value is truthy (i.e., not false, 0, "", null, undefined,
-     * or NaN).
+     * Inline if-then-else based on whether value is truthy.
+     * Delegates the condition check to {@link is#truthy}.
      *
      * @param {*} value - The value to check.
-     * @returns {boolean} True if the value is truthy, false otherwise.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is truthy.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not truthy.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
      *
      * @example
-     * is.truthy(1); // true
-     * is.truthy("hello"); // true
-     * is.truthy(0); // false
-     * is.truthy(""); // false
+     * si.truthy(1, 'yes', 'no') // 'yes'
+     * si.truthy(0, 'yes', 'no') // 'no'
+     * si.truthy("hello", () => 'computed', 'no') // 'computed'
      */
     truthy(value, thenValue, elseValue) {
-        const thenVal = is.function(thenValue) ? thenValue() : thenValue;
-        const elseVal = is.function(elseValue) ? elseValue() : elseValue;
-        return is.truthy(value) ? thenVal : elseVal;
+        return ifThenElse(is.truthy(value), thenValue, elseValue);
     },
+    /**
+     * Inline if-then-else based on whether value is undefined.
+     * Delegates the condition check to {@link is#a} with type 'undefined'.
+     *
+     * @param {*} value - The value to check.
+     * @param {function|*} thenValue - Returned (or called and its result
+     *   returned) if value is undefined.
+     * @param {function|*} elseValue - Returned (or called and its result
+     *   returned) if value is not undefined.
+     * @returns {*} The result of thenValue if the condition is true,
+     *   elseValue otherwise. If thenValue or elseValue is a function,
+     *   its return value is used instead.
+     *
+     * @example
+     * si.undefined(undefined, 'yes', 'no') // 'yes'
+     * si.undefined('value', 'yes', 'no') // 'no'
+     * si.undefined(undefined, () => 'computed', 'no') // 'computed'
+     */
+    undefined(value, thenValue, elseValue) {
+        return ifThenElse(is.a(value, 'undefined'), thenValue, elseValue);
+    }
 };
 /**
-
  * Checks if an object contains a specific key.
  *
  * This function determines if the provided object contains the specified key.
@@ -933,11 +1085,11 @@ export const si = {
  *
  * @example
  * // Returns true
- * has(new Map([['key', 'value']]), 'key');
+ * has(new Map([['key', 'value']]), 'key')
  *
  * @example
  * // Returns false
- * has({}, 'key');
+ * has({}, 'key')
  */
 export const has = function has(object, key) {
     if ([Map, Set, WeakMap, WeakSet].some((i) => object instanceof i)) {
@@ -962,11 +1114,11 @@ Object.assign(has, {
      * // Returns true
      * has.all(new Map([
      *   ['key1', 'value1'], ['key2', 'value2']
-     * ]), ['key1', 'key2']);
+     * ]), ['key1', 'key2'])
      *
      * @example
      * // Returns false
-     * has.all({}, ['key1', 'key2']);
+     * has.all({}, ['key1', 'key2'])
      */
     all(object, keys) {
         if (!is.shiny(object) || !is.array(keys) || !keys.length) {
@@ -989,11 +1141,11 @@ Object.assign(has, {
      *
      * @example
      * // Returns true
-     * has.some(new Map([['key1', 'value1'], ['key2', 'value2']]), ['key1']);
+     * has.some(new Map([['key1', 'value1'], ['key2', 'value2']]), ['key1'])
      *
      * @example
      * // Returns false
-     * has.some({}, ['key1', 'key2']);
+     * has.some({}, ['key1', 'key2'])
      */
     some(object, keys) {
         if (!is.shiny(object) || !is.array(keys) || !keys.length) {
@@ -1037,8 +1189,8 @@ Object.assign(has, {
      * @returns True if the object has a custom string tag, false otherwise.
      *
      * @example
-     * const obj = { [Symbol.toStringTag]: 'CustomObject' };
-     * has.stringTag(obj); // Returns true
+     * const obj = { [Symbol.toStringTag]: 'CustomObject' }
+     * has.stringTag(obj) // Returns true
      */
     stringTag(object) {
         return is.object(object) && has(object, Symbol.toStringTag);
@@ -1054,8 +1206,8 @@ Object.assign(has, {
      * false otherwise.
      *
      * @example
-     * const obj = { [Symbol.toPrimitive]: () => 42 };
-     * has.toPrimitive(obj); // Returns true
+     * const obj = { [Symbol.toPrimitive]: () => 42 }
+     * has.toPrimitive(obj) // Returns true
      */
     toPrimitive(object) {
         return is.object(object) && has(object, Symbol.toPrimitive);
@@ -1070,11 +1222,11 @@ Object.assign(has, {
      * @returns True if the object has a custom valueOf method, false otherwise.
      *
      * @example
-     * const obj = { valueOf: () => 42 };
-     * has.valueOf(obj); // Returns true
+     * const obj = { valueOf: () => 42 }
+     * has.valueOfFn(obj) // Returns true
      */
     valueOfFn(object) {
-        return (is.object(object) && has(object, "valueOf") && is.function(object.valueOf));
+        return (is.object(object) && Object.hasOwn(object, "valueOf") && is.function(object.valueOf));
     },
 });
 export const as = {
@@ -1086,15 +1238,15 @@ export const as = {
      *
      * @example
      * // Returns [1, 2, 3]
-     * as.array([1, 2, 3]);
+     * as.array([1, 2, 3])
      *
      * @example
      * // Returns ['s', 't', 'r', 'i', 'n', 'g']
-     * as.array('string');
+     * as.array('string')
      *
      * @example
      * // Returns undefined
-     * as.array(123);
+     * as.array(123)
      */
     array(value) {
         return (is.iterable(value) && Array.from(value)) || undefined;
@@ -1111,7 +1263,7 @@ export const as = {
      *
      * @example
      * // Returns { key: 'value' }
-     * as.object({ key: 'value' });
+     * as.object({ key: 'value' })
      *
      * @example
      * // String instance as oppposed to primitive string
@@ -1121,7 +1273,7 @@ export const as = {
      *
      * @example
      * // Returns {}
-     * as.object(null);
+     * as.object(null)
      */
     object(value) {
         return Object(value);
@@ -1140,29 +1292,29 @@ export const as = {
      *
      * @example
      * // Returns 'null'
-     * as.string(null);
+     * as.string(null)
      *
      * @example
      * // Returns '123'
-     * as.string(123);
+     * as.string(123)
      *
      * @example
      * // Returns 'custom'
      * const obj = {
      *   [Symbol.toPrimitive](hint) {
-     *     if (hint === 'string') return 'custom';
-     *     return null;
+     *     if (hint === 'string') return 'custom'
+     *     return null
      *   }
-     * };
-     * as.string(obj);
+     * }
+     * as.string(obj)
      *
      * @example
      * // Returns 'mySymbol'
-     * as.string(Symbol('mySymbol'), { description: true });
+     * as.string(Symbol('mySymbol'), { description: true })
      *
      * @example
      * // Returns 'Array'
-     * as.string([], { stringTag: true });
+     * as.string([], { stringTag: true })
      */
     string(value, use = {
         description: false,
@@ -1217,11 +1369,11 @@ export const as = {
      *
      * @example
      * // Returns '123'
-     * as.integerString(123.456);
+     * as.integerString(123.456)
      *
      * @example
      * // Returns '0'
-     * as.integerString('0.789');
+     * as.integerString('0.789')
      */
     integerString(value) {
         return this.numberString(value).split(".")[0];
@@ -1241,11 +1393,11 @@ export const as = {
      *
      * @example
      * // Returns '123.456'
-     * numberString('  123.456abc  ');
+     * as.numberString('  123.456abc  ')
      *
      * @example
      * // Returns '-0.789'
-     * numberString('-0.789xyz');
+     * as.numberString('-0.789xyz')
      */
     numberString(value) {
         // Trim the input string
@@ -1271,11 +1423,11 @@ export const as = {
      *
      * @example
      * // Returns 123.456
-     * number('123.456abc');
+     * as.number('123.456abc')
      *
      * @example
      * // Returns -0.789
-     * number('-0.789xyz');
+     * as.number('-0.789xyz')
      */
     number(value) {
         return Number(this.numberString(value));
@@ -1291,11 +1443,11 @@ export const as = {
      *
      * @example
      * // Returns 123n
-     * bigint('123.456abc');
+     * as.bigint('123.456abc')
      *
      * @example
      * // Returns 0n
-     * bigint('0.789xyz');
+     * as.bigint('0.789xyz')
      */
     bigint(value) {
         const BigInt = globalThis?.BigInt;
@@ -1315,35 +1467,35 @@ export const as = {
      *
      * @example
      * // Returns true
-     * is.boolean("yes")
+     * as.boolean("yes")
      *
      * @example
      * // Returns false
-     * is.boolean("no")
+     * as.boolean("no")
      *
      * @example
      * // Returns true
-     * is.boolean(1)
+     * as.boolean(1)
      *
      * @example
      * // Returns false
-     * is.boolean(0)
+     * as.boolean(0)
      *
      * @example
      * // Returns true
-     * is.boolean("true")
+     * as.boolean("true")
      *
      * @example
      * // Returns false
-     * is.boolean("false")
+     * as.boolean("false")
      *
      * @example
      * // Returns true
-     * is.boolean({})
+     * as.boolean({})
      *
      * @example
      * // Returns false
-     * is.boolean(null)
+     * as.boolean(null)
      */
     boolean(value) {
         switch (String(value).toLowerCase()) {
@@ -1370,4 +1522,22 @@ export default {
     si,
     createToolkit,
 };
+function ifThenElse(condition, thenCase, elseCase) {
+    if (typeof thenCase === 'undefined' && typeof elseCase === 'undefined')
+        return !!condition;
+    if (typeof thenCase === 'undefined')
+        thenCase = condition;
+    if (condition) {
+        if (is.function(thenCase))
+            return thenCase();
+        else
+            return thenCase;
+    }
+    else {
+        if (is.function(elseCase))
+            return elseCase();
+        else
+            return elseCase;
+    }
+}
 //# sourceMappingURL=toolkit.js.map

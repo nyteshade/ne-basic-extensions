@@ -7,6 +7,8 @@ import { Descriptor } from './descriptor.js';
 export * from './descriptor.js';
 import { Enum } from './enum.js';
 export * from './enum.js';
+import { Enumeration } from './enumeration.js';
+export * from './enumeration.js';
 import { Introspector } from './introspector.js';
 export * from './introspector.js';
 import { Iterable, Iterator } from './iterable.js';
@@ -31,6 +33,7 @@ export const NewClassesExtension = new Patch(globalThis, {
     Deferred,
     Descriptor,
     Enum,
+    Enumeration,
     Introspector,
     Iterable,
     Iterator,

@@ -1,3 +1,24 @@
+.exit
+is.objectKey(/asdfads/)
+is.objectKey(Symbol())
+is.objectKey('asdfads')
+is.objectKey(234)
+is.objectEntry([Symbol(), 234])
+is.objectEntry(['name', 234])
+is.objectEntry(['name', 'Brie'])
+is
+var { is, si, has, as } = await import('./dist/mjs/index.js')
+is.objectEntry(['name', 'Brie'])
+Colors.red
+class Colors extends Enumeration { static { Colors.define('red') } }
+Enumeration 
+toolkit.is.a(undefined, undefined)
+toolkit.is.a(undefined, 'undefined')
+toolkit = await import('./src/utils/toolkit.js')
+await import('./src/utils/toolkit.js')
+.exit
+await import('./src/toolkit.js')
+is
 (20n).within(10n, 20n, false)
 (20n).within(10n, 20n, true)
 (30n).within(10n, 20n, true)
@@ -6,25 +27,4 @@
 (-33n).within(10n, 20n)
 (-33n).clamp(10n, 30n)
 BigInt.max(10n, BigInt.min(30n, -33n))
--33n.clamp(10n, 30n)
-BigIntExtensions.apply(); BigIntPrototypeExtensions.apply()
-var { BigIntExtensions, BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js')
--33n.clamp(10n, 25n)
-BigIntExtensions.apply(); BigIntPrototypeExtensions.apply()
-var { BigIntExtensions, BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js')
-BigInt.max(10n, BigInt.min(25n, -33n))
-BigInt.max(10n, -33n)
-BigInt.min(25n, -33n)
--33n.clamp(10n, 25n)
-33n.clamp(10n, 25n)
-BigIntExtensions.apply(); BigIntPrototypeExtensions.apply()
-var { BigIntExtensions, BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js')
-BigInt(Number.MAX_VALUE + 1)
-BigInt.max
-Number.MAX_VALUE
-BigInt(Number.MAX_VALUE)
-BigInt(Infinity)
-33n.clamp(5n,25n)
-BigIntPrototypeExtensions.apply()
-BigIntExtensions.apply()
-var { BigIntExtensions, BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js')js/math.extension.js')p) } })get(p) } return Reflect.get(t,p,r) }, has(t,p) { if (t.has(p)) { return true } return Reflect.has(t,p) } })ypeOf(m)ame')ame', 'Brielle']])wner')mport ('.')og','This is being logged'], ['error', 'But something terrible happened'])p('Fun', ['log','This is being logged'], ['error', 'But something terrible happened']).print()ics','underline']).print()int() { console.log(this) }brave new world', ['italics','underline']))['italics','underline'])
+-33n.clamp(10n, 30n)tExtensions.apply(); BigIntPrototypeExtensions.apply() BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js') BigIntPrototypeExtensions.apply()sions, BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js') -33n))gIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js')h.extension.js')p) } })get(p) } return Reflect.get(t,p,r) }, has(t,p) { if (t.has(p)) { return true } return Reflect.has(t,p) } })ypeOf(m)ame')ame', 'Brielle']])wner')mport ('.')og','This is being logged'], ['error', 'But something terrible happened'])p('Fun', ['log','This is being logged'], ['error', 'But something terrible happened']).print()ics','underline']).print()int() { console.log(this) }brave new world', ['italics','underline']))['italics','underline'])
