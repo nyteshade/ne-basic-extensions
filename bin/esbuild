@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const esbuild = await import('esbuild')
-const fs = await import('fs')
+import esbuild from 'esbuild'
+import fs from 'fs'
 
 const ext = fs.existsSync('src/index.ts') ? '.ts' : '.js'
 const packageJSON = (
@@ -43,32 +43,6 @@ await esbuild
     process.exit(1)
   })
 
-// CJS builds for each entry point
-const cjsEntryPoints = [
-  { entry: `src/index${ext}`, outfile: 'dist/cjs/index.cjs' },
-  { entry: `src/classes/index${ext}`, outfile: 'dist/cjs/classes/index.cjs' },
-  { entry: `src/utils/index${ext}`, outfile: 'dist/cjs/utils/index.cjs' },
-]
-
-await Promise.all(cjsEntryPoints.map(({ entry, outfile }) =>
-  esbuild.build({
-    entryPoints: [entry],
-    bundle: true,
-    format: 'cjs',
-    platform: 'node',
-    target: ['node20'],
-    sourcemap: true,
-    outfile,
-    external,
-  })
-)).catch((e) => {
-  console.error(e)
-  process.exit(1)
-})
-
-console.log('Built browser bundle:', outfile)
-console.log('Built CJS entry points:', cjsEntryPoints.map(e => e.outfile).join(', '))
-
 try {
   let packageJSONString
 
@@ -83,6 +57,50 @@ catch (error) {
   console.warn('Unable to update package.json, the browser property may be incorrect')
   console.warn(`It should read ${outfile}`)
 }
+
+// ESM bundle for CDN / await import()
+await esbuild
+  .build({
+    entryPoints: [`src/index${ext}`],
+    bundle: true,
+    format: 'esm',
+    platform: 'browser',
+    target: ['esnext'],
+    minify: true,
+    sourcemap: true,
+    outfile: 'dist/esm/basic-extensions.mjs',
+  })
+  .catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+
+// CJS builds for each entry point
+const cjsEntryPoints = [
+  { entry: `src/index${ext}`, outfile: 'dist/cjs/index.cjs' },
+  { entry: `src/classes/index${ext}`, outfile: 'dist/cjs/classes/index.cjs' },
+  { entry: `src/utils/index${ext}`, outfile: 'dist/cjs/utils/index.cjs' },
+]
+
+await Promise.all(cjsEntryPoints.map(({ entry, outfile }) =>
+  esbuild.build({
+    entryPoints: [entry],
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    target: ['node22'],
+    sourcemap: true,
+    outfile,
+    external,
+  })
+)).catch((e) => {
+  console.error(e)
+  process.exit(1)
+})
+
+console.log('Built browser bundle:', outfile)
+console.log('Built ESM bundle: dist/esm/basic-extensions.mjs')
+console.log('Built CJS entry points:', cjsEntryPoints.map(e => e.outfile).join(', '))
 
 /**
  * Sanitizes a string to make it safe to use as a JavaScript variable name.
@@ -113,7 +131,6 @@ function sanitizeForVariableName(str) {
     'delete', 'do', 'else', 'export', 'extends', 'finally', 'for', 'function',
     'if', 'import', 'in', 'instanceof', 'new', 'return', 'super', 'switch',
     'this', 'throw', 'try', 'typeof', 'var', 'void', 'while', 'with', 'yield',
-    // Add any other keywords you wish to check against
   ];
 
   if (reservedKeywords.includes(sanitized)) {
