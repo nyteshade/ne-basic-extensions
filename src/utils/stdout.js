@@ -1,10 +1,25 @@
 import { Extension, Patch } from '@nejs/extension'
 
 /**
+ * True when running in an environment that has `process.stdout` (Node.js).
+ * Used to guard stdout/stderr access so the module can be safely imported
+ * in browsers.
+ */
+const hasProcess = (
+  typeof process !== 'undefined' &&
+  process?.stdout?.write &&
+  process?.stderr?.write
+)
+
+/**
  * Captures the output written to `process.stdout` during the execution of
  * a callback function. This function temporarily overrides the standard
  * output stream to capture any data written to it, allowing for inspection
  * or testing of console output.
+ *
+ * In browser environments where `process.stdout` is unavailable, the
+ * callback is still executed but output cannot be captured — an empty
+ * string is returned.
  *
  * @param {Function|*} callback - The function to execute, during which
  *   `process.stdout` is captured. If not a function, it will be treated
@@ -29,7 +44,7 @@ import { Extension, Patch } from '@nejs/extension'
  */
 export function captureStdout(callback, args = [], thisArg = console) {
   let captured = ''
-  const originalWrite = process.stdout.write
+  const originalWrite = hasProcess ? process.stdout.write : null
 
   if (typeof callback !== 'function') {
     let newArgs = [callback]
@@ -48,14 +63,18 @@ export function captureStdout(callback, args = [], thisArg = console) {
     args = []
   }
 
-  process.stdout.write = (chunk, encoding, callback) => {
-    captured += chunk
+  if (hasProcess) {
+    process.stdout.write = (chunk, encoding, callback) => {
+      captured += chunk
+    }
   }
 
   try {
     callback.apply(thisArg, args)
   } finally {
-    process.stdout.write = originalWrite
+    if (hasProcess) {
+      process.stdout.write = originalWrite
+    }
   }
 
   return captured.substring(0, captured.length - 1)
@@ -216,6 +235,8 @@ export class StringConsole {
    * console.log(stringConsole.isCapturing()) // Stores 'true' in the buffer
    */
   isCapturing() {
+    if (!hasProcess) return false
+
     return Reflect.has(
       process.stdout.write,
       Symbol.for('StringConsole.recorder')
@@ -240,8 +261,10 @@ export class StringConsole {
     if (this.captureOutput === false)
       this.buffer = []
 
-    process.stdout.write = this.recorder
-    process.stderr.write = this.recorder
+    if (hasProcess) {
+      process.stdout.write = this.recorder
+      process.stderr.write = this.recorder
+    }
     this.capturedAt = this.buffer.length ? this.buffer.length : 0
 
     return this.capturedAt
@@ -285,8 +308,10 @@ export class StringConsole {
     if (this.captureOutput === false)
       this.buffer = []
 
-    process.stdout.write = StringConsole[Symbol.for('process.stdout.write')]
-    process.stderr.write = StringConsole[Symbol.for('process.stderr.write')]
+    if (hasProcess) {
+      process.stdout.write = StringConsole[Symbol.for('process.stdout.write')]
+      process.stderr.write = StringConsole[Symbol.for('process.stderr.write')]
+    }
     this.capturedAt = NaN
 
     return { range, lines }
@@ -1099,36 +1124,38 @@ export class StringConsole {
    * the actual function is stored in.
    */
   static {
-    Object.defineProperties(StringConsole, {
-      [Symbol.for('process.stdout.write')]: {
-        value: Object.defineProperties(process.stdout.write, {
-          [Symbol.for('original')]: {value: true, configurable: true },
-          isOriginal: { get() { return true }, configurable: true },
-        }),
-        configurable: true,
-      },
-
-      [Symbol.for('process.stderr.write')]: {
-        value: Object.defineProperties(process.stderr.write, {
-          [Symbol.for('original')]: {value: true, configurable: true },
-          isOriginal: { get() { return true }, configurable: true },
-        }),
-        configurable: true,
-      },
-    })
-
-    if (!Reflect.has(StringConsole, 'writer')) {
+    if (hasProcess) {
       Object.defineProperties(StringConsole, {
-        writer: {
-          value: StringConsole[Symbol.for('process.stdout.write')],
+        [Symbol.for('process.stdout.write')]: {
+          value: Object.defineProperties(process.stdout.write, {
+            [Symbol.for('original')]: {value: true, configurable: true },
+            isOriginal: { get() { return true }, configurable: true },
+          }),
           configurable: true,
         },
 
-        errorWriter: {
-          value: StringConsole[Symbol.for('process.stderr.write')],
+        [Symbol.for('process.stderr.write')]: {
+          value: Object.defineProperties(process.stderr.write, {
+            [Symbol.for('original')]: {value: true, configurable: true },
+            isOriginal: { get() { return true }, configurable: true },
+          }),
           configurable: true,
         },
       })
+
+      if (!Reflect.has(StringConsole, 'writer')) {
+        Object.defineProperties(StringConsole, {
+          writer: {
+            value: StringConsole[Symbol.for('process.stdout.write')],
+            configurable: true,
+          },
+
+          errorWriter: {
+            value: StringConsole[Symbol.for('process.stderr.write')],
+            configurable: true,
+          },
+        })
+      }
     }
   }
 }

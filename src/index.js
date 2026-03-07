@@ -109,7 +109,9 @@ const Extensions = {
 export const Classes = {}
 for (const extension of Object.values(Extensions)) {
   const fnOrClass = extension.class || extension.function
-  Classes[fnOrClass.name] = fnOrClass
+  if (fnOrClass?.name) {
+    Classes[fnOrClass.name] = fnOrClass
+  }
 }
 
 const Controls = {}

@@ -90,6 +90,20 @@ When using the ESM bundle as a module:
 </script>
 ```
 
+Or with dynamic `await import()`:
+
+```html
+<script type="module">
+  const { default: basicExtensions } = await import(
+    'https://cdn.jsdelivr.net/npm/@nejs/basic-extensions/dist/esm/basic-extensions.mjs'
+  );
+  basicExtensions.Controls.enableAll();
+
+  // Extensions are now active
+  console.log([1, 2, 3].first); // 1
+</script>
+```
+
 ## Development
 
 ### Building
