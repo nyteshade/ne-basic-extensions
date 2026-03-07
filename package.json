@@ -1,37 +1,28 @@
 {
   "author": "Brielle Harrison <nyteshade at gmail.com>",
-  "browser": "dist/@nejs/basic-extensions.bundle.2.21.8.js",
+  "browser": "dist/@nejs/basic-extensions.bundle.2.22.0.js",
   "description": "Basic but commonly used extensions",
   "dependencies": {
-    "@nejs/extension": "^2.20.0",
-    "zod": "^3.23.8"
+    "@nejs/extension": "^2.20.0"
   },
   "devDependencies": {
-    "docdash": "^2.0.2",
-    "documentation": "^14.0.3",
     "esbuild": "^0.25.3",
-    "esdoc": "^0.0.2",
-    "esdoc-standard-plugin": "^1.0.0",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.5.4",
     "vitest": "^3.1.2"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
+      "browser": "./dist/esm/basic-extensions.mjs",
       "import": "./src/index.js",
       "require": "./dist/cjs/index.cjs"
     },
     "./classes": {
-      "types": "./dist/types/classes/index.d.ts",
       "import": "./src/classes/index.js",
       "require": "./dist/cjs/classes/index.cjs"
     },
     "./utils": {
-      "types": "./dist/types/utils/index.d.ts",
       "import": "./src/utils/index.js",
       "require": "./dist/cjs/utils/index.cjs"
     }
@@ -44,17 +35,16 @@
   "license": "MIT",
   "main": "dist/cjs/index.cjs",
   "module": "src/index.js",
-  "types": "dist/types/index.d.ts",
   "name": "@nejs/basic-extensions",
   "scripts": {
+    "build": "bin/clean && bin/version patch bump && bin/esbuild",
+    "distribute": "bin/clean && bin/version minor bump && bin/esbuild && npm publish",
     "browser": "bin/esbuild",
-    "build": "bin/clean && bin/version patch bump && bin/build && bin/esbuild",
     "clean": "bin/clean",
-    "distribute": "bin/clean && bin/version minor bump && bin/build && bin/esbuild",
-    "module": "bin/build",
+    "prepack": "bin/clean && bin/esbuild",
     "repl": "npm run build && node --no-warnings repl.bootstrap.js",
     "test": "vitest"
   },
   "type": "module",
-  "version": "2.21.8"
+  "version": "2.22.0"
 }
