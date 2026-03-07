@@ -21,16 +21,19 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/mjs/index.js",
-      "require": "./dist/cjs/index.js"
+      "types": "./dist/types/index.d.ts",
+      "import": "./src/index.js",
+      "require": "./dist/cjs/index.cjs"
     },
     "./classes": {
-      "import": "./dist/mjs/classes/index.js",
-      "require": "./dist/cjs/classes/index.js"
+      "types": "./dist/types/classes/index.d.ts",
+      "import": "./src/classes/index.js",
+      "require": "./dist/cjs/classes/index.cjs"
     },
     "./utils": {
-      "import": "./dist/mjs/utils/index.js",
-      "require": "./dist/cjs/utils/index.js"
+      "types": "./dist/types/utils/index.d.ts",
+      "import": "./src/utils/index.js",
+      "require": "./dist/cjs/utils/index.cjs"
     }
   },
   "keywords": [
@@ -39,14 +42,15 @@
     "localStorage"
   ],
   "license": "MIT",
-  "main": "dist/cjs/index.js",
-  "module": "dist/mjs/index.js",
+  "main": "dist/cjs/index.cjs",
+  "module": "src/index.js",
+  "types": "dist/types/index.d.ts",
   "name": "@nejs/basic-extensions",
   "scripts": {
     "browser": "bin/esbuild",
-    "build": "bin/clean && bin/version patch bump && bin/esbuild && bin/build",
+    "build": "bin/clean && bin/version patch bump && bin/build && bin/esbuild",
     "clean": "bin/clean",
-    "distribute": "bin/clean && bin/version minor bump && bin/esbuild && bin/build",
+    "distribute": "bin/clean && bin/version minor bump && bin/build && bin/esbuild",
     "module": "bin/build",
     "repl": "npm run build && node --no-warnings repl.bootstrap.js",
     "test": "vitest"

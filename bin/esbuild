@@ -16,7 +16,14 @@ const bundleName = `${packageJSON.name}.bundle.${version}.js`
 const outfile = `dist/${bundleName}`
 const iifeDefaultName = sanitizeForVariableName(packageJSON.name)
 
-esbuild
+// Collect external dependencies (don't bundle them into CJS output)
+const external = [
+  ...Object.keys(packageJSON.dependencies || {}),
+  ...Object.keys(packageJSON.peerDependencies || {}),
+]
+
+// Browser IIFE bundle
+await esbuild
   .build({
     entryPoints: [`src/index${ext}`],
     bundle: true,
@@ -35,6 +42,32 @@ esbuild
     console.error(e)
     process.exit(1)
   })
+
+// CJS builds for each entry point
+const cjsEntryPoints = [
+  { entry: `src/index${ext}`, outfile: 'dist/cjs/index.cjs' },
+  { entry: `src/classes/index${ext}`, outfile: 'dist/cjs/classes/index.cjs' },
+  { entry: `src/utils/index${ext}`, outfile: 'dist/cjs/utils/index.cjs' },
+]
+
+await Promise.all(cjsEntryPoints.map(({ entry, outfile }) =>
+  esbuild.build({
+    entryPoints: [entry],
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    target: ['node20'],
+    sourcemap: true,
+    outfile,
+    external,
+  })
+)).catch((e) => {
+  console.error(e)
+  process.exit(1)
+})
+
+console.log('Built browser bundle:', outfile)
+console.log('Built CJS entry points:', cjsEntryPoints.map(e => e.outfile).join(', '))
 
 try {
   let packageJSONString
