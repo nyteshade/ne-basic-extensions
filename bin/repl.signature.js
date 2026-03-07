@@ -1,4 +1,5 @@
-const ts = await import('typescript')
+let ts
+try { ts = await import('typescript') } catch { ts = null }
 
 export function findFunction(node) {
   const types = new Map([
@@ -25,6 +26,9 @@ export function makeSourceFile(sourcecode) {
 }
 
 export function extractSignature(fn) {
+  if (!ts)
+    return `(typescript not installed)`
+
   if (!fn || typeof fn !== 'function')
     return `Unable to extract signature from ${fn?.name}`
 

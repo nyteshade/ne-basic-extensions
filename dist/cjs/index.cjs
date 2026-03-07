@@ -8715,31 +8715,6 @@ var RegExpExtensions = new import_extension15.Patch(RegExp, {
       return `(?:${string})?`;
     },
     /**
-     * Escapes special characters in a string for use in a regular expression.
-     *
-     * This method checks if the `RegExp.escape` method is available. If it is,
-     * it uses that method to escape the string. If it's not, it uses a polyfill
-     * method to escape the string.
-     *
-     * The polyfill method replaces all special characters in the string with
-     * their escaped equivalents. The special characters are defined by the
-     * regular expression `/[-[\]{}()*+?.,\\^$|#\s]/g`.
-     *
-     * @param {string} string - The string to be escaped.
-     * @returns {string} - The escaped string.
-     *
-     * @example
-     * // Suppose we have a string with special characters
-     * const str = 'Hello, [World]!'
-     *
-     * // Using `escape` or `escapePolyfill`
-     * console.log(RegExp[RegExp.escape ? 'escapePolyfill' : 'escape'](str))
-     * // Output: 'Hello\\, \\[World\\]\\!'
-     */
-    escape(string) {
-      return RegExpEscape(string);
-    },
-    /**
      * Getter method that returns a string 'null'.
      *
      * This method is used when you need a string representation of null
@@ -8986,16 +8961,7 @@ var RegExpExtensions = new import_extension15.Patch(RegExp, {
       return `,${this.whitespace}`;
     }
   }
-}, {
-  conditions: {
-    ["escape"]() {
-      return !Reflect.has(RegExp, "escape");
-    }
-  }
 });
-function RegExpEscape(string) {
-  return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-}
 
 // src/set.extensions.js
 var import_extension16 = require("@nejs/extension");

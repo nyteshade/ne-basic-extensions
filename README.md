@@ -56,6 +56,40 @@ CommonJS is also supported via bundled CJS output:
 const { FunctionExtensions } = require('@nejs/basic-extensions');
 ```
 
+### Browser via jsdelivr
+
+Load the IIFE bundle directly from [jsdelivr](https://www.jsdelivr.com/) — no build step needed:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@nejs/basic-extensions/dist/@nejs/basic-extensions.bundle.2.22.2.js"></script>
+<script>
+  // The bundle exposes a global `nejsBasicExtensions` object
+  nejsBasicExtensions.Controls.enableAll();
+
+  // All extensions are now active on built-in prototypes
+  console.log([1, 2, 3].first); // 1
+</script>
+```
+
+You can also pin to a specific version or use the `latest` tag:
+
+```html
+<!-- Pin to exact version -->
+<script src="https://cdn.jsdelivr.net/npm/@nejs/basic-extensions@2.22.2/dist/@nejs/basic-extensions.bundle.2.22.2.js"></script>
+
+<!-- Latest version (browser field from package.json) -->
+<script src="https://cdn.jsdelivr.net/npm/@nejs/basic-extensions/dist/esm/basic-extensions.mjs" type="module"></script>
+```
+
+When using the ESM bundle as a module:
+
+```html
+<script type="module">
+  import basicExtensions from 'https://cdn.jsdelivr.net/npm/@nejs/basic-extensions/dist/esm/basic-extensions.mjs';
+  basicExtensions.Controls.enableAll();
+</script>
+```
+
 ## Development
 
 ### Building

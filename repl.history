@@ -1,4 +1,8 @@
 .exit
+.help
+clear
+is
+.exit
 is.objectKey(/asdfads/)
 is.objectKey(Symbol())
 is.objectKey('asdfads')
@@ -23,8 +27,4 @@ is
 (20n).within(10n, 20n, true)
 (30n).within(10n, 20n, true)
 (33n).within(10n, 20n, true)
-(-33n).within(10n, 20n, true)
-(-33n).within(10n, 20n)
-(-33n).clamp(10n, 30n)
-BigInt.max(10n, BigInt.min(30n, -33n))
--33n.clamp(10n, 30n)tExtensions.apply(); BigIntPrototypeExtensions.apply() BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js') BigIntPrototypeExtensions.apply()sions, BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js') -33n))gIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js')h.extension.js')p) } })get(p) } return Reflect.get(t,p,r) }, has(t,p) { if (t.has(p)) { return true } return Reflect.has(t,p) } })ypeOf(m)ame')ame', 'Brielle']])wner')mport ('.')og','This is being logged'], ['error', 'But something terrible happened'])p('Fun', ['log','This is being logged'], ['error', 'But something terrible happened']).print()ics','underline']).print()int() { console.log(this) }brave new world', ['italics','underline']))['italics','underline'])
+(-33n).within(10n, 20n, true)).within(10n, 20n)).clamp(10n, 30n)t.max(10n, BigInt.min(30n, -33n))3n.clamp(10n, 30n)tExtensions.apply(); BigIntPrototypeExtensions.apply() BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js') BigIntPrototypeExtensions.apply()sions, BigIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js') -33n))gIntPrototypeExtensions } = await import('./dist/mjs/big.int.extension.js')h.extension.js')p) } })get(p) } return Reflect.get(t,p,r) }, has(t,p) { if (t.has(p)) { return true } return Reflect.has(t,p) } })ypeOf(m)ame')ame', 'Brielle']])wner')mport ('.')og','This is being logged'], ['error', 'But something terrible happened'])p('Fun', ['log','This is being logged'], ['error', 'But something terrible happened']).print()ics','underline']).print()int() { console.log(this) }brave new world', ['italics','underline']))['italics','underline'])

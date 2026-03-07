@@ -1,18 +1,15 @@
 #!/usr/bin/env node --no-warnings --no-deprecations --enable-source-maps
 
 // Import everything for playtesting.
-(await import('./dist/mjs/index.js')).Controls.enableAll();
+(await import('./src/index.js')).Controls.enableAll();
 (await import('./bin/repl.signature.js'))
-
-// Grab typescript
-const ts = await import('typescript')
 
 const {
   accessor, data, describe, describeMany, extract, isDescriptor,
   isAccessor, isData, redescribe,
-} = await import('./dist/mjs/utils/index.js')
+} = await import('./src/utils/index.js')
 
-const { inspect } = await import('util');
+const { inspect } = await import('node:util');
 const nejsExtension = await import('@nejs/extension');
 
 const repl = await import('node:repl');
@@ -53,7 +50,7 @@ replServer = createRepl({
     Extension: nejsExtension.Extension,
 
     accessor, data, describe, describeMany, extract, inspect,
-    isAccessor, isData, isDescriptor, redescribe, ts,
+    isAccessor, isData, isDescriptor, redescribe,
   },
   onReady() {
     console.log(help())
