@@ -11,6 +11,8 @@ import { accessor, as, data, isDescriptor, redescribe } from '../utils/index.js'
  *   the enumeration. Can be an object or a Map.
  * @returns {Object} The constructed enumeration object.
  *
+ * @deprecated Since 2.20.0 — use {@link Enumeration} instead.
+ *
  * @example
  * const colors = Enum('Colors', ['red', 'green', 'blue'])
  * console.log(colors.red) // EnumValue object for 'red'
@@ -318,9 +320,14 @@ export function Enum(name, values, properties) {
   return enumeration
 }
 
+/**
+ * The {@link Extension} that wraps and exposes the {@link Enum} class
+ * to the global domain.
+ *
+ * @deprecated Since 2.20.0 — use {@link Enumeration} instead.
+ * @type {Extension<Enum>}
+ */
 export const EnumExtension = new Extension(Enum)
-
-
 
 /**
  * Converts a given value to a string representation with additional
@@ -359,6 +366,8 @@ function asString(value) {
  * @returns {Object} A new enumeration object with specific properties
  *   and symbols set for enhanced functionality and identification.
  *
+ * @deprecated Since 2.20.0 — use {@link Enumeration} instead.
+ *
  * @example
  * // Create a base enum with the name 'Color'
  * const colorEnum = makeBaseEnum('Color')
@@ -396,11 +405,12 @@ export function makeBaseEnum(name) {
      * more readily readable format. See the docs for node's `util.inspect()`
      * function for more details.
      *
-     * @type {(number, object, Function) => string}
+     * @type {function(number, object, function): string}
      */
     [Symbol.for('nodejs.util.inspect.custom')]: data(
-      function(depth, options, inspect) {
+      function(_, __, ___) {
         const valueKeys = this[Symbol.for('Enum.valueKeys')] ?? []
+
         let valueText = valueKeys
           .map(key => `\x1b[1;2m${key}\x1b[22m`)
           .join(', ')
@@ -449,13 +459,6 @@ export function makeBaseEnum(name) {
       return `Enum(${name})`
     }, false, true, false)
   })
-
-  const applySyntacticSugar = () => {
-    createSymlinks(Symbol.for('Enum.valueKeys'), 'keys')
-    createSymlinks(Symbol.for('Enum.name'), 'name')
-  }
-
-  return [base, applySyntacticSugar]
 }
 
 /**
@@ -471,14 +474,16 @@ export function makeBaseEnum(name) {
  * created.
  * @param {string|symbol} oldKey - The existing key whose property
  * descriptor will be used for the new key.
- * @param {string|symbol} newKey - The new key under which the property
+ * @param {...(string|symbol)} newKeys - The new key under which the property
  * will be accessible.
+ *
+ * @deprecated Since 2.20.0 — use {@link Enumeration} instead.
  *
  * @example
  * const obj = { a: 1 }
  * createSymlink(obj, 'a', 'b')
  * console.log(obj.b) // Outputs: 1
  */
-function createSymlinks(on, oldKey, ...newKeys) {
+export function createSymlinks(on, oldKey, ...newKeys) {
   redescribe(on, oldKey, {}, { alsoAs: newKeys })
 }

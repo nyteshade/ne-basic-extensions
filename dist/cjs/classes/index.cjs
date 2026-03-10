@@ -29,7 +29,7 @@ __export(index_exports, {
   DescriptorExtensions: () => DescriptorExtensions,
   Enum: () => Enum,
   EnumExtension: () => EnumExtension,
-  Enumeration: () => Enumeration,
+  Enumeration: () => import_enumeration.Enumeration,
   EnumerationExtension: () => EnumerationExtension,
   Introspector: () => Introspector,
   IntrospectorExtensions: () => IntrospectorExtensions,
@@ -52,11 +52,11 @@ __export(index_exports, {
   RefMapExtensions: () => RefMapExtensions,
   RefSet: () => RefSet,
   RefSetExtensions: () => RefSetExtensions,
-  SubscriptProxy: () => SubscriptProxy,
   Symkeys: () => Symkeys,
   SymkeysExtension: () => SymkeysExtension,
   Type: () => Type,
   TypeExtensions: () => TypeExtensions,
+  createSymlinks: () => createSymlinks,
   makeBaseEnum: () => makeBaseEnum
 });
 module.exports = __toCommonJS(index_exports);
@@ -499,100 +499,101 @@ var DescriptorUtils = {
    *
    * This function has multiple possible overloads
    *
-   * ```markdown
-   *   _**zeroFn** is a function that takes no parameters_
-   *   _**oneFn** is a function that takes a single parameter_
-   *   _**oneOrNone** is a either a function that takes a single parameter or nullish_
-   *   _**nonFn** is any value that is not a function_
-   *   _**nullish** is either null or undefined_
-   *   _**...** means configurable?, enumerable?, storage?, key? liaison? as
-   *   subsequent following parameters in that order_
+   * _**zeroFn** is a function that takes no parameters_
+   * _**oneFn** is a function that takes a single parameter_
+   * _**oneOrNone** is a either a function that takes a single parameter or nullish_
+   * _**nonFn** is any value that is not a function_
+   * _**nullish** is either null or undefined_
+   * _**...** means configurable?, enumerable?, storage?, key? liaison? as
+   * the subsequent following parameters in that order_
    *
-   *   **accessor()**
-   *     creates a storage backed accessor that is both read and write.
-   *     The storage object will be a provided empty object with the key
-   *     being 'value'. Configurable and enumerable flags will be set to
-   *     `true`.
+   * **accessor ()**
+   *   creates a storage-backed accessor that is both read and write.
+   *   The storage object will be a provided empty object with the key
+   *   being 'value'. Configurable and enumerable flags will be set to
+   *   `true`.
    *
-   *   **accessor(options)**
-   *     this single argument variant of accessor() consists of a single
-   *     options object. If neither `get` nor `set` are provided, a
-   *     storage backed read-write accessor with undefined as the initial
-   *     value will be constructed.
+   * **accessor (options)**
+   *   this single argument variant of accessor() consists of a single
+   *   options object. If neither `get` nor `set` are provided, a
+   *    storage-backed read-write accessor with undefined as the initial
+   *   value will be constructed.
    *
-   *   **accessor(nonFn)**
-   *   **accessor(any, true, options?)**
-   *   **accessor(any, true, ...)**
-   *     supplying only a non-function only parameter or any value and the
-   *     value `true` as the second parameter, you will get a read-write
-   *     accessor stored in the default or specified storage. The resultant
-   *     initial value will be whatever is provided as the first parameter.
-   *     See options to customize `configurable`, `enumerable`, `storage`,
-   *     `key` and the `liaison` factory function.
+   * **accessor (nonFn)**
+   * **accessor (any, true, options?)**
+   * **accessor (any, true, ...)**
+   *   supplying only a non-function-only parameter or any value and the
+   *   value `true` as the second parameter, you will get a read-write
+   *   accessor stored in the default or specified storage. The resultant
+   *   initial value will be whatever is provided as the first parameter.
+   *   See options to customize `configurable`, `enumerable`, `storage`,
+   *   `key` and the `liaison` factory function.
    *
-   *   **accessor(any, false, options?)**
-   *   **accessor(any, false, ...)**
-   *     supplying only a non-function only parameter or any value and the
-   *     value `false` as the second parameter, you will get a read-only
-   *     getter stored in the default or specified storage. The resultant
-   *     value will be whatever is provided as the first parameter.
-   *     See options to customize `configurable`, `enumerable`, `storage`,
-   *     `key` and the `liaison` factory function.
+   * **accessor (any, false, options?)**
+   * **accessor (any, false, ...)**
+   *   supplying only a non-function-only parameter or any value and the
+   *   value `false` as the second parameter, you will get a read-only
+   *   getter stored in the default or specified storage. The resultant
+   *   value will be whatever is provided as the first parameter.
+   *   See options to customize `configurable`, `enumerable`, `storage`,
+   *   `key` and the `liaison` factory function.
    *
-   *   **accessor(zeroFn)**
-   *   **accessor(zeroFn, nullish, options?)**
-   *   **accessor(zeroFn, nullish, ...)**
-   *     creates a generic read-only accessor with the first no-argument
-   *     function parameter being the getter and either null or undefined
-   *     for the setter. Either an options object or the manually ordered
-   *     parameters can optionally follow if a nullish value for setter
-   *     is provided.
+   * **accessor (zeroFn)**
+   * **accessor (zeroFn, nullish, options?)**
+   * **accessor (zeroFn, nullish, ...)**
+   *   creates a generic read-only accessor with the first no-argument
+   *   function parameter being the getter and either null or undefined
+   *   for the setter. Either an options object or the manually ordered
+   *   parameters can optionally follow if a nullish value for setter
+   *   is provided.
    *
-   *   **accessor(zeroFn, oneOrNone, options?)**
-   *   **accessor(zeroFn, oneOrNone, ...)**
-   *     creates a generic read-write accessor with the first no-argument
-   *     function parameter being the getter and the second single-argument
-   *     function parameter being the setter. Either an options object or
-   *     the manually ordered parameters can optionally follow.
+   * **accessor (zeroFn, oneOrNone, options?)**
+   * **accessor (zeroFn, oneOrNone, ...)**
+   *   creates a generic read-write accessor with the first no-argument
+   *   function parameter being the getter and the second single-argument
+   *   function parameter being the setter. Either an options object or
+   *   the manually ordered parameters can optionally follow.
    *
-   *   **accessor(oneFn, oneFn, options?)**
-   *   **accessor(oneFn, oneFn, ...)**
-   *     this special variant of the accessor() invocation, allows a single
-   *     argument getter and setter factory to be supplied. These will
-   *     automatically be invoked with the specified or default storage
-   *     object. The result of the getter factory should be a no argument
-   *     function. And the result of the setter factory should be a single
-   *     argument function. The options for `liaison` and `key` will be
-   *     ignored and should be handled specifically in the factory
-   *     functions to suit your own use case.
-   * ```
+   * **accessor (oneFn, oneFn, options?)**
+   * **accessor (oneFn, oneFn, ...)**
+   *   this special variant of the accessor() invocation allows a single
+   *   argument getter and setter factory to be supplied. These will
+   *   automatically be invoked with the specified or default storage
+   *   object. The result of the getter factory should be a no-argument
+   *   function. And the result of the setter factory should be a single
+   *   argument function. The options for `liaison` and `key` will be
+   *   ignored and should be handled specifically in the factory
+   *   functions to suit your own use case.
    *
-   * Options are an object oriented way of supplying the alternate
+   *
+   * Options are an object-oriented way of supplying the alternate
    * flags to the data descriptor. They are
    *
-   *   • `get` - only referenced when an options object is the only parameter
-   *   • `set` - only referenced when an options object is the only parameter
-   *   • `configurable` - if true, the descriptor of the object that this
+   *   * **`get`** - only referenced when an options object is the only
+   *     parameter
+   *   * **`set`** - only referenced when an options object is the only
+   *     parameter
+   *   * **`configurable`** - if true, the descriptor of the object that this
    *     accessor descriptor represents can be redefined at later time by
-   *     subsequent calls to {@link Object.defineProperty} or
+   *     later calls to {@link Object.defineProperty} or
    *     {@link Object.defineProperties}
-   *   • `enumerable` - if true, enumeration over the object this
-   *     descriptor is applied to, will show the property
+   *   * **`enumerable`** - if true, enumeration over the object this
+   *     descriptor is applied to will show the property
    *     represented by this descriptor. See the associated MDN
    *     page regarding this {@link PropertyDescriptor} if you
    *     want to know more.
-   *   • `storage` - an object, usually {@link Object} or {@link Map} or
+   *   * **`storage`** - an object, usually {@link Object} or {@link Map} or
    *     nullish if unused
-   *   • `key` - a {@link PropertyKey} of your choosing or the default
+   *   * **`key`** - a {@link PropertyKey} of your choosing or the default
    *      string `"value"`
-   *   • `bind` - true if you wish to have the `storage` object bound as
+   *   * **`bind`** - true if you wish to have the `storage` object bound as
    *     the `thisObj` for both the `get` and `set` functions when
    *     storage is used. **note* this will not work if you supply a
    *     big arrow function for the accessor function in question. This
    *     defaults to `false`.
-   *   • `liaison` - an optional factory function that must return an
+   *   * **`liaison`** - an optional factory function that must return an
    *     object with two properties. The first is a `get()` function that
-   *     returns a value and the second is a `set(value)` function that
+   *     returns a value, and the second is a `set(value)` function that
    *     stores a value. The factory function receives `storage` and
    *     `key`, in that order. The default uses {@link Map.get} and
    *     {@link Map.set} if the storage is an instance of {@link Map}.
@@ -602,27 +603,31 @@ var DescriptorUtils = {
    * @param {(object|any)?} value the JavaScript value representing
    * this descriptor's value or an options object if it is the
    * only parameter.
+   *
    * @param {(object|boolean)?} optionsOrConfigurable true or false if
    * you wish the `configurable` flag to be set. Optionally supply an
    * object with one of the supported options to configure the run
    * of the function.
+   *
    * @param {boolean?} enumerable true or false if you wish to
    * configure the `.enumerable` property of the descriptor
+   *
    * @param {object?} storage an object upon which data storage should
    * be written to and read from. Defaults to an empty {@link Object}
    * when storage is needed and not supplied via this parameter or
    * an options object.
+   *
    * @param {PropertyKey?} key the key used to store content on the
    * storage object.
-   * @param {(object, PropertyKey) => { get: ()=>any, set: (v)=>void}} liaison
-   * an optional function that, given a storage object and property key,
-   * returns an object with a no argument `get()` function that returns
-   * the value on the storage object with a given key and a single argument
-   * `set(value)` function that stores a new value using the property key
-   * on the supplied storage object. This exists because access to a
-   * {@link Map} and {@link Object} values are handled differently. If you
-   * need support for some other class than `Map` or `Object` then you
-   * should provide a liaison function to define access.
+   *
+   * @param {{function(object, PropertyKey): {
+   *   get: function(): any,
+   *   set: function(*): void
+   * }}} liaison
+   * an optional accessor factory for the storage object. Defaults support
+   * {@link Map} and plain {@link Object}; provide this if you need to support
+   * something else. Receives the storage object and a property key; returns
+   * a `get()` and `set(value)` pair for reading and writing that key.
    *
    * @returns {PropertyDescriptor}
    *
@@ -788,51 +793,49 @@ var DescriptorUtils = {
    *
    * This function has multiple possible overloads
    *
-   * ```markdown
-   *   **data()**
-   *     creates a data descriptor with a value of `undefined` that
-   *     is writable, configurable and enumerable.
+   * **data ()**
+   *   creates a data descriptor with a value of `undefined` that
+   *   is writable, configurable and enumerable.
    *
-   *   **data(options)**
-   *     if the only parameter is an object and that object contains
-   *     at least a `.value` property, this funtion will return a
-   *     data descriptor with the associated values. This variant
-   *     is useful if you want to extract the normal data descriptor
-   *     properties: value, writable, configurable and/or enumerable
-   *     from an object that has properties with these names, in
-   *     addition to other properties or functions. Note that if you
-   *     wish for the value of the descriptor to be an object that
-   *     also contains a `.value` property, use `data({value: obj})`
-   *     instead.
+   * **data (options)**
+   *   if the only parameter is an object and that object contains
+   *   at least a `.value` property, this funtion will return a
+   *   data descriptor with the associated values. This variant
+   *   is useful if you want to extract the normal data descriptor
+   *   properties: value, writable, configurable and/or enumerable
+   *   from an object that has properties with these names, in
+   *   addition to other properties or functions. Note that if you
+   *   wish for the value of the descriptor to be an object that
+   *   also contains a `.value` property, use `data({value: obj})`
+   *   instead.
    *
-   *   **data(value)**
-   *   **data(value, options?)**
-   *     creates a data descriptor from the supplied `value`,
-   *     optionally augmented by additional `options`. The defaults
-   *     for this writable, configurable and enumerable values set
-   *     to `true`
+   * **data (value)**
+   * **data (value, options?)**
+   *   creates a data descriptor from the supplied `value`,
+   *   optionally augmented by additional `options`. The defaults
+   *   for these writable, configurable and enumerable values are set
+   *   to `true`
    *
-   *   **data(value, writable?, configurable?, enumerable?)**
-   *     if writable, configurable or enumerable or true or false
-   *     then this function creates a data descriptor with those
-   *     flags and the supplied value (there's no real reason to
-   *     invoke this function if you're supplying all four values)
-   * ```
+   * **data (value, writable?, configurable?, enumerable?)**
+   *   if writable, configurable or enumerable or true or false
+   *   then this function creates a data descriptor with those
+   *   flags and the supplied value (there's no real reason to
+   *   invoke this function if you're supplying all four values)
    *
-   * Options are an object oriented way of supplying the alternate
+   * Options are an object-oriented way of supplying the alternate
    * flags to the data descriptor. They are
    *
-   *   • `value` - only referenced when an options object is the
+   *   * **`value`** - only referenced when an options object is the
    *     only parameter
-   *   • `writable` - true if the value represented by this data
+   *   * **`writable`** - true if the value represented by this data
    *     descriptor can be reassigned a new value.
-   *   • `configurable` - if true, the descriptor of the object
+   *   * **`configurable`** - if true, the descriptor of the object
    *     that this data descriptor represents can be redefined at
-   *     later time by subsequent calls to `Object.defineProperty`
-   *     or `Object.defineProperties`. If `.configurable` is true
+   *      a later time by later calls to `Object.defineProperty`
+   *     or `Object.defineProperties`. If `.configurable` is true,
    *     this can be done even if `.writable` is set to false
-   *   • `enumerable` - if true, enumeration over the object this
-   *     descriptor is applied to, will show the property
+   *   * **`enumerable`** - if true, enumeration over the object this
+   *     descriptor is applied to will show the property
    *     represented by this descriptor. See the associated MDN
    *     page regarding this `PropertyDescriptor` if you want to
    *     know more.
@@ -840,14 +843,18 @@ var DescriptorUtils = {
    * @param {(object|any)?} value the JavaScript value representing
    * this descriptor's value or an options object if it is the
    * only parameter.
+   *
    * @param {(object|boolean)?} optionsOrWritable true or false if
    * you wish the writable flag to be set. Optionally supply an
    * object with one of the supported options to configure the run
    * of the function.
+   *
    * @param {boolean?} configurable true or false if you wish to
    * configure the `.configurable` property of the descriptor
+   *
    * @param {boolean?} enumerable true or false if you wish to
    * configure the `.enumerable` property of the descriptor
+   *
    * @returns {PropertyDescriptor}
    *
    * @note More info on this can be found at the
@@ -1819,14 +1826,14 @@ function isObject2(o) {
 function isString(o) {
   return typeOrType("string", String)(o);
 }
-function isNumber2(o) {
+function isNumber(o) {
   return typeOrType("number", Number)(o);
 }
 function isSymbol(o) {
   return typeOrType("symbol", Symbol)(o);
 }
 function isValidKey(o) {
-  return isString(o) || isNumber2(o) || isSymbol(o);
+  return isString(o) || isNumber(o) || isSymbol(o);
 }
 
 // src/classes/enum.js
@@ -5075,10 +5082,10 @@ function makeBaseEnum(name) {
      * more readily readable format. See the docs for node's `util.inspect()`
      * function for more details.
      *
-     * @type {(number, object, Function) => string}
+     * @type {function(number, object, function): string}
      */
     [Symbol.for("nodejs.util.inspect.custom")]: data(
-      function(depth, options, inspect) {
+      function(_, __, ___) {
         const valueKeys = this[Symbol.for("Enum.valueKeys")] ?? [];
         let valueText = valueKeys.map((key) => `\x1B[1;2m${key}\x1B[22m`).join(", ");
         if (valueText.length)
@@ -5119,11 +5126,6 @@ function makeBaseEnum(name) {
       return `Enum(${name})`;
     }, false, true, false)
   });
-  const applySyntacticSugar = () => {
-    createSymlinks(Symbol.for("Enum.valueKeys"), "keys");
-    createSymlinks(Symbol.for("Enum.name"), "name");
-  };
-  return [base, applySyntacticSugar];
 }
 function createSymlinks(on, oldKey, ...newKeys) {
   redescribe(on, oldKey, {}, { alsoAs: newKeys });
@@ -5131,328 +5133,8 @@ function createSymlinks(on, oldKey, ...newKeys) {
 
 // src/classes/enumeration.js
 var import_extension6 = require("@nejs/extension");
-var Enumeration = class {
-  /**
-   * The case name for this {@link Enumeration} instance.
-   *
-   * @type {string|symbol}
-   */
-  key;
-  /**
-   * The value for this case name, defaults to the same as the
-   * case name unless specifically supplied.
-   *
-   * @type {any}
-   */
-  value;
-  /**
-   * For {@link Enumeration} instances that have instance level associated
-   * values. This is uncommon but is modeled after Swift's enums with
-   * associated values. This object is `null` if there are no associations.
-   *
-   * @type {object}
-   */
-  associations;
-  /**
-   * Creates a new simple {@link Enumeration} case with a key (case name)
-   * and associated value of any type. If no value is supplied, it will be
-   * set to the value of the key unless `acceptUndefinedValue` is set to
-   * true.
-   *
-   * @param {string|number|symbol} key the case name represented by this
-   * instance of {@link Enumeration}.
-   * @param {any} value any value for this enumeration case. If this is
-   * `undefined` and `acceptUndefinedValue` is set to false (the default)
-   * then the value will be identical to the `key`.
-   * @param {boolean} [acceptUndefinedValue=false] a flag that allows the
-   * rare case of setting a case's value explicitly to `undefined`
-   * @returns {Enumeration} a new {@link Enumeration} value, or instance of
-   * whatever child class has extended `Enumeration`.
-   */
-  constructor(key, value, acceptUndefinedValue = false) {
-    if (value === void 0 && !acceptUndefinedValue) value = key;
-    Object.assign(this, { key, value });
-    Object.defineProperty(this, "associations", {
-      value: null,
-      configurable: true,
-      enumerable: false,
-      writable: true
-    });
-    Object.setPrototypeOf(
-      this.constructor.prototype,
-      SubscriptProxy(
-        Object.create(Object.getPrototypeOf(this.constructor.prototype))
-      )
-    );
-    return this;
-  }
-  /**
-   * Creates a duplicate of this enumeration case, and assigns instance
-   * level associated key/value pairs on the copy. It is still of the
-   * same enum class type, but has instance level associated value.
-   *
-   * @param {...(object|string|number|symbol|[string|number|symbol,any])} entries
-   * a variadic list of objects (whose key/value pairs will be flattened
-   * and added to the associations), a key (string|number|symbol) whose
-   * value will be the same as the key, or an Object entry (i.e. an array with
-   * the first value being the key and the second value being the value).
-   * @returns {*} an instance of this class
-   */
-  associate(...entries) {
-    const associations = {};
-    for (const entry of entries) {
-      if (is.object(entry, Object)) {
-        Object.assign(associations, ...entries);
-      } else if (is.array(entry)) {
-        const key = is.objectKey(entry[0]);
-        associations[key] = entry[1];
-      } else if (is.objectKey(entry)) {
-        associations[entry] = entry;
-      }
-    }
-    if (this.hasAssociatedValues) {
-      Object.assign(this.associations, associations);
-      return this;
-    }
-    const variantCase = Object.create(this);
-    variantCase.associations = associations;
-    return variantCase;
-  }
-  /**
-   * Shorthand for retrieving an internal associated value
-   *
-   * @param {string|number|symbol} key a key into the internal
-   * associations store. Typically, this value is null.
-   * @returns {any|null} null if there is no such named association
-   * or if there are no associations stored on this enum value.
-   */
-  associated(key) {
-    return this.associations?.[key];
-  }
-  /**
-   * Returns true if there is an associated value for this enumeration case.
-   *
-   * @returns {boolean} true if associations exist, denoting this is as
-   * a variant case; false otherwise.
-   */
-  get hasAssociatedValues() {
-    return this.associations !== null;
-  }
-  /**
-   * Checks to see if this object is, or is loosely, the same as
-   * the supplied `someCase` value. This is determined by comparing
-   * the `.key` property.
-   *
-   * @param {any} someCase some object value that might have a
-   * matching (double equals) key property value
-   * @returns {boolean} true if the objects are loosely equal (==)
-   * or if each of `.key` values are loosely equal (==)
-   */
-  is(someCase) {
-    return this == someCase || this?.key == someCase?.key;
-  }
-  /**
-   * Define the string representation of any given {@link Enumeration}
-   * instance to be its `.key` value.
-   *
-   * @returns {string} the value of the `.key` property wrapped in
-   * a call to `String()` to ensure conversion.
-   */
-  toString() {
-    return String(this.key);
-  }
-  /**
-   * Returns a combination of the this class' name followed by this
-   * instances key value. This can be more explicit than just using
-   * the `.key` property.
-   *
-   * @example
-   * class Shape extends Enumeration {
-   *   static {
-   *     Shape.define('circle')
-   *     Shape.define('square')
-   *   }
-   * }
-   *
-   * console.log(Shape.circle.case) // 'Shape.circle'
-   *
-   * // ['Shape.circle', 'Shape.square']
-   * console.log([...Shape.values()].map(s => s.case))
-   *
-   * @type {string}
-   */
-  get case() {
-    return `${this.constructor.name}.${String(this.key)}`;
-  }
-  /**
-   * Define the result of a call to {@link #valueOf} to always be
-   * the contents of the `.value` property.
-   *
-   * @returns {any} the contents of the `.value` property
-   */
-  valueOf() {
-    return this.value;
-  }
-  /**
-   * Returns the `.key` value as a primitive, unless a conversion to
-   * number is requested. In which case, if the `.value` propert is
-   * of type {@link Number} then it will be returned. In all other
-   * cases the result will be `String(this.key)`.
-   *
-   * @returns {string|number|NaN} returns a {@link String} representation
-   * of the `.key` property unless a number is requested. See above
-   * for custom logic pertaining to number coercion.
-   */
-  [Symbol.toPrimitive](hint) {
-    switch (hint) {
-      default:
-      case "string":
-        return String(this.key);
-      case "number":
-        return isNumber(this.value) ? this.value : Number(this.key);
-    }
-  }
-  /**
-   * Generates a custom tag name that matches this instances class name.
-   *
-   * @example
-   * class Shape extends Enumeration {
-   *   static { Shape.define('circle') }
-   * }
-   *
-   * console.log(Shape.circle[Symbol.toStringTag]) // 'Shape'
-   */
-  get [Symbol.toStringTag]() {
-    return this.constructor.name;
-  }
-  /**
-   * Static variant of {@link Enumeration#is} that takes a left and
-   * right hand value, then checks to see if both objects are, or are
-   * loosely, the same as each other's `.key` value.
-   *
-   * @param {any} leftCase some object value that might have a
-   * matching (double equals) key property value
-   * @param {any} rightCase some object value that might have a
-   * matching (double equals) key property value
-   * @returns {boolean} true if the objects are loosely equal (==)
-   * or if each of `.key` values are loosely equal (==)
-   */
-  static is(leftCase, rightCase) {
-    return leftCase == rightCase || leftCase?.key == rightCase?.key;
-  }
-  /**
-   * Used when creating a static instance of {@link Enumeration}. Generally
-   * this is done as follows:
-   *
-   * @example
-   * class Shape extends Enumeration {
-   *   static {
-   *     Shape.define('cylinder')
-   *     Shape.define('cube')
-   *     Shade.define('other')
-   *   }
-   * }
-   *
-   * @param {string|number|symbol} key the case name of the this particular
-   * enumeration instance.
-   * @param {any|[string|number|symbol, any]} value the value of the newly
-   * defined {@link Enumeration} instance.
-   * @param {function|object} [customizeInstance=undefined] defaults to
-   * `undefined`, but when it is passed in as a function, the signature
-   * would be to take an instance of this Enumeration class and return
-   * one (presumably after modification), or in the form of an object whose
-   * property descriptors are copied onto the defined instance. This later
-   * approach retains getter and setter application as well as other rare
-   * descriptor modifications.
-   * @returns {*} an instance of this {@link Enumeration} class type.
-   */
-  static define(key, value, customizeInstance) {
-    if (!is.objectKey(key)) {
-      throw new TypeError(
-        "Enumeration.define() must have a string/number/symbol key"
-      );
-    }
-    let caseName = key;
-    let caseValue = value;
-    if (is.objectEntry(value)) {
-      [caseName, caseValue] = value;
-    }
-    let instance = new this(key, value);
-    if (customizeInstance instanceof Function) {
-      const newInstance = customizeInstance(instance);
-      if (newInstance instanceof this)
-        instance = newInstance;
-    } else if (is.object(customizeInstance)) {
-      const descriptors = Object.getOwnPropertyDescriptors(customizeInstance);
-      Object.defineProperties(instance, descriptors);
-    }
-    Object.defineProperty(this, key, {
-      get() {
-        return instance;
-      },
-      configurable: true,
-      enumerable: true
-    });
-  }
-  /**
-   * Creates an iterator of all {@link Enumeration} derived instances that
-   * are statically assigned to this class. Generally this is only useful
-   * if applied to child class of `Enumeration`.
-   *
-   * @returns {Generator<string, void, *>} an iterator that walks instances
-   * of derived {@link Enumeration} classes and returns their `.key` values
-   */
-  static *cases() {
-    for (let [key, _] of this) yield key;
-  }
-  /**
-   * Creates an iterator of all {@link Enumeration} derived instances that
-   * are statically assigned to this class. Generally this is only useful
-   * if applied to child class of `Enumeration`.
-   *
-   * @returns {Generator<string, void, *>} an iterator that walks instances
-   * of derived {@link Enumeration} classes and returns their `.value` values
-   */
-  static *values() {
-    for (let [_, value] of this) yield value;
-  }
-  /**
-   * Creates an iterator of all {@link Enumeration} derived instances that
-   * are statically assigned to this class. Generally this is only useful
-   * if applied to child class of `Enumeration`.
-   *
-   * @returns {Generator<string, void, *>} an iterator that walks instances
-   * of derived {@link Enumeration} classes and returns each key/value pair
-   * as arrays. **This is the same as `Object.entries(ChildEnumerationClass)`
-   * and then filter the results for pairs whose values are instances of
-   * `ChildEnumerationClass`**
-   */
-  static *[Symbol.iterator]() {
-    const keys = Object.keys(this);
-    for (const key of keys) {
-      const value = this[key];
-      if (value instanceof this) yield [key, value];
-    }
-  }
-};
-function SubscriptProxy(proxied) {
-  return new Proxy(proxied, {
-    get(target, property2, receiver) {
-      if (!Reflect.has(target, property2) && receiver.hasAssociatedValues) {
-        return receiver.associated(property2);
-      }
-      return Reflect.get(target, property2, receiver);
-    },
-    set(target, property2, newValue, receiver) {
-      if (!Reflect.has(target, property2) && receiver.hasAssociatedValues && Reflect.has(receiver.associations, property2)) {
-        receiver.associations[property2] = newValue;
-        return;
-      }
-      return Reflect.set(target, property2, newValue, receiver);
-    }
-  });
-}
-var EnumerationExtension = new import_extension6.Extension(Enumeration);
+var import_enumeration = require("@nejs/enumeration");
+var EnumerationExtension = new import_extension6.Extension(import_enumeration.Enumeration);
 
 // src/classes/introspector.js
 var import_extension7 = require("@nejs/extension");
@@ -8868,6 +8550,8 @@ var ObjectExtensions = new import_extension15.Patch(Object, {
       }
       return object;
     },
+    redescribe() {
+    },
     /**
      * Strips an object down to only the keys specified. Optionally, any
      * accessors can be made to retain their context on the source object.
@@ -11083,7 +10767,7 @@ var NewClassesExtension = new import_extension20.Patch(globalThis, {
   Deferred,
   Descriptor,
   Enum,
-  Enumeration,
+  Enumeration: import_enumeration.Enumeration,
   Introspector,
   Iterable,
   Iterator,
@@ -11131,11 +10815,11 @@ var NewClassesExtension = new import_extension20.Patch(globalThis, {
   RefMapExtensions,
   RefSet,
   RefSetExtensions,
-  SubscriptProxy,
   Symkeys,
   SymkeysExtension,
   Type,
   TypeExtensions,
+  createSymlinks,
   makeBaseEnum
 });
 //# sourceMappingURL=index.cjs.map

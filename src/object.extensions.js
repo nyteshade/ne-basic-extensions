@@ -753,6 +753,10 @@ export const ObjectExtensions = new Patch(Object, {
       return object
     },
 
+    redescribe() {
+
+    },
+
     /**
      * Strips an object down to only the keys specified. Optionally, any
      * accessors can be made to retain their context on the source object.

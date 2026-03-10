@@ -3069,100 +3069,101 @@ var DescriptorUtils = {
    *
    * This function has multiple possible overloads
    *
-   * ```markdown
-   *   _**zeroFn** is a function that takes no parameters_
-   *   _**oneFn** is a function that takes a single parameter_
-   *   _**oneOrNone** is a either a function that takes a single parameter or nullish_
-   *   _**nonFn** is any value that is not a function_
-   *   _**nullish** is either null or undefined_
-   *   _**...** means configurable?, enumerable?, storage?, key? liaison? as
-   *   subsequent following parameters in that order_
+   * _**zeroFn** is a function that takes no parameters_
+   * _**oneFn** is a function that takes a single parameter_
+   * _**oneOrNone** is a either a function that takes a single parameter or nullish_
+   * _**nonFn** is any value that is not a function_
+   * _**nullish** is either null or undefined_
+   * _**...** means configurable?, enumerable?, storage?, key? liaison? as
+   * the subsequent following parameters in that order_
    *
-   *   **accessor()**
-   *     creates a storage backed accessor that is both read and write.
-   *     The storage object will be a provided empty object with the key
-   *     being 'value'. Configurable and enumerable flags will be set to
-   *     `true`.
+   * **accessor ()**
+   *   creates a storage-backed accessor that is both read and write.
+   *   The storage object will be a provided empty object with the key
+   *   being 'value'. Configurable and enumerable flags will be set to
+   *   `true`.
    *
-   *   **accessor(options)**
-   *     this single argument variant of accessor() consists of a single
-   *     options object. If neither `get` nor `set` are provided, a
-   *     storage backed read-write accessor with undefined as the initial
-   *     value will be constructed.
+   * **accessor (options)**
+   *   this single argument variant of accessor() consists of a single
+   *   options object. If neither `get` nor `set` are provided, a
+   *    storage-backed read-write accessor with undefined as the initial
+   *   value will be constructed.
    *
-   *   **accessor(nonFn)**
-   *   **accessor(any, true, options?)**
-   *   **accessor(any, true, ...)**
-   *     supplying only a non-function only parameter or any value and the
-   *     value `true` as the second parameter, you will get a read-write
-   *     accessor stored in the default or specified storage. The resultant
-   *     initial value will be whatever is provided as the first parameter.
-   *     See options to customize `configurable`, `enumerable`, `storage`,
-   *     `key` and the `liaison` factory function.
+   * **accessor (nonFn)**
+   * **accessor (any, true, options?)**
+   * **accessor (any, true, ...)**
+   *   supplying only a non-function-only parameter or any value and the
+   *   value `true` as the second parameter, you will get a read-write
+   *   accessor stored in the default or specified storage. The resultant
+   *   initial value will be whatever is provided as the first parameter.
+   *   See options to customize `configurable`, `enumerable`, `storage`,
+   *   `key` and the `liaison` factory function.
    *
-   *   **accessor(any, false, options?)**
-   *   **accessor(any, false, ...)**
-   *     supplying only a non-function only parameter or any value and the
-   *     value `false` as the second parameter, you will get a read-only
-   *     getter stored in the default or specified storage. The resultant
-   *     value will be whatever is provided as the first parameter.
-   *     See options to customize `configurable`, `enumerable`, `storage`,
-   *     `key` and the `liaison` factory function.
+   * **accessor (any, false, options?)**
+   * **accessor (any, false, ...)**
+   *   supplying only a non-function-only parameter or any value and the
+   *   value `false` as the second parameter, you will get a read-only
+   *   getter stored in the default or specified storage. The resultant
+   *   value will be whatever is provided as the first parameter.
+   *   See options to customize `configurable`, `enumerable`, `storage`,
+   *   `key` and the `liaison` factory function.
    *
-   *   **accessor(zeroFn)**
-   *   **accessor(zeroFn, nullish, options?)**
-   *   **accessor(zeroFn, nullish, ...)**
-   *     creates a generic read-only accessor with the first no-argument
-   *     function parameter being the getter and either null or undefined
-   *     for the setter. Either an options object or the manually ordered
-   *     parameters can optionally follow if a nullish value for setter
-   *     is provided.
+   * **accessor (zeroFn)**
+   * **accessor (zeroFn, nullish, options?)**
+   * **accessor (zeroFn, nullish, ...)**
+   *   creates a generic read-only accessor with the first no-argument
+   *   function parameter being the getter and either null or undefined
+   *   for the setter. Either an options object or the manually ordered
+   *   parameters can optionally follow if a nullish value for setter
+   *   is provided.
    *
-   *   **accessor(zeroFn, oneOrNone, options?)**
-   *   **accessor(zeroFn, oneOrNone, ...)**
-   *     creates a generic read-write accessor with the first no-argument
-   *     function parameter being the getter and the second single-argument
-   *     function parameter being the setter. Either an options object or
-   *     the manually ordered parameters can optionally follow.
+   * **accessor (zeroFn, oneOrNone, options?)**
+   * **accessor (zeroFn, oneOrNone, ...)**
+   *   creates a generic read-write accessor with the first no-argument
+   *   function parameter being the getter and the second single-argument
+   *   function parameter being the setter. Either an options object or
+   *   the manually ordered parameters can optionally follow.
    *
-   *   **accessor(oneFn, oneFn, options?)**
-   *   **accessor(oneFn, oneFn, ...)**
-   *     this special variant of the accessor() invocation, allows a single
-   *     argument getter and setter factory to be supplied. These will
-   *     automatically be invoked with the specified or default storage
-   *     object. The result of the getter factory should be a no argument
-   *     function. And the result of the setter factory should be a single
-   *     argument function. The options for `liaison` and `key` will be
-   *     ignored and should be handled specifically in the factory
-   *     functions to suit your own use case.
-   * ```
+   * **accessor (oneFn, oneFn, options?)**
+   * **accessor (oneFn, oneFn, ...)**
+   *   this special variant of the accessor() invocation allows a single
+   *   argument getter and setter factory to be supplied. These will
+   *   automatically be invoked with the specified or default storage
+   *   object. The result of the getter factory should be a no-argument
+   *   function. And the result of the setter factory should be a single
+   *   argument function. The options for `liaison` and `key` will be
+   *   ignored and should be handled specifically in the factory
+   *   functions to suit your own use case.
    *
-   * Options are an object oriented way of supplying the alternate
+   *
+   * Options are an object-oriented way of supplying the alternate
    * flags to the data descriptor. They are
    *
-   *   • `get` - only referenced when an options object is the only parameter
-   *   • `set` - only referenced when an options object is the only parameter
-   *   • `configurable` - if true, the descriptor of the object that this
+   *   * **`get`** - only referenced when an options object is the only
+   *     parameter
+   *   * **`set`** - only referenced when an options object is the only
+   *     parameter
+   *   * **`configurable`** - if true, the descriptor of the object that this
    *     accessor descriptor represents can be redefined at later time by
-   *     subsequent calls to {@link Object.defineProperty} or
+   *     later calls to {@link Object.defineProperty} or
    *     {@link Object.defineProperties}
-   *   • `enumerable` - if true, enumeration over the object this
-   *     descriptor is applied to, will show the property
+   *   * **`enumerable`** - if true, enumeration over the object this
+   *     descriptor is applied to will show the property
    *     represented by this descriptor. See the associated MDN
    *     page regarding this {@link PropertyDescriptor} if you
    *     want to know more.
-   *   • `storage` - an object, usually {@link Object} or {@link Map} or
+   *   * **`storage`** - an object, usually {@link Object} or {@link Map} or
    *     nullish if unused
-   *   • `key` - a {@link PropertyKey} of your choosing or the default
+   *   * **`key`** - a {@link PropertyKey} of your choosing or the default
    *      string `"value"`
-   *   • `bind` - true if you wish to have the `storage` object bound as
+   *   * **`bind`** - true if you wish to have the `storage` object bound as
    *     the `thisObj` for both the `get` and `set` functions when
    *     storage is used. **note* this will not work if you supply a
    *     big arrow function for the accessor function in question. This
    *     defaults to `false`.
-   *   • `liaison` - an optional factory function that must return an
+   *   * **`liaison`** - an optional factory function that must return an
    *     object with two properties. The first is a `get()` function that
-   *     returns a value and the second is a `set(value)` function that
+   *     returns a value, and the second is a `set(value)` function that
    *     stores a value. The factory function receives `storage` and
    *     `key`, in that order. The default uses {@link Map.get} and
    *     {@link Map.set} if the storage is an instance of {@link Map}.
@@ -3172,27 +3173,31 @@ var DescriptorUtils = {
    * @param {(object|any)?} value the JavaScript value representing
    * this descriptor's value or an options object if it is the
    * only parameter.
+   *
    * @param {(object|boolean)?} optionsOrConfigurable true or false if
    * you wish the `configurable` flag to be set. Optionally supply an
    * object with one of the supported options to configure the run
    * of the function.
+   *
    * @param {boolean?} enumerable true or false if you wish to
    * configure the `.enumerable` property of the descriptor
+   *
    * @param {object?} storage an object upon which data storage should
    * be written to and read from. Defaults to an empty {@link Object}
    * when storage is needed and not supplied via this parameter or
    * an options object.
+   *
    * @param {PropertyKey?} key the key used to store content on the
    * storage object.
-   * @param {(object, PropertyKey) => { get: ()=>any, set: (v)=>void}} liaison
-   * an optional function that, given a storage object and property key,
-   * returns an object with a no argument `get()` function that returns
-   * the value on the storage object with a given key and a single argument
-   * `set(value)` function that stores a new value using the property key
-   * on the supplied storage object. This exists because access to a
-   * {@link Map} and {@link Object} values are handled differently. If you
-   * need support for some other class than `Map` or `Object` then you
-   * should provide a liaison function to define access.
+   *
+   * @param {{function(object, PropertyKey): {
+   *   get: function(): any,
+   *   set: function(*): void
+   * }}} liaison
+   * an optional accessor factory for the storage object. Defaults support
+   * {@link Map} and plain {@link Object}; provide this if you need to support
+   * something else. Receives the storage object and a property key; returns
+   * a `get()` and `set(value)` pair for reading and writing that key.
    *
    * @returns {PropertyDescriptor}
    *
@@ -3358,51 +3363,49 @@ var DescriptorUtils = {
    *
    * This function has multiple possible overloads
    *
-   * ```markdown
-   *   **data()**
-   *     creates a data descriptor with a value of `undefined` that
-   *     is writable, configurable and enumerable.
+   * **data ()**
+   *   creates a data descriptor with a value of `undefined` that
+   *   is writable, configurable and enumerable.
    *
-   *   **data(options)**
-   *     if the only parameter is an object and that object contains
-   *     at least a `.value` property, this funtion will return a
-   *     data descriptor with the associated values. This variant
-   *     is useful if you want to extract the normal data descriptor
-   *     properties: value, writable, configurable and/or enumerable
-   *     from an object that has properties with these names, in
-   *     addition to other properties or functions. Note that if you
-   *     wish for the value of the descriptor to be an object that
-   *     also contains a `.value` property, use `data({value: obj})`
-   *     instead.
+   * **data (options)**
+   *   if the only parameter is an object and that object contains
+   *   at least a `.value` property, this funtion will return a
+   *   data descriptor with the associated values. This variant
+   *   is useful if you want to extract the normal data descriptor
+   *   properties: value, writable, configurable and/or enumerable
+   *   from an object that has properties with these names, in
+   *   addition to other properties or functions. Note that if you
+   *   wish for the value of the descriptor to be an object that
+   *   also contains a `.value` property, use `data({value: obj})`
+   *   instead.
    *
-   *   **data(value)**
-   *   **data(value, options?)**
-   *     creates a data descriptor from the supplied `value`,
-   *     optionally augmented by additional `options`. The defaults
-   *     for this writable, configurable and enumerable values set
-   *     to `true`
+   * **data (value)**
+   * **data (value, options?)**
+   *   creates a data descriptor from the supplied `value`,
+   *   optionally augmented by additional `options`. The defaults
+   *   for these writable, configurable and enumerable values are set
+   *   to `true`
    *
-   *   **data(value, writable?, configurable?, enumerable?)**
-   *     if writable, configurable or enumerable or true or false
-   *     then this function creates a data descriptor with those
-   *     flags and the supplied value (there's no real reason to
-   *     invoke this function if you're supplying all four values)
-   * ```
+   * **data (value, writable?, configurable?, enumerable?)**
+   *   if writable, configurable or enumerable or true or false
+   *   then this function creates a data descriptor with those
+   *   flags and the supplied value (there's no real reason to
+   *   invoke this function if you're supplying all four values)
    *
-   * Options are an object oriented way of supplying the alternate
+   * Options are an object-oriented way of supplying the alternate
    * flags to the data descriptor. They are
    *
-   *   • `value` - only referenced when an options object is the
+   *   * **`value`** - only referenced when an options object is the
    *     only parameter
-   *   • `writable` - true if the value represented by this data
+   *   * **`writable`** - true if the value represented by this data
    *     descriptor can be reassigned a new value.
-   *   • `configurable` - if true, the descriptor of the object
+   *   * **`configurable`** - if true, the descriptor of the object
    *     that this data descriptor represents can be redefined at
-   *     later time by subsequent calls to `Object.defineProperty`
-   *     or `Object.defineProperties`. If `.configurable` is true
+   *      a later time by later calls to `Object.defineProperty`
+   *     or `Object.defineProperties`. If `.configurable` is true,
    *     this can be done even if `.writable` is set to false
-   *   • `enumerable` - if true, enumeration over the object this
-   *     descriptor is applied to, will show the property
+   *   * **`enumerable`** - if true, enumeration over the object this
+   *     descriptor is applied to will show the property
    *     represented by this descriptor. See the associated MDN
    *     page regarding this `PropertyDescriptor` if you want to
    *     know more.
@@ -3410,14 +3413,18 @@ var DescriptorUtils = {
    * @param {(object|any)?} value the JavaScript value representing
    * this descriptor's value or an options object if it is the
    * only parameter.
+   *
    * @param {(object|boolean)?} optionsOrWritable true or false if
    * you wish the writable flag to be set. Optionally supply an
    * object with one of the supported options to configure the run
    * of the function.
+   *
    * @param {boolean?} configurable true or false if you wish to
    * configure the `.configurable` property of the descriptor
+   *
    * @param {boolean?} enumerable true or false if you wish to
    * configure the `.enumerable` property of the descriptor
+   *
    * @returns {PropertyDescriptor}
    *
    * @note More info on this can be found at the

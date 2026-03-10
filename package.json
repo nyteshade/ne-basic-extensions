@@ -1,11 +1,13 @@
 {
   "author": "Brielle Harrison <nyteshade at gmail.com>",
-  "browser": "dist/@nejs/basic-extensions.bundle.2.22.6.js",
+  "browser": "dist/@nejs/basic-extensions.bundle.2.22.12.js",
   "description": "Basic but commonly used extensions",
   "dependencies": {
-    "@nejs/extension": "^2.20.0"
+    "@nejs/enumeration": "^1.0.2",
+    "@nejs/extension": "^2.24.0"
   },
   "devDependencies": {
+    "@nejs/jsdoc-react-theme": "^2.1.1",
     "esbuild": "^0.25.3",
     "vitest": "^3.1.2"
   },
@@ -38,13 +40,14 @@
   "name": "@nejs/basic-extensions",
   "scripts": {
     "build": "bin/clean && bin/version patch bump && bin/esbuild",
-    "distribute": "bin/clean && bin/version minor bump && bin/esbuild && npm publish",
+    "distribute": "bin/clean && bin/version minor bump && bin/esbuild && npm publish --access public",
     "browser": "bin/esbuild",
+    "docs": "npx jsdoc-react src -o docs",
     "clean": "bin/clean",
     "prepack": "bin/clean && bin/esbuild",
     "repl": "npm run build && node --no-warnings repl.bootstrap.js",
     "test": "vitest"
   },
   "type": "module",
-  "version": "2.22.6"
+  "version": "2.22.12"
 }
