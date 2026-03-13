@@ -15401,11 +15401,7 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
     }));
   });
 
-  // src/Layout.jsx
-  var import_jsx_runtime14 = __toESM(require_jsx_runtime());
-  var MIN_SIDEBAR = 200;
-  var MAX_SIDEBAR = 480;
-  var DEFAULT_SIDEBAR = 280;
+  // src/constants.js
   var KIND_COLORS = {
     class: "red",
     interface: "orange",
@@ -15418,6 +15414,16 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
     typedef: "orange",
     event: "plum"
   };
+
+  // src/Layout.jsx
+  var import_jsx_runtime14 = __toESM(require_jsx_runtime());
+  var MIN_SIDEBAR = 200;
+  var MAX_SIDEBAR = 480;
+  var DEFAULT_SIDEBAR = 280;
+  function truncateHtml(html, maxLen) {
+    const plain = html.replace(/<[^>]*>/g, "");
+    return plain.length > maxLen ? plain.slice(0, maxLen) + "\u2026" : plain;
+  }
   function Layout({ docs: docs2, currentSlug, onNavigate, appearance, onToggleAppearance, children }) {
     const [searchOpen, setSearchOpen] = (0, import_react4.useState)(false);
     const [searchQuery, setSearchQuery] = (0, import_react4.useState)("");
@@ -15597,7 +15603,7 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
                     group.title,
                     /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "nav-group-count", children: group.items.length })
                   ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(p10, { direction: "column", gap: "0", mt: "1", children: [...group.items].sort((a16, b2) => a16.name.localeCompare(b2.name)).map((item) => {
+                  /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(p10, { direction: "column", gap: "0", mt: "1", children: group.items.map((item) => {
                     const isActive = currentSlug === item.slug;
                     return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
                       "a",
@@ -15681,15 +15687,7 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
                 ),
                 /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(p, { size: "2", weight: "medium", children: result.entry.name })
               ] }),
-              result.entry.description && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
-                p,
-                {
-                  size: "1",
-                  color: "gray",
-                  className: "search-result-desc",
-                  dangerouslySetInnerHTML: { __html: result.entry.description.slice(0, 100) }
-                }
-              )
+              result.entry.description && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(p, { size: "1", color: "gray", className: "search-result-desc", children: truncateHtml(result.entry.description, 100) })
             ]
           },
           `${result.pageSlug}-${result.entry.name}-${i6}`
@@ -18997,6 +18995,9 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
     if (doclet.readonly) {
       badges.push(/* @__PURE__ */ (0, import_jsx_runtime16.jsx)(e13, { variant: "surface", color: "gray", size: "1", children: "readonly" }, "ro"));
     }
+    if (doclet.typeMeta?.opaque) {
+      badges.push(/* @__PURE__ */ (0, import_jsx_runtime16.jsx)(e13, { variant: "surface", color: "amber", size: "1", children: "opaque" }, "opaque"));
+    }
     if (doclet.since) {
       badges.push(/* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(e13, { variant: "outline", color: "gray", size: "1", children: [
         "since ",
@@ -19004,6 +19005,20 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
       ] }, "since"));
     }
     return badges.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(p10, { gap: "1", children: badges }) : null;
+  }
+  function TypeMetaBlock({ typeMeta }) {
+    if (!typeMeta) return null;
+    const parts = [];
+    if (typeMeta.typeParams) parts.push(typeMeta.typeParams);
+    if (typeMeta.type) parts.push("= " + typeMeta.type);
+    if (typeMeta.enumValues && typeMeta.enumValues.length > 0) {
+      parts.push("{ " + typeMeta.enumValues.join(", ") + " }");
+    }
+    if (parts.length === 0) return null;
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(p7, { mt: "2", className: "flow-type-block", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(p, { size: "1", color: "gray", weight: "medium", className: "subsection-label", children: "Flow Type" }),
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(p7, { mt: "1", children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(p11, { size: "2", className: "flow-type-code", children: parts.join(" ") }) })
+    ] });
   }
   function SeeAlso({ see }) {
     if (!see || see.length === 0) return null;
@@ -19050,6 +19065,7 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
       isCallable && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Signature, { doclet, isConstructor }),
       doclet.description && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(p7, { className: "entry-description", mt: "2", children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("div", { dangerouslySetInnerHTML: { __html: doclet.description } }) }),
       isCallable && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(ParamsTable, { params: sig.params }),
+      isTypedef && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(TypeMetaBlock, { typeMeta: doclet.typeMeta }),
       isTypedef && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(PropertiesTable, { properties: doclet.properties }),
       isTypedef && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(ParamsTable, { params: sig.params }),
       isEvent && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(ParamsTable, { params: sig.params }),
@@ -19078,7 +19094,7 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
       }
     }, []);
     if (!open) return null;
-    const lines = highlightedHtml ? highlightedHtml.split("\n") : null;
+    const lines = highlightedHtml ? highlightedHtml.split(/\r?\n/) : null;
     return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(dialog_exports.Root, { open, onOpenChange: (v3) => {
       if (!v3) onClose();
     }, children: /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(dialog_exports.Content, { className: "source-dialog", size: "4", children: [
@@ -19131,18 +19147,6 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
 
   // src/EntityPage.jsx
   var import_jsx_runtime18 = __toESM(require_jsx_runtime());
-  var KIND_COLORS2 = {
-    class: "red",
-    interface: "orange",
-    mixin: "plum",
-    namespace: "green",
-    function: "green",
-    object: "cyan",
-    constant: "blue",
-    property: "blue",
-    typedef: "orange",
-    event: "plum"
-  };
   function Section({ id, title, items, onViewSource }) {
     if (!items || items.length === 0) return null;
     return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(p7, { className: "doc-section", mt: "6", id, children: [
@@ -19207,7 +19211,7 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
                 e13,
                 {
                   variant: "surface",
-                  color: KIND_COLORS2[sib.kind] || "gray",
+                  color: KIND_COLORS[sib.kind] || "gray",
                   size: "1",
                   style: { flexShrink: 0 },
                   children: sib.kind === "function" ? "fn" : sib.kind === "constant" ? "const" : sib.kind.slice(0, 3)
@@ -19223,7 +19227,7 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
   }
   function EntityPage({ entry, docs: docs2, onNavigate }) {
     const m6 = entry.members || {};
-    const kindColor = KIND_COLORS2[entry.kind] || "gray";
+    const kindColor = KIND_COLORS[entry.kind] || "gray";
     const kindLabel = entry.kind.charAt(0).toUpperCase() + entry.kind.slice(1);
     const [activeMember, setActiveMember] = (0, import_react6.useState)(null);
     const contentRef = (0, import_react6.useRef)(null);
@@ -19313,6 +19317,7 @@ For more information, see https://radix-ui.com/primitives/docs/components/${titl
           typeof entry.deprecated === "string" ? `: ${entry.deprecated}` : ""
         ] }) }),
         entry.description && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(p7, { className: "entity-description", mt: "4", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { dangerouslySetInnerHTML: { __html: entry.description } }) }),
+        entry.typeMeta && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(p7, { mt: "4", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(TypeMetaBlock, { typeMeta: entry.typeMeta }) }),
         /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(o19, { size: "4", my: "5" }),
         entry.signature && /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(p7, { className: "doc-section", mt: "2", children: [
           entry.kind === "class" && entry.signature.params?.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(r8, { size: "4", mb: "4", className: "section-title", children: "Constructor" }) : null,
