@@ -946,6 +946,15 @@ export const ObjectPrototypeExtensions = new Patch(Object.prototype, {
     },
 
     /**
+     * Semantically `isObject` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set isObject(_ignored) {
+      return
+    },
+
+    /**
      * Checks if the current value is an object and returns one of two
      * provided values based on the result. This function is a convenience
      * method for performing conditional operations based on the type of
@@ -1000,6 +1009,16 @@ export const ObjectPrototypeExtensions = new Patch(Object.prototype, {
     },
 
     /**
+     * Semantically `isNullDefined` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set isNullDefined(_ignored) {
+      return
+    },
+
+
+    /**
      * Checks if the current value is either `null` or `undefined` and
      * returns one of two provided values based on the result.
      *
@@ -1049,6 +1068,15 @@ export const ObjectPrototypeExtensions = new Patch(Object.prototype, {
      */
     get isPrimitive() {
       return pIsPrimitive(this)
+    },
+
+    /**
+     * Semantically `isPrimitive` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set isPrimitive(_ignored) {
+      return
     },
 
     /**
@@ -1112,6 +1140,15 @@ export const ObjectPrototypeExtensions = new Patch(Object.prototype, {
     },
 
     /**
+     * Semantically `isValidKey` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set isValidKey(_ignored) {
+      return
+    },
+
+    /**
      * Checks if the current value is a valid key for an object and returns
      * one of two provided values based on the result. This function is a
      * convenience method for performing conditional operations based on
@@ -1152,6 +1189,15 @@ export const ObjectPrototypeExtensions = new Patch(Object.prototype, {
      */
     get hasStringTag() {
       return pHasStringTag(this)
+    },
+
+    /**
+     * Semantically `hasStringTag` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set hasStringTag(_ignored) {
+      return
     },
 
     /**

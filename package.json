@@ -1,6 +1,6 @@
 {
   "author": "Brielle Harrison <nyteshade at gmail.com>",
-  "browser": "dist/@nejs/basic-extensions.bundle.2.22.12.js",
+  "browser": "dist/@nejs/basic-extensions.bundle.2.22.13.js",
   "description": "Basic but commonly used extensions",
   "dependencies": {
     "@nejs/enumeration": "^1.0.2",
@@ -49,5 +49,5 @@
     "test": "vitest"
   },
   "type": "module",
-  "version": "2.22.12"
+  "version": "2.22.13"
 }

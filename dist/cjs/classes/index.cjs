@@ -5236,9 +5236,9 @@ var Introspector = class {
     let typer = typeNameOrTyperFn;
     if (typeof typeNameOrTyperFn !== "function") {
       const type = String(typeNameOrTyperFn);
-      typer = function(value, typeName, descriptor) {
+      typer = (function(value, typeName, descriptor) {
         return typeName === type;
-      }.bind(this);
+      }).bind(this);
     }
     return this.addExpansion(
       searchClass[searchFunction](owner).filter((key) => {
@@ -8706,6 +8706,14 @@ var ObjectPrototypeExtensions = new import_extension15.Patch(Object.prototype, {
       return pIsObject(this);
     },
     /**
+     * Semantically `isObject` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set isObject(_ignored) {
+      return;
+    },
+    /**
      * Checks if the current value is an object and returns one of two
      * provided values based on the result. This function is a convenience
      * method for performing conditional operations based on the type of
@@ -8758,6 +8766,14 @@ var ObjectPrototypeExtensions = new import_extension15.Patch(Object.prototype, {
       return pIsNullDefined(this);
     },
     /**
+     * Semantically `isNullDefined` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set isNullDefined(_ignored) {
+      return;
+    },
+    /**
      * Checks if the current value is either `null` or `undefined` and
      * returns one of two provided values based on the result.
      *
@@ -8806,6 +8822,14 @@ var ObjectPrototypeExtensions = new import_extension15.Patch(Object.prototype, {
      */
     get isPrimitive() {
       return pIsPrimitive(this);
+    },
+    /**
+     * Semantically `isPrimitive` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set isPrimitive(_ignored) {
+      return;
     },
     /**
      * Checks if the current value is a primitive type and returns one
@@ -8866,6 +8890,14 @@ var ObjectPrototypeExtensions = new import_extension15.Patch(Object.prototype, {
       return pIsValidKey(this);
     },
     /**
+     * Semantically `isValidKey` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set isValidKey(_ignored) {
+      return;
+    },
+    /**
      * Checks if the current value is a valid key for an object and returns
      * one of two provided values based on the result. This function is a
      * convenience method for performing conditional operations based on
@@ -8905,6 +8937,14 @@ var ObjectPrototypeExtensions = new import_extension15.Patch(Object.prototype, {
      */
     get hasStringTag() {
       return pHasStringTag(this);
+    },
+    /**
+     * Semantically `hasStringTag` is a constant, but some JavaScript
+     * libraries and strict modes complain about the existence of only
+     * a getter without a setter for Object properties.
+     */
+    set hasStringTag(_ignored) {
+      return;
     },
     /**
      * Retrieves the string tag of an object. The string tag is a representation
